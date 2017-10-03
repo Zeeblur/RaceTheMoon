@@ -13,6 +13,7 @@
 
 
 
+
 // Include GLEW
 #include <GL/glew.h>
 
@@ -44,7 +45,7 @@ int main() {
     e->add_component("physics", physics_system::get()->build_component(e));
     e->add_component("render", renderer::get()->build_component(e, "Blue", "Sphere", "Gouraud"));
 
-    eng->run();
+	eng->run();
 
     return 0;
 }
