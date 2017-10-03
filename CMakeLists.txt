@@ -10,8 +10,6 @@ include_directories ("${PROJECT_BINARY_DIR}")
 
 include(DownloadProject.cmake)
 
-#add_subdirectory (external)
-
 # don't download glfw project shit
 option(GLFW_BUILD_DOCS "" OFF)
 option(GLFW_BUILD_EXAMPLES "" OFF)
@@ -29,12 +27,15 @@ download_project(PROJ glfw
 add_subdirectory(${glfw_SOURCE_DIR} ${glfw_BINARY_DIR})
 include_directories("${glfw_SOURCE_DIR}/include")
 
-add_subdirectory(glew)
+#get glew
+download_project(PROJ glew
+  GIT_REPOSITORY      https://github.com/menpo/glew.git
+  GIT_TAG             896c62c
+  ${UPDATE_DISCONNECTED_IF_AVAILABLE}
+)
 
-#include_directories(external/glew-1.13.0/include)
-set(GLEW_SOURCE
-        ${glew_SOURCE_DIR}/glew.c
-        )
+add_subdirectory(${glew_SOURCE_DIR} ${glew_BINARY_DIR})
+include_directories("${glew_SOURCE_DIR}/include")
 
 #get glm
 download_project(PROJ glm
@@ -65,22 +66,12 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 file(GLOB_RECURSE SOURCES src/*.cpp src/*.h)
 
 add_executable(RaceTheMoon ${SOURCES} src/main.cpp src/glfw.h)
-#target_link_libraries (RaceTheMoon  ${EXTRA_LIBS})
+
 
 set(GLEW_HEADERS
         )
 
 
-add_library( GLEW_1130 STATIC
-        ${GLEW_SOURCE}
-        ${GLEW_INCLUDE}
-        )
-
-target_link_libraries(GLEW_1130
-        ${OPENGL_LIBRARY}
-        ${EXTRA_LIBS}
-        )
-
-target_link_libraries(RaceTheMoon glfw glm GLEW_1130)
+target_link_libraries(RaceTheMoon glfw glm GLEW)
 
 
