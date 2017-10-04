@@ -49,6 +49,69 @@ download_project(PROJ glm
 add_subdirectory(${glm_SOURCE_DIR} ${glm_BINARY_DIR})
 include_directories("${glm_SOURCE_DIR}")
 
+#get zlib
+download_project(PROJ zlib
+  GIT_REPOSITORY	  https://github.com/madler/zlib.git
+  ${UPDATE_DISCONNECTED_IF_AVAILABLE}
+)
+
+add_subdirectory(${zlib_SOURCE_DIR} ${zlib_BINARY_DIR})
+include_directories("${zlib_SOURCE_DIR}")
+
+# TODO: fix this
+set(ZLIB_INCLUDE_DIR ${ZLIB_INCLUDE_DIR} ${zlib_BINARY_DIR})
+set(ZLIB_LIBRARY ${ZLIB_LIBRARY} ${zlib_SOURCE_DIR})
+
+#get libpng
+download_project(PROJ libpng
+  GIT_REPOSITORY	  https://github.com/glennrp/libpng.git
+  ${UPDATE_DISCONNECTED_IF_AVAILABLE}
+)
+add_subdirectory(${libpng_SOURCE_DIR} ${libpng_BINARY_DIR})
+include_directories("${zlib_SOURCE_DIR}")
+
+# TODO: fix this
+set(PNG_INCLUDE_DIR ${PNG_INCLUDE_DIR} ${libpng_BINARY_DIR})
+set(PNG_LIBRARY ${PNG_LIBRARY} ${libpng_SOURCE_DIR})
+
+#get libjpeg
+
+download_project(PROJ libjpeg
+  GIT_REPOSITORY	  https://github.com/LuaDist/libjpeg.git
+  ${UPDATE_DISCONNECTED_IF_AVAILABLE}
+)
+add_subdirectory(${libjpeg_SOURCE_DIR} ${libjpeg_BINARY_DIR})
+include_directories("${libjpeg_SOURCE_DIR}")
+
+# TODO: fix this
+set(JPEG_INCLUDE_DIR ${JPEG_INCLUDE_DIR} ${libjpeg_BINARY_DIR})
+set(JPEG_LIBRARY ${JPEG_LIBRARY} ${libjpeg_SOURCE_DIR})
+
+#freeimage options
+option(ENABLE_TIFF "" OFF)
+option(ENABLE_WEBP "" OFF)
+option(ENABLE_RAW "" OFF)
+option(ENABLE_OPENJP "" OFF)
+option(FREEIMAGE_BUILD_STATIC "" OFF)
+option(FREEIMAGE_BUILD_DLL "" ON)
+
+#get freeimage
+download_project(PROJ FreeImage
+  GIT_REPOSITORY	  https://github.com/imazen/freeimage.git
+  ${UPDATE_DISCONNECTED_IF_AVAILABLE}
+)
+
+
+
+add_subdirectory(${FreeImage_SOURCE_DIR} ${FreeImage_BINARY_DIR})
+include_directories("${FreeImage_SOURCE_DIR}/Source")
+
+set(assets
+  FreeImage
+  zlib
+  libpng
+  libjpeg)
+
 find_package(OpenGL REQUIRED)
 
 add_definitions(-DGLEW_STATIC)
@@ -79,6 +142,12 @@ file(GLOB_RECURSE SOURCES src/*.cpp src/*.h)
 
 add_executable(RaceTheMoon ${SOURCES} src/main.cpp src/glfw.h)
 
-target_link_libraries(RaceTheMoon glfw ${glew})
 
+
+set(GLEW_HEADERS
+        )
+
+
+add_dependencies(RaceTheMoon glfw ${glew} ${assets})
+target_link_libraries(RaceTheMoon glfw ${glew} ${assets})
 
