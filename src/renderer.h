@@ -7,6 +7,7 @@
 #include "entity.h"
 #include "component.h"
 #include "subsystem.h"
+#include "glfw.h"
 
 struct render_data
 {
@@ -133,7 +134,7 @@ public:
             }
         }
 
-        glfwSwapBuffers(window);
+        glfwSwapBuffers(glfw::window);
         glfwPollEvents();
     }
 

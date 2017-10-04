@@ -37,6 +37,9 @@ download_project(PROJ glew
 add_subdirectory(${glew_SOURCE_DIR} ${glew_BINARY_DIR})
 include_directories("${glew_SOURCE_DIR}/include")
 
+## get library for os
+GET_DIRECTORY_PROPERTY(glew DIRECTORY ${glew_SOURCE_DIR} DEFINITION GLEW_NAME)
+
 #get glm
 download_project(PROJ glm
   GIT_REPOSITORY      https://github.com/g-truc/glm.git
@@ -103,21 +106,34 @@ download_project(PROJ FreeImage
 add_subdirectory(${FreeImage_SOURCE_DIR} ${FreeImage_BINARY_DIR})
 include_directories("${FreeImage_SOURCE_DIR}/Source")
 
-#target_link_libraries(RaceTheMoon FreeImage zlib libpng libjpeg)
+set(assets
+  FreeImage
+  zlib
+  libpng
+  libjpeg)
+
+find_package(OpenGL REQUIRED)
 
 add_definitions(-DGLEW_STATIC)
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    set(OPENGL_LIBRARY
-            ${OPENGL_LIBRARY}
+    set(glew
+            ${OPENGL_LIBRARIES}
             -lGL -lGLU -lXrandr -lXext -lX11 -lrt
             ${CMAKE_DL_LIBS}
-            ${GLFW_LIBRARIES}
+	    glm
+	    ${glew}
             )
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    set(OPENGL_LIBRARY
-            ${OPENGL_LIBRARY}
+    set(glew
+            ${OPENGL_LIBRARIES}
             ${CMAKE_DL_LIBS}
-            ${GLFW_LIBRARIES}
+	    glm
+	    ${glew}
+            )
+elseif()
+    set(glew
+	    glm
+	    ${glew}
             )
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
@@ -127,10 +143,11 @@ file(GLOB_RECURSE SOURCES src/*.cpp src/*.h)
 add_executable(RaceTheMoon ${SOURCES} src/main.cpp src/glfw.h)
 
 
+
 set(GLEW_HEADERS
         )
 
 
-target_link_libraries(RaceTheMoon glfw glm glew32 FreeImage zlib libpng libjpeg)
-add_dependencies(RaceTheMoon glfw glm glew32 FreeImage zlib libpng libjpeg)
+add_dependencies(RaceTheMoon glfw ${glew} ${assets})
+target_link_libraries(RaceTheMoon glfw ${glew} ${assets})
 
