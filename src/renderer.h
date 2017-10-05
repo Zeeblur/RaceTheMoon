@@ -17,7 +17,9 @@ struct render_data
     std::string colour = "Red";
     std::string shape = "Sphere";
     std::string shader = "Phong";
+		// add ref to structs
 };
+// struct mesh, effect
 
 struct render_component : public component
 {
