@@ -114,13 +114,13 @@ public:
     void update(float delta_time)
     {
         // Should never be called
-        std::cout << "Renderer updating" << std::endl;
+        //std::cout << "Renderer updating" << std::endl;
 
     }
 
     void render()
     {
-        std::cout << "Renderer rendering" << std::endl;
+        //std::cout << "Renderer rendering" << std::endl;
         // Clear the screen.
         glClear( GL_COLOR_BUFFER_BIT );
 
@@ -130,9 +130,9 @@ public:
             {
                 // TODO: open gl calls
 
-                std::cout << "Rendering " << d.colour << " ";
-                std::cout << d.shape << " using " << d.shader;
-                std::cout << " shading at position " << d.transform << std::endl;
+                //std::cout << "Rendering " << d.colour << " ";
+                //std::cout << d.shape << " using " << d.shader;
+                //std::cout << " shading at position " << d.transform << std::endl;
             }
         }
 

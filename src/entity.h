@@ -54,15 +54,15 @@ public:
 
     inline void update(float delta_time)
     {
-        std::cout << "Entity " << _id << " updating" << std::endl;
-        std::cout << _components.size() << std::endl;
+        //std::cout << "Entity " << _id << " updating" << std::endl;
+        //std::cout << _components.size() << std::endl;
         for (auto &c : _components)
             c.second->update(delta_time);
     }
 
     inline void render()
     {
-        std::cout << "Entity " << _id << " rendering" << std::endl;
+        //std::cout << "Entity " << _id << " rendering" << std::endl;
         for (auto &c : _components)
             c.second->render();
     }

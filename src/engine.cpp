@@ -49,7 +49,7 @@ void engine::run()
 	// Check if the ESC key was pressed or the window was closed
 	while (_running && glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS && glfwWindowShouldClose(window) == 0)
 	{
-		std::cout << "Engine Running" << std::endl;
+		//std::cout << "Engine Running" << std::endl;
 
 		// Update the subsystems.  At the moment use dummy time of 1.0s.  You
 		// will want to use a proper timer.

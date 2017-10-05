@@ -50,14 +50,14 @@ public:
 
     void update(float delta_time) override final
     {
-        std::cout << "Entity manager updating" << std::endl;
+        //std::cout << "Entity manager updating" << std::endl;
         for (auto &e : _entities)
             e.second->update(delta_time);
     }
 
     void render() override final
     {
-        std::cout << "Entity manager rendering" << std::endl;
+        //std::cout << "Entity manager rendering" << std::endl;
         for (auto &e : _entities)
             e.second->render();
     }
