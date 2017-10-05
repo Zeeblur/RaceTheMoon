@@ -152,6 +152,11 @@ public:
         }
     }
 
+	std::string get_current_state()
+	{
+		return _current_state_name;
+	}
+
     bool initialise() override final
     {
         return true;

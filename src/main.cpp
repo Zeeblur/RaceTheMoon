@@ -8,7 +8,9 @@
 #include "physics_system.h"
 #include "renderer.h"
 #include "state_machine.h"
-#include "engine_states.h"
+//#include "engine_states.h"
+#include "game_state.h"
+#include "menu_state.h"
 #include "input_handler.h"
 
 
@@ -37,9 +39,9 @@ int main() {
     eng->add_subsystem("state_machine", engine_state_machine::get());
     eng->add_subsystem("input_handler", input_handler::get());
 
-    engine_state_machine::get()->add_state("1", std::make_shared<engine_state_1>());
-    engine_state_machine::get()->add_state("2", std::make_shared<engine_state_2>());
-    engine_state_machine::get()->change_state("1");
+    engine_state_machine::get()->add_state("menu_state", std::make_shared<menu_state>());
+    engine_state_machine::get()->add_state("game_state", std::make_shared<game_state>());
+    engine_state_machine::get()->change_state("game_state");
 
     auto e = entity_manager::get()->create_entity("Test");
     e->add_component("physics", physics_system::get()->build_component(e));

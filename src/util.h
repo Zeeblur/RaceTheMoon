@@ -3,6 +3,7 @@
 #pragma once
 #include <fstream>
 #include <iostream>
+#include "GL\glew.h"
 // Checks for any OpenGL errors
 inline bool get_GL_error(int line, const std::string& file)
 {
