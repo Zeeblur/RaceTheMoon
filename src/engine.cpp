@@ -21,9 +21,26 @@ std::shared_ptr<subsystem> engine::get_subsystem(const std::string &name)
 // If subsystem order is important consider using another mechanism.
 void engine::run()
 {
-	glfw::runwindow();
+	initWindowMan();
+	initGraphics();
+	initSubsystems();
+	mainLoop();
+	cleanup();
+}
 
 
+void engine::initWindowMan()
+{
+	glfw::runWindow();
+}
+
+void engine::initGraphics()
+{
+
+}
+
+void engine::initSubsystems()
+{
 	// Initialise all the subsystems
 	for (auto &sys : _subsystems)
 	{
@@ -43,10 +60,13 @@ void engine::run()
 			return;
 		}
 	}
+}
 
-
+void engine::mainLoop()
+{
 	// Loop until not running.
 	// Check if the ESC key was pressed or the window was closed
+
 	while (_running && glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS && glfwWindowShouldClose(window) == 0)
 	{
 		std::cout << "Engine Running" << std::endl;
@@ -62,6 +82,10 @@ void engine::run()
 				sys.second->render();
 
 	}
+}
+
+void engine::cleanup()
+{
 
 	// Unload the content.
 	for (auto &sys : _subsystems)
@@ -83,6 +107,7 @@ void engine::run()
 	// Close OpenGL window and terminate GLFW
 	glfwTerminate();
 }
+
 
 
 

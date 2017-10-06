@@ -1,6 +1,9 @@
-//
+ //
 // Created by zoe on 03/10/17.
 //
+#include <fstream>
+#include <string>
+#include <vector>
 #include "glfw.h"
 
 
@@ -8,7 +11,7 @@ namespace glfw
 {
 	GLFWwindow* window;
 
-    int runwindow()
+    int runWindow()
     {
         // Initialise GLFW
         if( !glfwInit() )
@@ -34,6 +37,7 @@ namespace glfw
         }
         glfwMakeContextCurrent(window);
 
+		glewExperimental = GL_TRUE;
         // Initialize GLEW
         if (glewInit() != GLEW_OK) {
             fprintf(stderr, "Failed to initialize GLEW\n");

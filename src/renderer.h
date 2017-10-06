@@ -8,6 +8,9 @@
 #include "component.h"
 #include "subsystem.h"
 #include "glfw.h"
+#include "opengl_util.h"
+
+//static GLuint glfw::LoadShaders(char const* vertex_file_path, char const* fragment_file_path);
 
 struct render_data
 {
@@ -82,6 +85,10 @@ private:
         _active = false;
     }
 
+	GLuint vertexArrayID;
+	GLuint vertexbuffer;
+	GLuint programID;
+
 public:
 
     inline static std::shared_ptr<renderer> get()
@@ -102,12 +109,18 @@ public:
     bool initialise()
     {
         std::cout << "Renderer initialising" << std::endl;
+		    
+        // create vao
+
         return true;
     }
 
     bool load_content()
     {
         std::cout << "Renderer loading content" << std::endl;
+	
+
+		gl::createvao(vertexArrayID, vertexbuffer, programID);        
         return true;
     }
 
@@ -115,7 +128,6 @@ public:
     {
         // Should never be called
         std::cout << "Renderer updating" << std::endl;
-
     }
 
     void render()
@@ -129,10 +141,30 @@ public:
             if (d.visible)
             {
                 // TODO: open gl calls
+                glUseProgram(programID);
+
+                // 1rst attribute buffer : vertices
+                glEnableVertexAttribArray(0);
+                glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+                glVertexAttribPointer(
+                        0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+                        3,                  // size
+                        GL_FLOAT,           // type
+                        GL_FALSE,           // normalized?
+                        0,                  // stride
+                        (void*)0            // array buffer offset
+                );
+
+                // Draw the triangle !
+                glDrawArrays(GL_TRIANGLES, 0, 3); // 3 indices starting at 0 -> 1 triangle
+
+                glDisableVertexAttribArray(0);
 
                 std::cout << "Rendering " << d.colour << " ";
                 std::cout << d.shape << " using " << d.shader;
                 std::cout << " shading at position " << d.transform << std::endl;
+
+
             }
         }
 

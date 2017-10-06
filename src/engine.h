@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include "subsystem.h"
 #include "glfw.h"
+#include "opengl_util.h"
 
 class engine
 {
@@ -16,6 +17,14 @@ private:
 	std::unordered_map<std::string, std::shared_ptr<subsystem>> _subsystems;
 
 	engine() = default;
+
+	// app stuff
+	void initWindowMan();
+	void initGraphics();
+	void initSubsystems();
+	void mainLoop();
+	void cleanup();
+
 
 
 public:
