@@ -2,7 +2,7 @@
 #include <iostream>
 void pause_state::on_enter()
 {
-	std::cout << "Entered pause state" << std::endl;
+	std::cout << "Entered pause state, press ESC to go back to game state or BACKSPACE to go back to menu state" << std::endl;
 }
 
 void pause_state::on_update(float delta_time)

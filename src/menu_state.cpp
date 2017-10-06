@@ -9,7 +9,7 @@ void menu_state::on_enter()
 	engine::get()->get_subsystem("physics_system")->set_active(false);
 	//engine::get()->get_subsystem("renderer")->set_visible(false);
 
-	std::cout << "Entered menu state" << std::endl;
+	std::cout << "Entered menu state, press ENTER to go to game state" << std::endl;
 }
 
 void menu_state::on_update(float delta_time)

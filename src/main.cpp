@@ -8,13 +8,11 @@
 #include "physics_system.h"
 #include "renderer.h"
 #include "state_machine.h"
-//#include "engine_states.h"
+#include "engine_state_machine.h"
 #include "game_state.h"
 #include "menu_state.h"
+#include "pause_state.h"
 #include "input_handler.h"
-
-
-
 
 // Include GLEW
 #include <GL/glew.h>
@@ -26,7 +24,7 @@ using namespace std;
 // Include GLM
 #include <glm/glm.hpp>
 using namespace glm;
-
+using namespace util;
 
 int main() {
 
@@ -39,9 +37,10 @@ int main() {
     eng->add_subsystem("state_machine", engine_state_machine::get());
     eng->add_subsystem("input_handler", input_handler::get());
 
-    engine_state_machine::get()->add_state("menu_state", std::make_shared<menu_state>());
-    engine_state_machine::get()->add_state("game_state", std::make_shared<game_state>());
-    engine_state_machine::get()->change_state("game_state");
+    engine_state_machine::get()->add_state("menu_state", std::make_shared<menu_state>(), state_type::MENU);
+    engine_state_machine::get()->add_state("game_state", std::make_shared<game_state>(), state_type::GAME);
+	engine_state_machine::get()->add_state("pause_state", std::make_shared<pause_state>(), state_type::PAUSE);
+    engine_state_machine::get()->change_state("menu_state");
 
     auto e = entity_manager::get()->create_entity("Test");
     e->add_component("physics", physics_system::get()->build_component(e));

@@ -1,5 +1,15 @@
 // General utility functions
-
+namespace util
+{
+	enum class state_type
+	{
+		START,
+		MENU,
+		GAME,
+		PAUSE,
+		OPTIONS
+	};
+}
 #pragma once
 #include <fstream>
 #include <iostream>

@@ -47,7 +47,7 @@ void engine::run()
 
 	// Loop until not running.
 	// Check if the ESC key was pressed or the window was closed
-	while (_running && glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS && glfwWindowShouldClose(window) == 0)
+	while (_running && glfwWindowShouldClose(window) == 0)
 	{
 		//std::cout << "Engine Running" << std::endl;
 
