@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <memory>
 #include "component.h"
-
+#include <iostream>
 struct transform
 {
     float x = 1.0f;
@@ -96,5 +96,3 @@ public:
         return nullptr;
     }
 };
-
-size_t entity::counter = 0;

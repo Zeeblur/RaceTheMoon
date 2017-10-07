@@ -76,7 +76,7 @@ private:
 
 public:
 
-	  inline static std::shared_ptr<renderer> get();
+		static std::shared_ptr<renderer> get();
 
 		std::shared_ptr<render_component> build_component(std::shared_ptr<entity> &e, std::string colour, std::string shape, std::string shader, Effect effect, Mesh mesh);
 
