@@ -5,7 +5,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include "util.h"
 
 #define CHECK_GL_ERROR CheckGL(__LINE__, __FILE__)
 
@@ -198,31 +197,3 @@ void renderer::shutdown()
 {
 	std::cout << "Renderer shutting down" << std::endl;
 }
-
-// **** ASSIMP CODE FROM SAM'S ENGINE ****
-
-
-//Effect *renderer::GetEffect(const std::string &path) {
-//	std::string vert_path = path + ".vert";
-//	std::string frag_path = path + ".frag";
-//	std::string geom_path = path + ".geom";
-//	std::string vert_file, frag_file, geom_file;
-//
-//	if (!Findfile(vert_path) || !read_file(vert_path, vert_file)) {
-//		throw std::runtime_error("Error loading vert");
-//	}
-//
-//	if (!Findfile(frag_path) || !read_file(frag_path, frag_file)) {
-//		throw std::runtime_error("Error loading vert");
-//	}
-//
-//	auto e = new Effect();
-//	e->name = path;
-//	e->has_geometry = (Findfile(geom_path) && read_file(geom_path, geom_file));
-//
-//	util::LoadEffect(e, vert_file, frag_file, geom_file);
-//
-//	return e;
-//}
-
-// **** END OF ASSIMP CODE ****

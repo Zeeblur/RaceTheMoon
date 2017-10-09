@@ -1,10 +1,10 @@
 #pragma once
-
 #include <string>
 #include <unordered_map>
 #include <memory>
 #include "component.h"
 #include <iostream>
+
 struct transform
 {
     float x = 1.0f;
@@ -24,15 +24,15 @@ private:
     transform _trans;
 
 public:
-    entity(const std::string& name)
+    inline entity(const std::string& name)
         : _name(name)
     {
         _id = counter++;
     }
 
-    transform& get_trans() { return _trans; }
+    inline transform& get_trans() { return _trans; }
 
-    bool initialise()
+    inline bool initialise()
     {
         std::cout << "Entity " << _id << " initialising" << std::endl;
         // Call initialise on all components
@@ -42,7 +42,7 @@ public:
         return true;
     }
 
-    bool load_content()
+    inline bool load_content()
     {
         std::cout << "Entity " << _id << " loading content" << std::endl;
         // Call load_content on all components
@@ -52,29 +52,29 @@ public:
         return true;
     }
 
-    void update(float delta_time)
+    inline void update(float delta_time)
     {
-        std::cout << "Entity " << _id << " updating" << std::endl;
-        std::cout << _components.size() << std::endl;
+        //std::cout << "Entity " << _id << " updating" << std::endl;
+        //std::cout << _components.size() << std::endl;
         for (auto &c : _components)
             c.second->update(delta_time);
     }
 
-    void render()
+    inline void render()
     {
-        std::cout << "Entity " << _id << " rendering" << std::endl;
+        //std::cout << "Entity " << _id << " rendering" << std::endl;
         for (auto &c : _components)
             c.second->render();
     }
 
-    void unload_content()
+    inline void unload_content()
     {
         std::cout << "Entity " << _id << " unloading content" << std::endl;
         for (auto &c : _components)
             c.second->unload_content();
     }
 
-    void shutdown()
+    inline void shutdown()
     {
         std::cout << "Entity " << _id << " shutting down" << std::endl;
         for (auto &c : _components)
@@ -82,13 +82,13 @@ public:
         _components.clear();
     }
 
-    bool add_component(const std::string &name, std::shared_ptr<component> comp)
+    inline bool add_component(const std::string &name, std::shared_ptr<component> comp)
     {
         _components[name] = comp;
         return true;
     }
 
-    std::shared_ptr<component> get_component(const std::string &name) const
+    inline std::shared_ptr<component> get_component(const std::string &name) const
     {
         auto found = _components.find(name);
         if (found != _components.end())

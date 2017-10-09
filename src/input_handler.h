@@ -33,13 +33,6 @@ public:
 
     void update(float delta_time)
     {
-        // We are really cheating here.  You should use standard key down
-        // checking each frame here.
-        //std::cout << "Input handler updating" << std::endl;
-        //int choice = 1;
-        //std::cout << "Change state to 1 or 2: ";
-        //std::cin >> choice;
-        //engine_state_machine::get()->change_state(std::to_string(choice));
     }
 
     void render()

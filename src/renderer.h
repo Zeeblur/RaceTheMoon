@@ -85,10 +85,13 @@ public:
 
 	void update(float delta_time);
 
+
     void render();
+
 
 	void unload_content();
 	void shutdown();
+
 
 	GLuint programID;
 

@@ -101,7 +101,7 @@ public:
 
     void update(float delta_time) override final
     {
-        std::cout << "Physics system updating" << std::endl;
+        //std::cout << "Physics system updating" << std::endl;
         for (auto &d : _data)
         {
             // If active physics object add 1 to each component.
@@ -117,7 +117,7 @@ public:
     void render() override final
     {
         // This should never be called.
-        std::cout << "Physics system rendering" << std::endl;
+        //std::cout << "Physics system rendering" << std::endl;
     }
 
     void unload_content() override final

@@ -16,7 +16,7 @@ option(GLFW_BUILD_EXAMPLES "" OFF)
 option(GLFW_BUILD_TESTS "" OFF)
 option(GLFW_DOCUMENT_INTERNALS "" OFF)
 option(GLFW_INSTALL "" OFF)
-
+ 
 #get glfw
 download_project(PROJ glfw
   GIT_REPOSITORY      https://github.com/glfw/glfw.git
