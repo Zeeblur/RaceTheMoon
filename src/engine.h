@@ -19,7 +19,6 @@ private:
 	engine() = default;
 
 	// app stuff
-	void initWindowMan();
 	void initGraphics();
 	void initSubsystems();
 	void mainLoop();
@@ -30,6 +29,9 @@ private:
 public:
 
 
+
+	void initWindowMan();
+	
 	inline static std::shared_ptr<engine> get()
 	{
 	

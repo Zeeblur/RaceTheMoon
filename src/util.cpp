@@ -165,29 +165,7 @@ namespace util {
 		return add_buffer(om, &buffer[0], 4, static_cast<GLuint>(buffer.size() * sizeof(glm::vec4)), index, buffer_type);
 	}
 
-	void LoadModel(Mesh *msh) {
-		ogl_mesh *om = new ogl_mesh();
-		msh->GpuData = om;
-		om->type = GL_TRIANGLES;
-		// Add the buffers to the geometry
-		add_buffer(*om, msh->positions, BUFFER_INDEXES::POSITION_BUFFER);
-		if (msh->colours.size() != 0)
-			add_buffer(*om, msh->colours, BUFFER_INDEXES::COLOUR_BUFFER);
-		if (msh->normals.size() != 0) {
-			add_buffer(*om, msh->normals, BUFFER_INDEXES::NORMAL_BUFFER);
-			// generate_tb(normals);
-		}
-		if (msh->tex_coords.size() != 0) {
-			add_buffer(*om, msh->tex_coords, BUFFER_INDEXES::TEXTURE_COORDS_0);
-		}
-		if (msh->indices.size() != 0) {
-			add_index_buffer(*om, msh->indices);
-			om->has_indices = true;
-		}
-		else {
-			om->vertex_count = msh->positions.size();
-		}
-	}
+
 
 	void LoadEffect(Effect *eff, const std::string &vert, const std::string &frag, const std::string &geom) {
 		// Create shader with OpenGL

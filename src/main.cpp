@@ -11,9 +11,6 @@
 #include "engine_states.h"
 #include "input_handler.h"
 
-
-
-
 // Include GLEW
 #include <GL/glew.h>
 
@@ -31,6 +28,7 @@ int main() {
     std::cout << "hello world" << std::endl;
 
     auto eng = engine::get();
+	eng->initWindowMan();
     eng->add_subsystem("entity_manager", entity_manager::get());
     eng->add_subsystem("physics_system", physics_system::get());
     eng->add_subsystem("renderer", renderer::get());
@@ -39,16 +37,11 @@ int main() {
 
     engine_state_machine::get()->add_state("1", std::make_shared<engine_state_1>());
     engine_state_machine::get()->add_state("2", std::make_shared<engine_state_2>());
-    engine_state_machine::get()->change_state("1");
-
-
-		// ** Temp variables for build_component method **
-		Effect eff;
-		Mesh mes;
+    engine_state_machine::get()->change_state("2");
 
     auto e = entity_manager::get()->create_entity("Test");
     e->add_component("physics", physics_system::get()->build_component(e));
-    e->add_component("render", renderer::get()->build_component(e, "Blue", "Sphere", "Gouraud", eff, mes));
+    e->add_component("render", renderer::get()->build_component(e, "Blue", "Sphere", "Gouraud", simple, "res/models/bat.obj"));
 
 	eng->run();
 

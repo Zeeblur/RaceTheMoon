@@ -21,7 +21,6 @@ std::shared_ptr<subsystem> engine::get_subsystem(const std::string &name)
 // If subsystem order is important consider using another mechanism.
 void engine::run()
 {
-	initWindowMan();
 	initGraphics();
 	initSubsystems();
 	mainLoop();
@@ -36,7 +35,6 @@ void engine::initWindowMan()
 
 void engine::initGraphics()
 {
-
 }
 
 void engine::initSubsystems()
