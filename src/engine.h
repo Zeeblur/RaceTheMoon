@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include "subsystem.h"
 #include "glfw.h"
+#include "opengl_util.h"
 
 class engine
 {
@@ -17,10 +18,20 @@ private:
 
 	engine() = default;
 
+	// app stuff
+	void initGraphics();
+	void initSubsystems();
+	void mainLoop();
+	void cleanup();
+
+
 
 public:
 
 
+
+	void initWindowMan();
+	
 	inline static std::shared_ptr<engine> get()
 	{
 	
