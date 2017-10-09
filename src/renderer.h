@@ -85,9 +85,9 @@ private:
         _active = false;
     }
 
-	GLuint vertexArrayID;
-	GLuint vertexbuffer;
-	GLuint programID;
+	GLuint vertexArrayID = 0;
+	GLuint vertexbuffer = 0;
+	GLuint programID = 0;
 
 public:
 
@@ -119,8 +119,25 @@ public:
     {
         std::cout << "Renderer loading content" << std::endl;
 	
+		  
+		gl::createvao(vertexArrayID, vertexbuffer, programID);   
 
-		gl::createvao(vertexArrayID, vertexbuffer, programID);        
+		// create and compile our GLSL program from shader.
+		programID = gl::LoadShaders("res/shaders/simple.vert", "res/shaders/simple.frag");
+
+		static const GLfloat g_vertex_buffer_data[] = {
+			-1.0f, -1.0f, 0.0f,
+			1.0f, -1.0f, 0.0f,
+			0.0f,  1.0f, 0.0f,
+		};
+
+		glBindVertexArray(vertexArrayID);
+
+		GLuint vertexbuffer;
+		glGenBuffers(1, &vertexbuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
+
         return true;
     }
 
@@ -133,43 +150,70 @@ public:
     void render()
     {
         std::cout << "Renderer rendering" << std::endl;
-        // Clear the screen.
-        glClear( GL_COLOR_BUFFER_BIT );
+		// Clear the screen
+		glClear(GL_COLOR_BUFFER_BIT);
 
-        for (auto &d : _data)
-        {
-            if (d.visible)
-            {
-                // TODO: open gl calls
-                glUseProgram(programID);
+		gl::CheckGL();
 
-                // 1rst attribute buffer : vertices
-                glEnableVertexAttribArray(0);
-                glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-                glVertexAttribPointer(
-                        0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-                        3,                  // size
-                        GL_FLOAT,           // type
-                        GL_FALSE,           // normalized?
-                        0,                  // stride
-                        (void*)0            // array buffer offset
-                );
+		// Use our shader
+		glUseProgram(programID);
 
-                // Draw the triangle !
-                glDrawArrays(GL_TRIANGLES, 0, 3); // 3 indices starting at 0 -> 1 triangle
+		glBindVertexArray(vertexArrayID);
+		// 1rst attribute buffer : vertices
+	//	glEnableVertexAttribArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+		glVertexAttribPointer(
+			0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+			3,                  // size
+			GL_FLOAT,           // type
+			GL_FALSE,           // normalized?
+			0,                  // stride
+			(void*)0            // array buffer offset
+		);
 
-                glDisableVertexAttribArray(0);
+		// Draw the triangle !
+		glDrawArrays(GL_TRIANGLES, 0, 3); // 3 indices starting at 0 -> 1 triangle
 
-                std::cout << "Rendering " << d.colour << " ";
-                std::cout << d.shape << " using " << d.shader;
-                std::cout << " shading at position " << d.transform << std::endl;
+	//	glDisableVertexAttribArray(0);
+
+		// Swap buffers
+		glfwSwapBuffers(glfw::window);
+		glfwPollEvents();
+
+        //for (auto &d : _data)
+        //{
+        //    if (d.visible) 
+        //    {
+        //        // TODO: open gl calls
+        //        glUseProgram(programID);
+
+        //        // 1rst attribute buffer : vertices
+        //        glEnableVertexAttribArray(0);
+        //        glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+        //        glVertexAttribPointer(
+        //                0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+        //                3,                  // size
+        //                GL_FLOAT,           // type
+        //                GL_FALSE,           // normalized?
+        //                0,                  // stride
+        //                (void*)0            // array buffer offset
+        //        );
+
+        //        // Draw the triangle !
+        //        glDrawArrays(GL_TRIANGLES, 0, 3); // 3 indices starting at 0 -> 1 triangle
+
+        //        glDisableVertexAttribArray(0);
+
+        //        std::cout << "Rendering " << d.colour << " ";
+        //        std::cout << d.shape << " using " << d.shader;
+        //        std::cout << " shading at position " << d.transform << std::endl;
 
 
-            }
-        }
+        //    }
+        //}
 
-        glfwSwapBuffers(glfw::window);
-        glfwPollEvents();
+        //glfwSwapBuffers(glfw::window);
+        //glfwPollEvents();
     }
 
     void unload_content()

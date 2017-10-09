@@ -22,9 +22,6 @@ namespace gl
 
     GLuint LoadShaders(const char* vertex_file_path, const char* fragment_file_path)
     {
-		//vertex_file_path= std::string("res/shaders/") + std::string(vertex_file_path);
-
-
         // Create the shaders
         GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
         GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
@@ -123,26 +120,11 @@ namespace gl
 		{
 			//generate and check for errors if vao is not gen
 			glGenVertexArrays(1, &vaoID);
-			//glfw::CheckGL();
+			CheckGL();
 			//assert(!CHECK_GL_ERROR && "Couldn't create VAO.");
 		}
 
 		
-
-		// create and compile our GLSL program from shader.
-		programID = LoadShaders("res/shaders/simple.vert", "res/shaders/simple.frag");
-
-
-		static const GLfloat g_vertex_buffer_data[] = {
-			-1.0f, -1.0f, 0.0f,
-			1.0f, -1.0f, 0.0f,
-			0.0f,  1.0f, 0.0f,
-		};
-
-
-		glGenBuffers(1, &vertexbuffer);
-		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
 	}
 
 }
