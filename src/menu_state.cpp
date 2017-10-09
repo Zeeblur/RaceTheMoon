@@ -7,6 +7,7 @@ void menu_state::on_enter()
 	engine::get()->get_subsystem("entity_manager")->set_active(false);
 	engine::get()->get_subsystem("entity_manager")->set_visible(false);
 	engine::get()->get_subsystem("physics_system")->set_active(false);
+	engine::get()->get_subsystem("clickable_system")->set_active(true);
 	//engine::get()->get_subsystem("renderer")->set_visible(false);
 
 	std::cout << "Entered menu state, press ENTER to go to game state" << std::endl;

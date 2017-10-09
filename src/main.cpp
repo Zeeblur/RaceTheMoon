@@ -13,6 +13,7 @@
 #include "menu_state.h"
 #include "pause_state.h"
 #include "input_handler.h"
+#include "clickable_system.h"
 
 // Include GLEW
 #include <GL/glew.h>
@@ -36,6 +37,7 @@ int main() {
     eng->add_subsystem("renderer", renderer::get());
     eng->add_subsystem("state_machine", engine_state_machine::get());
     eng->add_subsystem("input_handler", input_handler::get());
+	eng->add_subsystem("clickable_system", clickable_system::get());
 
     engine_state_machine::get()->add_state("menu_state", std::make_shared<menu_state>(), state_type::MENU);
     engine_state_machine::get()->add_state("game_state", std::make_shared<game_state>(), state_type::GAME);
@@ -45,6 +47,10 @@ int main() {
     auto e = entity_manager::get()->create_entity("Test");
     e->add_component("physics", physics_system::get()->build_component(e));
     e->add_component("render", renderer::get()->build_component(e, "Blue", "Sphere", "Gouraud"));
+
+	auto buttonEntity = entity_manager::get()->create_entity("Button");
+	buttonEntity->add_component("clickable", clickable_system::get()->build_component(buttonEntity, glm::vec2(0,200), glm::vec2(0,200)));
+
 
 	eng->run();
 
