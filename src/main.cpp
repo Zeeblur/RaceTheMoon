@@ -41,9 +41,14 @@ int main() {
     engine_state_machine::get()->add_state("2", std::make_shared<engine_state_2>());
     engine_state_machine::get()->change_state("1");
 
+
+		// ** Temp variables for build_component method **
+		Effect eff;
+		Mesh mes;
+
     auto e = entity_manager::get()->create_entity("Test");
     e->add_component("physics", physics_system::get()->build_component(e));
-    e->add_component("render", renderer::get()->build_component(e, "Blue", "Sphere", "Gouraud"));
+    e->add_component("render", renderer::get()->build_component(e, "Blue", "Sphere", "Gouraud", eff, mes));
 
 	eng->run();
 

@@ -108,7 +108,7 @@ download_project(PROJ assimp
         ${UPDATE_DISCONNECTED_IF_AVAILABLE}
         )
 add_subdirectory(${assimp_SOURCE_DIR} ${assimp_BINARY_DIR})
-include_directories("${assimp_SOURCE_DIR}")
+include_directories("${assimp_SOURCE_DIR}/include")
 
 #---------------- ASSIMP
 
