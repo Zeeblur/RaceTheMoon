@@ -54,7 +54,7 @@ void render_component::render()
 		gl::glData *om = static_cast<gl::glData *>(_data->mesh->GpuData);
 		
 		glDisable(GL_CULL_FACE);
-		glDisable(GL_DEPTH_TEST);
+		//glDisable(GL_DEPTH_TEST);
 		
 
 		glUseProgram(programID);
@@ -168,9 +168,10 @@ void renderer::render()
 	// Clear the screen.
 	//glClearColor(((float)(rand() % 255))/255.0f, 0.2, 0.6, 1.0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glDisable(GL_DEPTH_TEST);
+	glDepthMask(true);
+	glEnable(GL_DEPTH_TEST);
 
+	//glDisable(GL_DEPTH_TEST);
 
 	for (auto &c : _components)
 	{
@@ -181,7 +182,10 @@ void renderer::render()
 		}
 	}
 
+
+
 	glfwSwapBuffers(glfw::window);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glfwPollEvents();
 }
 

@@ -27,6 +27,14 @@ namespace glfw
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+
+		auto monitor = glfwGetPrimaryMonitor();
+		auto mode = glfwGetVideoMode(monitor);
+		glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+		glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+		glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+		glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+
         // Open a window and create its OpenGL context
         window = glfwCreateWindow( 1024, 768, "Tutorial 01", NULL, NULL);
         if( window == NULL ){
@@ -54,7 +62,7 @@ namespace glfw
         glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
         // Dark blue background
-        glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+        glClearColor(0.0f, 0.0f, 0.4f, 1.0f);
 
 		return 0;
 
