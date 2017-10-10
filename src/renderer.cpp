@@ -163,7 +163,7 @@ void renderer::update(float delta_time)
 
 void renderer::render()
 {
-	std::cout << "Renderer rendering" << std::endl;
+	//std::cout << "Renderer rendering" << std::endl;
 	// Clear the screen.
 	//glClearColor(((float)(rand() % 255))/255.0f, 0.2, 0.6, 1.0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);

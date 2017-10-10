@@ -7,7 +7,7 @@ void game_state::on_enter()
 	engine::get()->get_subsystem("entity_manager")->set_visible(true);
 	engine::get()->get_subsystem("physics_system")->set_active(true);
 	engine::get()->get_subsystem("renderer")->set_visible(true);
-
+	engine::get()->get_subsystem("clickable_system")->set_active(false);
 	std::cout << "Entered game state, press ESC to go to pause state" << std::endl;
 }
 

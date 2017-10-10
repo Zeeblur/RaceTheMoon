@@ -4,6 +4,8 @@
 // Menu state
 class menu_state : public engine_state
 {
+private:
+	bool _initialised = false;
 public:
 	void on_enter();
 
