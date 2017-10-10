@@ -13,6 +13,7 @@
 *.userprefs
 
 # Build results
+[Cc]make-build-debug/
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/
