@@ -16,7 +16,7 @@ option(GLFW_BUILD_EXAMPLES "" OFF)
 option(GLFW_BUILD_TESTS "" OFF)
 option(GLFW_DOCUMENT_INTERNALS "" OFF)
 option(GLFW_INSTALL "" OFF)
-
+ 
 #get glfw
 download_project(PROJ glfw
   GIT_REPOSITORY      https://github.com/glfw/glfw.git
@@ -100,6 +100,7 @@ set(ASSIMP_BUILD_GLTF_IMPORTER OFF CACHE BOOL "" FORCE)
 set(ASSIMP_BUILD_3MF_IMPORTER OFF CACHE BOOL "" FORCE)
 #set(addGTest_FOUND OFF CACHE BOOL "" FORCE)
 set(BuildTests OFF CACHE BOOL "" FORCE)
+set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 
 download_project(PROJ assimp
         GIT_REPOSITORY      https://github.com/assimp/assimp
@@ -107,7 +108,7 @@ download_project(PROJ assimp
         ${UPDATE_DISCONNECTED_IF_AVAILABLE}
         )
 add_subdirectory(${assimp_SOURCE_DIR} ${assimp_BINARY_DIR})
-include_directories("${assimp_SOURCE_DIR}")
+include_directories("${assimp_SOURCE_DIR}/include")
 
 #---------------- ASSIMP
 
@@ -203,12 +204,17 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 # Add all files from a src folder
 file(GLOB_RECURSE SOURCES src/*.cpp src/*.h)
 
+# Add all shaders
+file(GLOB_RECURSE SHADER_FILES res/shaders/*.vert res/shaders/*.frag res/shaders/*.geom res/shaders/*.comp)
+
 add_executable(RaceTheMoon ${SOURCES} src/main.cpp src/glfw.h)
 
 
+# add the shaderrrrrrrrrs!
+add_custom_command(TARGET RaceTheMoon POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy_directory  "${PROJECT_SOURCE_DIR}/res" $<TARGET_FILE_DIR:RaceTheMoon>/res)
 
-set(GLEW_HEADERS
-        )
+set(GLEW_HEADERS)
 
 
 add_dependencies(RaceTheMoon glfw ${glew} ${assets})

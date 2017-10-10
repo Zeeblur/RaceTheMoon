@@ -1,8 +1,14 @@
 #pragma once
 #include <iostream>
-#include "util.h"
 
-using namespace util;
+enum state_type
+{
+	START,
+	MENU,
+	GAME,
+	PAUSE,
+	OPTIONS
+};
 
 class engine_state
 {

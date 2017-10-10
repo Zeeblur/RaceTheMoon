@@ -16,8 +16,12 @@
 // Include GLM
 #include <glm/glm.hpp>
 
+#include <iostream>
+#include <ios>
+
 namespace glfw
 {
 	extern GLFWwindow* window;
-	int runwindow();  
+	int runWindow();
+
 }

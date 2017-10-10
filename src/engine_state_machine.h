@@ -4,11 +4,13 @@
 #include "subsystem.h"
 #include "engine_state.h"
 
+
 class engine_state_machine : public subsystem
 {
 
 public:
 	static std::shared_ptr<engine_state_machine> get();
+
 
 	void add_state(const std::string &name, std::shared_ptr<engine_state> state, state_type type);
 

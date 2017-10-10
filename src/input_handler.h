@@ -33,7 +33,6 @@ public:
 
     void update(float delta_time)
     {
-
     }
 
     void render()
