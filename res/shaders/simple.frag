@@ -1,7 +1,7 @@
-#version 410 core
+#version 330 core
 
 // Incoming vertex colour
-layout(location = 0) in vec4 frag_colour;
+in vec4 frag_colour;
 
 // Outgoing pixel colour
 out vec4 out_colour;

@@ -10,10 +10,11 @@
 #include <glm/glm.hpp>
 
 #include <map>
-#include <assimp/Importer.hpp>"
+#include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
 #include <memory>
+#include <vector>
 
 namespace gl
 {

@@ -1,6 +1,7 @@
 #pragma once
 #include "subsystem.h"
 #include "clickable_component.h"
+#include <vector>
 
 class clickable_system : public subsystem
 {

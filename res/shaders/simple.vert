@@ -1,12 +1,12 @@
-#version 410 core
+#version 330 core
 
 // Model view projection matrix
 uniform mat4 MVP;
 
-layout (location = 0) in vec3 position;
-layout (location = 1) in vec4 in_colour;
+in vec3 position;
+in vec4 in_colour;
 
-layout (location = 0) out vec4 frag_colour;
+out vec4 frag_colour;
 
 void main()
 {

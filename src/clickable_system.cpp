@@ -1,4 +1,3 @@
-#pragma once
 #include "clickable_system.h"
 #include "glfw.h"
 
