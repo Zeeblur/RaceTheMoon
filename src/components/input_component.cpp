@@ -25,10 +25,6 @@ bool input_component::load_content()
 
 void input_component::update(float delta_time)
 {
-    // We will just update the entity position.
-//    _parent->get_trans().x += 0.1*delta_time;
-//    _parent->get_trans().y = 0;
-//    _parent->get_trans().z = 0;
 
     //move commands change physics comp.
     // get all commands then execute them.

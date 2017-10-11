@@ -4,6 +4,8 @@
 
 #include "physics_system.h"
 
+using namespace glm;
+
 physics_system::physics_system()
 {
     _visible = false;
@@ -35,6 +37,9 @@ void physics_system::update(float delta_time)
         // If active physics object add 1 to each component.
         if (d.active)
         {
+            //cap speed.
+            cap_speed(d.currentVelocity);
+
             // change by speed and delta-time.
             auto movement = d.currentVelocity * delta_time;
 
@@ -42,8 +47,44 @@ void physics_system::update(float delta_time)
             d.x += movement.x;
             d.y += movement.y;
             d.z += movement.z;
+
+            if (!d.moveRequest)
+            {
+                //std::cout << moveSpeed.x << ", " << moveSpeed.y << std::endl;
+                // lateral movement
+                if (d.currentVelocity.x < 0) d.currentVelocity.x += deceleration.x;
+                if (d.currentVelocity.x > 0) d.currentVelocity.x -= deceleration.x;
+
+                // if speed within epsilon of zero. Reset to zero
+                if (d.currentVelocity.x > 0 && d.currentVelocity.x <  deceleration.x) d.currentVelocity.x = 0;
+                if (d.currentVelocity.x < 0 && d.currentVelocity.x > -deceleration.x) d.currentVelocity.x = 0;
+
+                // forwards movement
+                if (d.currentVelocity.z < 0) d.currentVelocity.z += deceleration.z;
+                if (d.currentVelocity.z > 0) d.currentVelocity.z -= deceleration.z;
+
+                // if speed within epsilon of zero. Reset to zero
+                if (d.currentVelocity.z > 0 && d.currentVelocity.z < deceleration.z) d.currentVelocity.z = 0;
+                if (d.currentVelocity.z < 0 && d.currentVelocity.z > -deceleration.z) d.currentVelocity.z = 0;
+            }
+
+            // reset move request
+            d.moveRequest = false;
         }
     }
+}
+
+void physics_system::cap_speed(vec3& currentSpeed)
+{
+    // limit movement
+
+    if (currentSpeed.x > maxSpeed) currentSpeed.x = maxSpeed;
+    if (currentSpeed.x < -maxSpeed) currentSpeed.x = -maxSpeed;
+    if (currentSpeed.y > maxSpeed) currentSpeed.y = maxSpeed;
+    if (currentSpeed.y < -maxSpeed) currentSpeed.y = -maxSpeed;
+    if (currentSpeed.z > maxSpeed) currentSpeed.z = maxSpeed;
+    if (currentSpeed.z < -maxSpeed) currentSpeed.z = -maxSpeed;
+
 }
 
 void physics_system::render()

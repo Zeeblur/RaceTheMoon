@@ -43,5 +43,6 @@ void physics_component::shutdown()
 
 void physics_component::add_impulse(glm::vec3& direction)
 {
-    _data.currentVelocity += direction; //Vector2f(direction.x * acceleration.x, direction.y * acceleration.y);
+    _data.moveRequest = true;
+    _data.currentVelocity += (direction * acceleration);
 }

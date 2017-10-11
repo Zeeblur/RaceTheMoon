@@ -16,6 +16,7 @@ struct physics_data
     float y = 0.0f;
     float z = 0.0f;
     glm::vec3 currentVelocity = glm::vec3(0.0f, 0.0f, 0.0f);
+    bool moveRequest = false;
 };
 
 struct physics_component : public component
@@ -28,6 +29,7 @@ private:
     // We'll also keep a reference to the parent entity
     std::shared_ptr<entity> _parent;
 
+    glm::vec3 acceleration = glm::vec3(0.2f);
 public:
     physics_component(std::shared_ptr<entity> &e, physics_data &data);
 
