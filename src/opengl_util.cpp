@@ -332,7 +332,9 @@ namespace gl
 
 	std::shared_ptr<Mesh> loadModel(std::string msh)
 	{
+		// load model here
 		auto mesh = GetMesh(msh);
+
 
 		glData *om = new glData();
 		mesh->GpuData = om;

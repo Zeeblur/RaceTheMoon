@@ -3,8 +3,12 @@
 //
 
 #include "input_component.h"
+#include "Command.h"
+#include "../systems/input_handler.h"
+#include <vector>
 
-input_component::input_component(std::shared_ptr<entity> &e) : _parent(e)
+
+input_component::input_component(std::shared_ptr<entity> &e) : _parent(e)//, _handler(ih)
 {
     _visible = false;
 }
@@ -22,6 +26,16 @@ bool input_component::load_content()
 void input_component::update(float delta_time)
 {
     // We will just update the entity position.
+//    _parent->get_trans().x += 0.1*delta_time;
+//    _parent->get_trans().y = 0;
+//    _parent->get_trans().z = 0;
+
+    //move commands change physics comp.
+    // get all commands then execute them.
+    std::vector<Command*> commands = input_handler::get()->handle_input();
+
+    for (Command* com : commands)
+        com->execute(_parent);
 
 }
 

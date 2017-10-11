@@ -3,12 +3,11 @@
 //
 
 #include "../component.h"
+#include "../entity.h"
+#include "glm/glm.hpp"
 
 #ifndef RACETHEMOON_PHYSICS_COMPONENT_H
 #define RACETHEMOON_PHYSICS_COMPONENT_H
-
-#endif //RACETHEMOON_PHYSICS_COMPONENT_H
-
 
 struct physics_data
 {
@@ -16,6 +15,7 @@ struct physics_data
     float x = 0.0f;
     float y = 0.0f;
     float z = 0.0f;
+    glm::vec3 currentVelocity = glm::vec3(0.0f, 0.0f, 0.0f);
 };
 
 struct physics_component : public component
@@ -27,41 +27,24 @@ private:
 
     // We'll also keep a reference to the parent entity
     std::shared_ptr<entity> _parent;
+
 public:
-    physics_component(std::shared_ptr<entity> &e, physics_data &data)
-            : _parent(e), _data(data)
-    {
-        _visible = false;
-        _data.active = true;
-    }
+    physics_component(std::shared_ptr<entity> &e, physics_data &data);
 
-    bool initialise() override final
-    {
-        return true;
-    }
+    bool initialise() override final;
 
-    bool load_content() override final
-    {
-        return true;
-    }
+    bool load_content() override final;
 
-    void update(float delta_time) override final
-    {
-        // We will just update the entity position.
-        _parent->get_trans().x = _data.x;
-        _parent->get_trans().y = _data.y;
-        _parent->get_trans().z = _data.z;
-    }
+    void update(float delta_time) override final;
 
-    void render() override final
-    {
-    }
+    void render() override final;
 
-    void unload_content() override final
-    {
-    }
+    void unload_content() override final;
 
-    void shutdown() override final
-    {
-    }
+    void shutdown() override final;
+
+    void add_impulse(glm::vec3& direction);
+
 };
+
+#endif //RACETHEMOON_PHYSICS_COMPONENT_H

@@ -35,9 +35,13 @@ void physics_system::update(float delta_time)
         // If active physics object add 1 to each component.
         if (d.active)
         {
-            d.x += 1.0f;
-            d.y += 1.0f;
-            d.z += 1.0f;
+            // change by speed and delta-time.
+            auto movement = d.currentVelocity * delta_time;
+
+            // movement test here....
+            d.x += movement.x;
+            d.y += movement.y;
+            d.z += movement.z;
         }
     }
 }

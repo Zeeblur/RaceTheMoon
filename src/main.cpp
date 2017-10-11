@@ -45,12 +45,12 @@ int main() {
 	engine_state_machine::get()->add_state("pause_state", std::make_shared<pause_state>(), state_type::PAUSE);
     engine_state_machine::get()->change_state("game_state");
 
-    auto e = entity_manager::get()->create_entity("Test");
+    auto e = entity_manager::get()->create_entity("Bat");
     e->add_component("physics", physics_system::get()->build_component(e));
     e->add_component("input", input_handler::get()->build_component(e));
     e->add_component("render", renderer::get()->build_component(e, "Blue", "Sphere", "Gouraud", simple, "res/models/bat.obj"));
 
-	auto buttonEntity = entity_manager::get()->create_entity("Button");
+    auto buttonEntity = entity_manager::get()->create_entity("Button");
 	buttonEntity->add_component("clickable", clickable_system::get()->build_component(buttonEntity, glm::vec2(0,200), glm::vec2(0,200)));
 
 
