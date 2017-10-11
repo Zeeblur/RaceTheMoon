@@ -5,14 +5,14 @@
 #include <iostream>
 #include "engine.h"
 #include "entity_manager.h"
-#include "physics_system.h"
+#include "systems/physics_system.h"
 #include "renderer.h"
 #include "state_machine.h"
 #include "engine_state_machine.h"
 #include "game_state.h"
 #include "menu_state.h"
 #include "pause_state.h"
-#include "input_handler.h"
+#include "systems/input_handler.h"
 #include "clickable_system.h"
 
 // Include GLEW
@@ -47,6 +47,7 @@ int main() {
 
     auto e = entity_manager::get()->create_entity("Test");
     e->add_component("physics", physics_system::get()->build_component(e));
+    e->add_component("input", input_handler::get()->build_component(e));
     e->add_component("render", renderer::get()->build_component(e, "Blue", "Sphere", "Gouraud", simple, "res/models/bat.obj"));
 
 	auto buttonEntity = entity_manager::get()->create_entity("Button");
