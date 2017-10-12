@@ -137,7 +137,10 @@ std::shared_ptr<render_component> renderer::build_component(std::shared_ptr<enti
 	_rd->shape = shape;
 	_rd->shader = shader;
 
-	_rd->mesh = gl::loadModel(mesh);
+	if (shape == "rectangle")
+		_rd->mesh = gl::generate_rect();
+	else
+		_rd->mesh = gl::loadModel(mesh);
 
 	return std::make_shared<render_component>(e, _rd);
 }

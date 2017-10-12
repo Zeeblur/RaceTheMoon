@@ -330,6 +330,84 @@ namespace gl
 		return ret;
 	}
 
+	std::shared_ptr<Mesh> generate_rect()
+	{
+		Mesh *mesh = new Mesh();
+
+		std::vector<glm::vec3> positions
+		{
+			// 1
+			glm::vec3(-1.0f, 1.0f, 0.0f),
+			glm::vec3(-1.0f, -1.0f, 0.0f),
+			glm::vec3(1.0f, -1.0f, 0.0f),
+			// 2
+			glm::vec3(1.0f, -1.0f, 0.0f),
+			glm::vec3(1.0f, 1.0f, 0.0f),
+			glm::vec3(-1.0f, 1.0f, 0.0f)
+		};
+		// These are probably wrong
+		std::vector<glm::vec2> tex_coords
+		{
+			glm::vec2(0.5, 1),
+			glm::vec2(0, 0),
+			glm::vec2(1, 0),
+			glm::vec2(1, 0),
+			glm::vec2(0, 0),
+			glm::vec2(0.5, 1)
+		};
+
+		// Colours
+		std::vector<glm::vec4> colours
+		{
+			glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
+			glm::vec4(0.5f, 0.5f, 0.5f, 1.0f),
+			glm::vec4(0.0f, 0.0f, 0.0f, 1.0f),
+			glm::vec4(0.0f, 0.0f, 0.0f, 1.0f),
+			glm::vec4(0.5f, 0.5f, 0.5f, 1.0f),
+			glm::vec4(1.0f, 1.0f, 1.0f, 1.0f)
+		};
+
+		//// Calculate the minimal and maximal
+		//mesh->min = mesh->positions[0];
+		//mesh->max = mesh->positions[0];
+		//for (auto &v : mesh->positions) {
+		//	mesh->min = glm::min(mesh->min, v);
+		//	mesh->max = glm::max(mesh->max, v);
+		//}
+
+		mesh->positions = positions;
+		mesh->tex_coords = tex_coords;
+		/*mesh->colours = colours;*/
+
+		glData *om = new glData();
+		mesh->GpuData = om;
+		om->type = GL_TRIANGLES;
+		// Add the buffers to the geometry
+
+
+		add_buffer(*om, mesh->positions, BUFFER_INDEXES::POSITION_BUFFER);
+		if (mesh->colours.size() != 0)
+			add_buffer(*om, mesh->colours, BUFFER_INDEXES::COLOUR_BUFFER);
+		if (mesh->normals.size() != 0) {
+			add_buffer(*om, mesh->normals, BUFFER_INDEXES::NORMAL_BUFFER);
+			// generate_tb(normals);
+		}
+		if (mesh->tex_coords.size() != 0) {
+			add_buffer(*om, mesh->tex_coords, BUFFER_INDEXES::TEXTURE_COORDS_0);
+		}
+		if (mesh->indices.size() != 0) {
+			add_index_buffer(*om, mesh->indices);
+			om->has_indices = true;
+		}
+		else
+		{
+			om->vertex_count = mesh->positions.size();
+		}
+
+
+		return std::shared_ptr<Mesh>(mesh);
+	}
+
 	std::shared_ptr<Mesh> loadModel(std::string msh)
 	{
 		auto mesh = GetMesh(msh);

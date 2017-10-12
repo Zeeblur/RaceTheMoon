@@ -63,6 +63,7 @@ void engine_state_machine::update(float delta_time)
 {
 	if (engine_state_machine::get()->get_current_state_type() == state_type::MENU)
 	{
+		//std::cout << "=============MENU STATE============" << std::endl;
 		std::shared_ptr<clickable_system> cs = std::static_pointer_cast<clickable_system>(engine::get()->get_subsystem("clickable_system"));
 		if (cs->get_clicked_component_name() == "buttonPlay")
 		{
@@ -72,6 +73,20 @@ void engine_state_machine::update(float delta_time)
 		else if (cs->get_clicked_component_name() == "buttonExit")
 		{
 			// Handle exit game logic here
+			cs->clear_clicked_component_name();
+		}
+	}
+	else if (engine_state_machine::get()->get_current_state_type() == state_type::PAUSE)
+	{
+		std::shared_ptr<clickable_system> cs = std::static_pointer_cast<clickable_system>(engine::get()->get_subsystem("clickable_system"));
+		if (cs->get_clicked_component_name() == "buttonContinue")
+		{
+			engine_state_machine::get()->change_state("game_state");
+			cs->clear_clicked_component_name();
+		}
+		else if (cs->get_clicked_component_name() == "buttonMenu")
+		{
+			engine_state_machine::get()->change_state("menu_state");
 			cs->clear_clicked_component_name();
 		}
 	}
