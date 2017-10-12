@@ -43,13 +43,15 @@ void render_component::render()
 		ss << "(" << _parent->get_trans().x << ", " << _parent->get_trans().y << ", " << _parent->get_trans().z << ")" << std::endl;
 		_data->transform = ss.str();
 
-		// pass in matrix 
+		vec3 transvec = vec3(_parent->get_trans().x, _parent->get_trans().y, _parent->get_trans().z);
+
+		mat4 trans = glm::translate(mat4(1.0f), transvec);
 
 		mat4 projMat_ = glm::perspective(1.0472f, (16.0f / 9.0f), 0.01f, 1000.0f);
 		
 		mat4 viewMat_ = glm::lookAt(glm::vec3(100.0f), glm::vec3(), glm::vec3(0, 1.0f, 0));
 
-		auto MVP = projMat_ * viewMat_ * mat4(1);
+		auto MVP = projMat_ * viewMat_ * trans;
 		gl::glData *om = static_cast<gl::glData *>(_data->mesh->GpuData);
 		
 		glDisable(GL_CULL_FACE);
@@ -137,7 +139,14 @@ std::shared_ptr<render_component> renderer::build_component(std::shared_ptr<enti
 	_rd->shape = shape;
 	_rd->shader = shader;
 
-	_rd->mesh = gl::loadModel(mesh);
+
+	// TODO: check if it actually has a model
+
+	if (shape == "rectangle")
+		_rd->mesh = gl::generate_rect();
+	else
+		_rd->mesh = gl::loadModel(mesh);
+
 
 	return std::make_shared<render_component>(e, _rd);
 }
@@ -163,7 +172,7 @@ void renderer::update(float delta_time)
 
 void renderer::render()
 {
-	std::cout << "Renderer rendering" << std::endl;
+	//std::cout << "Renderer rendering" << std::endl;
 	// Clear the screen.
 	//glClearColor(((float)(rand() % 255))/255.0f, 0.2, 0.6, 1.0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);

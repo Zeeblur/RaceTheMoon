@@ -207,7 +207,7 @@ file(GLOB_RECURSE SOURCES src/*.cpp src/*.h)
 # Add all shaders
 file(GLOB_RECURSE SHADER_FILES res/shaders/*.vert res/shaders/*.frag res/shaders/*.geom res/shaders/*.comp)
 
-add_executable(RaceTheMoon ${SOURCES} src/main.cpp src/glfw.h)
+add_executable(RaceTheMoon ${SOURCES} src/main.cpp src/glfw.h src/systems/input_handler.cpp src/components/input_component.cpp src/components/physics_component.cpp src/components/physics_component.h src/components/input_component.h src/systems/physics_system.cpp src/components/Command.cpp src/components/Command.h)
 
 
 # add the shaderrrrrrrrrs!

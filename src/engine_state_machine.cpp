@@ -1,5 +1,6 @@
 #include "engine_state_machine.h"
-
+#include "entity_manager.h"
+#include "clickable_system.h"
 
 
 engine_state_machine::engine_state_machine()
@@ -32,6 +33,8 @@ void engine_state_machine::change_state(const std::string &name)
 			_current_state->on_enter();
 			_current_state_name = name;
 			_current_state_type = _current_state->type;
+
+			entity_manager::get()->currentState = _current_state_type;
 		}
 		else
 		{
@@ -62,6 +65,35 @@ bool engine_state_machine::load_content()
 
 void engine_state_machine::update(float delta_time)
 {
+	if (engine_state_machine::get()->get_current_state_type() == state_type::MENU)
+	{
+		//std::cout << "=============MENU STATE============" << std::endl;
+		std::shared_ptr<clickable_system> cs = std::static_pointer_cast<clickable_system>(engine::get()->get_subsystem("clickable_system"));
+		if (cs->get_clicked_component_name() == "buttonPlay")
+		{
+			engine_state_machine::get()->change_state("game_state");
+			cs->clear_clicked_component_name();
+		}
+		else if (cs->get_clicked_component_name() == "buttonExit")
+		{
+			// Handle exit game logic here
+			cs->clear_clicked_component_name();
+		}
+	}
+	else if (engine_state_machine::get()->get_current_state_type() == state_type::PAUSE)
+	{
+		std::shared_ptr<clickable_system> cs = std::static_pointer_cast<clickable_system>(engine::get()->get_subsystem("clickable_system"));
+		if (cs->get_clicked_component_name() == "buttonContinue")
+		{
+			engine_state_machine::get()->change_state("game_state");
+			cs->clear_clicked_component_name();
+		}
+		else if (cs->get_clicked_component_name() == "buttonMenu")
+		{
+			engine_state_machine::get()->change_state("menu_state");
+			cs->clear_clicked_component_name();
+		}
+	}
 	static int escape_old_state = GLFW_RELEASE;
 	int escape_state = glfwGetKey(glfw::window, GLFW_KEY_ESCAPE);
 	

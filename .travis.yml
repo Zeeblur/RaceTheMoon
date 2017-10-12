@@ -1,0 +1,75 @@
+--- 
+before_install: 
+  - |
+      if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+        CMAKE_URL="https://cmake.org/files/v3.8/cmake-3.8.0-Linux-x86_64.tar.gz"
+        echo "pulling down cmake" ${CMAKE_URL}  
+        mkdir cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
+        export PATH=${TRAVIS_BUILD_DIR}/cmake/bin:${PATH}
+      else
+        brew upgrade cmake || brew install cmake
+      fi
+  - "cmake --version"
+  - |
+      if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
+          export CXX=g++
+          export CC=gcc
+      fi
+dist: trusty
+language: generic
+matrix: 
+  include: 
+    - 
+      os: osx
+      osx_image: xcode8.3
+    - 
+      addons: 
+        apt: 
+          packages: 
+            - g++-6
+            - gcc-6
+            - xorg-dev
+            - libglu1-mesa-dev
+            - freeglut3-dev
+            - libjpeg-dev
+            - libfreetype6-dev
+            - libxrandr-dev
+            - libglew-dev
+            - libsndfile1-dev
+            - libopenal-dev
+            - libudev-dev
+          sources: 
+            - llvm-toolchain-precise-3.8
+            - ubuntu-toolchain-r-test
+      env: "COMPILER_NAME=gcc COMPILER=g++-6 CXX=g++-6 CC=gcc-6"
+      os: linux
+    - 
+      addons: 
+        apt: 
+          packages: 
+            - clang-3.8
+            - g++-6
+            - gcc-6
+            - xorg-dev
+            - libglu1-mesa-dev
+            - freeglut3-dev
+            - libjpeg-dev
+            - libfreetype6-dev
+            - libxrandr-dev
+            - libglew-dev
+            - libsndfile1-dev
+            - libopenal-dev
+            - libudev-dev
+          sources: 
+            - llvm-toolchain-precise-3.8
+            - ubuntu-toolchain-r-test
+      env: "COMPILER_NAME=clang CXX=clang++-3.8 CC=clang-3.8 LLVM_VERSION=3.8"
+      os: linux
+script: 
+  - "uname -a"
+  - "$CXX --version"
+  - "cmake --version"
+  - "mkdir -p build && cd build"
+  - "cmake .."
+  - "cmake --build . --target Race_The_Moon --config Release -- -j4"
+sudo: false

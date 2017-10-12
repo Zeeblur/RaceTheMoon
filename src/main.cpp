@@ -5,14 +5,14 @@
 #include <iostream>
 #include "engine.h"
 #include "entity_manager.h"
-#include "physics_system.h"
+#include "systems/physics_system.h"
 #include "renderer.h"
 #include "state_machine.h"
 #include "engine_state_machine.h"
 #include "game_state.h"
 #include "menu_state.h"
 #include "pause_state.h"
-#include "input_handler.h"
+#include "systems/input_handler.h"
 #include "clickable_system.h"
 
 // Include GLEW
@@ -45,13 +45,37 @@ int main() {
 	engine_state_machine::get()->add_state("pause_state", std::make_shared<pause_state>(), state_type::PAUSE);
     engine_state_machine::get()->change_state("game_state");
 
-    auto e = entity_manager::get()->create_entity("Test");
+    auto e = entity_manager::get()->create_entity("Bat", state_type::GAME);
     e->add_component("physics", physics_system::get()->build_component(e));
+    e->add_component("input", input_handler::get()->build_component(e));
     e->add_component("render", renderer::get()->build_component(e, "Blue", "Sphere", "Gouraud", simple, "res/models/bat.obj"));
 
-	auto buttonEntity = entity_manager::get()->create_entity("Button");
-	buttonEntity->add_component("clickable", clickable_system::get()->build_component(buttonEntity, glm::vec2(0,200), glm::vec2(0,200)));
+	int x_size = 0;
+	int y_size = 0;
 
+	glfwGetWindowSize(glfw::window, &x_size, &y_size);
+
+	int x_center = x_size / 2;
+	int y_center = y_size / 2;
+
+	int x_button_size = 100;
+	int y_button_size = 50;
+	// Y offset between buttons
+	int button_offset = 100;
+	// Menu buttons
+	auto button_play = entity_manager::get()->create_entity("buttonPlay", state_type::MENU);
+	button_play->add_component("clickable", clickable_system::get()->build_component(button_play, glm::vec2(x_center - x_button_size, x_center + x_button_size), glm::vec2(y_center - y_button_size, y_center + y_button_size)));
+	button_play->add_component("render", renderer::get()->build_component(button_play, "Blue", "rectangle", "Gouraud", simple, ""));
+
+	auto button_exit = entity_manager::get()->create_entity("buttonExit", state_type::MENU);
+	button_exit->add_component("clickable", clickable_system::get()->build_component(button_exit, glm::vec2(x_center - x_button_size, x_center + x_button_size), glm::vec2(button_offset + y_center - y_button_size, button_offset + y_center + y_button_size)));
+
+	// Pause buttons
+	auto button_continue = entity_manager::get()->create_entity("buttonContinue", state_type::PAUSE);
+	button_continue->add_component("clickable", clickable_system::get()->build_component(button_continue, glm::vec2(x_center - x_button_size, x_center + x_button_size), glm::vec2(y_center - y_button_size, y_center + y_button_size)));
+
+	auto button_menu = entity_manager::get()->create_entity("buttonMenu", state_type::PAUSE);
+	button_menu->add_component("clickable", clickable_system::get()->build_component(button_menu, glm::vec2(x_center - x_button_size, x_center + x_button_size), glm::vec2(button_offset + y_center - y_button_size, button_offset + y_center + y_button_size)));
 
 	eng->run();
 
