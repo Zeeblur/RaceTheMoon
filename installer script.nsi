@@ -8,9 +8,9 @@
 # show up in a few places.
 # All the other settings can be tweaked by editing the !defines at the top of this script
 
-!define APPNAME "Hotline Scunthorpe"
-!define COMPANYNAME "Beej's 2D Game"
-!define DESCRIPTION "Top down shoot'em'up."
+!define APPNAME "RaceTheMoon"
+!define COMPANYNAME "~xXx-A*T3Am-xXx~"
+!define DESCRIPTION "Race against the moon. Early Alpha Build."
 # These three must be integers
 !define VERSIONMAJOR 1
 !define VERSIONMINOR 1
@@ -31,7 +31,7 @@ InstallDir "$PROGRAMFILES\${APPNAME}"
 # This will be in the installer/uninstaller's title bar
 Name "${COMPANYNAME} - ${APPNAME}"
 Icon "icon.ico"
-outFile "HotlineScunthorpeInstaller.exe"
+outFile "RaceTheMoonInstaller.exe"
  
 !include LogicLib.nsh
  
@@ -58,11 +58,11 @@ section "install"
 	# Files for the install directory - to build the installer, these should be in the same directory as the install script (this file)
 	setOutPath $INSTDIR
 	# Files added here should be removed by the uninstaller (see section "uninstall")
-	file "bin\RELEASE\Hotline_Scunthorpe_main.exe"
+	file "Release\RaceTheMoon.exe"
 	# Add any other files for the install directory (license files, app data, etc) here
-    file /r "bin\RELEASE\*.*"
+    file /r "Release\*.*"
 	# Uninstaller - See function un.onInit and section "uninstall" for configuration
-	writeUninstaller "$INSTDIR\HotlineScunthorpeUninstall.exe"
+	writeUninstaller "$INSTDIR\RaceTheMoonUninstall.exe"
  
  
 	# Registry information for add/remove programs
@@ -106,16 +106,14 @@ section "uninstall"
  
 	# Remove files
 	delete $INSTDIR\res\*.*
-	delete $INSTDIR\res\font\*.*
-    delete $INSTDIR\res\img\*.*
-    delete $INSTDIR\res\sound\*.*
+	delete $INSTDIR\res\models\*.*
+    delete $INSTDIR\res\shaders\*.*
     delete $INSTDIR\*.*
     
 	# Always delete uninstaller as the last action
-	delete $INSTDIR\HotlineScunthorpeUninstall.exe
- 	rmDir $INSTDIR\res\font
-    rmDir $INSTDIR\res\img
-    rmDir $INSTDIR\res\sound
+	delete $INSTDIR\RaceTheMoonUninstall.exe
+ 	rmDir $INSTDIR\res\models
+    rmDir $INSTDIR\res\shaders
     rmDir $INSTDIR\res
 	# Try to remove the install directory - this will only happen if it is empty
     rmDir $INSTDIR
