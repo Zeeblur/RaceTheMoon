@@ -7,7 +7,9 @@ enum state_type
 	MENU,
 	GAME,
 	PAUSE,
-	OPTIONS
+	OPTIONS,
+	EXIT,
+	NONE
 };
 
 class engine_state

@@ -83,7 +83,7 @@ namespace gl
     extern GLuint LoadShaders(char const* vertex_file_path, char const* fragment_file_path);
 
 	std::shared_ptr<Mesh> loadModel(std::string msh);
-
+	std::shared_ptr<Mesh> generate_rect();
 
 	Mesh* GetMesh(const std::string &file);
 }

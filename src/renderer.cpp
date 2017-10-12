@@ -139,8 +139,14 @@ std::shared_ptr<render_component> renderer::build_component(std::shared_ptr<enti
 	_rd->shape = shape;
 	_rd->shader = shader;
 
+
 	// TODO: check if it actually has a model
-	_rd->mesh = gl::loadModel(mesh);
+
+	if (shape == "rectangle")
+		_rd->mesh = gl::generate_rect();
+	else
+		_rd->mesh = gl::loadModel(mesh);
+
 
 	return std::make_shared<render_component>(e, _rd);
 }
@@ -166,7 +172,7 @@ void renderer::update(float delta_time)
 
 void renderer::render()
 {
-	std::cout << "Renderer rendering" << std::endl;
+	//std::cout << "Renderer rendering" << std::endl;
 	// Clear the screen.
 	//glClearColor(((float)(rand() % 255))/255.0f, 0.2, 0.6, 1.0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);

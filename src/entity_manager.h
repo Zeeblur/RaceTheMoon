@@ -75,7 +75,7 @@ public:
     void unload_content() override final
     {
         std::cout << "Entity manager unloading content" << std::endl;
-        for(auto &entLists : _entities) 
+        for(auto &entLists : _entities)
         {
             for (auto &e : entLists)
                 e.second->unload_content();

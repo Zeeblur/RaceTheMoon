@@ -20,7 +20,7 @@ bool clickable_component::load_content()
 void clickable_component::update(float delta_time)
 {
 	// Check if mouse is within certain bounds and if it's clicked
-	std::cout << "Checking to see if mouse is within bounds" << std::endl;
+	//std::cout << "Checking to see if mouse is within bounds" << std::endl;
 }
 
 void clickable_component::render()
