@@ -1,5 +1,5 @@
 #include "engine_state_machine.h"
-
+#include "entity_manager.h"
 
 
 engine_state_machine::engine_state_machine()
@@ -32,6 +32,8 @@ void engine_state_machine::change_state(const std::string &name)
 			_current_state->on_enter();
 			_current_state_name = name;
 			_current_state_type = _current_state->type;
+
+			entity_manager::get()->currentState = _current_state_type;
 		}
 		else
 		{
