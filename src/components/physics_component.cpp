@@ -5,7 +5,7 @@
 #include "physics_component.h"
 
 physics_component::physics_component(std::shared_ptr<entity> &e, physics_data &data)
-: _parent(e), _data(data)
+    : _parent(e), _data(data)
 {
     _visible = false;
     _data.active = true;

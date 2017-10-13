@@ -1,4 +1,4 @@
- //
+//
 // Created by zoe on 03/10/17.
 //
 #include <fstream>
@@ -9,14 +9,14 @@
 
 namespace glfw
 {
-	GLFWwindow* window;
+    GLFWwindow* window;
 
     int runWindow()
     {
         // Initialise GLFW
-        if( !glfwInit() )
+        if (!glfwInit())
         {
-            fprintf( stderr, "Failed to initialize GLFW\n" );
+            fprintf(stderr, "Failed to initialize GLFW\n");
             getchar();
             return -1;
         }
@@ -28,24 +28,24 @@ namespace glfw
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 
-		auto monitor = glfwGetPrimaryMonitor();
-		auto mode = glfwGetVideoMode(monitor);
-		glfwWindowHint(GLFW_RED_BITS, mode->redBits);
-		glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
-		glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
-		glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+        auto monitor = glfwGetPrimaryMonitor();
+        auto mode = glfwGetVideoMode(monitor);
+        glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+        glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+        glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+        glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 
         // Open a window and create its OpenGL context
-        window = glfwCreateWindow( 1024, 768, "Race The Moon", NULL, NULL);
-        if( window == NULL ){
-            fprintf( stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n" );
+        window = glfwCreateWindow(1024, 768, "Race The Moon", NULL, NULL);
+        if (window == NULL) {
+            fprintf(stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n");
             getchar();
             glfwTerminate();
             return -1;
         }
         glfwMakeContextCurrent(window);
 
-		glewExperimental = GL_TRUE;
+        glewExperimental = GL_TRUE;
         // Initialize GLEW
         if (glewInit() != GLEW_OK) {
             fprintf(stderr, "Failed to initialize GLEW\n");
@@ -54,9 +54,9 @@ namespace glfw
             return -1;
         }
 
-		glGetError();
+        glGetError();
 
-		glViewport(0, 0, 1024, 768);
+        glViewport(0, 0, 1024, 768);
 
         // Ensure we can capture the escape key being pressed below
         glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
@@ -64,7 +64,7 @@ namespace glfw
         // Dark blue background
         glClearColor(0.0f, 0.0f, 0.4f, 1.0f);
 
-		return 0;
+        return 0;
 
     }
 

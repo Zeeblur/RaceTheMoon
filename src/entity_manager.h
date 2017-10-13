@@ -37,7 +37,7 @@ public:
     bool initialise() override final
     {
         std::cout << "Entity manager initialising" << std::endl;
-        for(auto &entLists : _entities)
+        for (auto &entLists : _entities)
         {
             for (auto &e : entLists)
                 if (!e.second->initialise())
@@ -49,7 +49,7 @@ public:
     bool load_content() override final
     {
         std::cout << "Entity manager loading content" << std::endl;
-        for(auto &entLists : _entities)
+        for (auto &entLists : _entities)
         {
             for (auto &e : entLists)
                 if (!e.second->load_content())
@@ -75,7 +75,7 @@ public:
     void unload_content() override final
     {
         std::cout << "Entity manager unloading content" << std::endl;
-        for(auto &entLists : _entities)
+        for (auto &entLists : _entities)
         {
             for (auto &e : entLists)
                 e.second->unload_content();
@@ -85,7 +85,7 @@ public:
     void shutdown() override final
     {
         std::cout << "Entity manager shutting down" << std::endl;
-        for(auto &entLists : _entities)
+        for (auto &entLists : _entities)
         {
             for (auto &e : entLists)
                 e.second->shutdown();

@@ -13,30 +13,30 @@
 // Effect struct
 struct Effect
 {
-	std::string name;
-	bool has_geometry;
-	bool is_compute;
-	void *GpuData;
+    std::string name;
+    bool has_geometry;
+    bool is_compute;
+    void *GpuData;
 };
 
 enum effect
 {
-	simple
+    simple
 };
 
 
 struct render_data
 {
-	bool visible;// = false;
-	// Let's pretend this is a matrix that was built.
-	std::string transform;// = "(0, 0, 0)";
-	std::string colour;// = "Red";
-	std::string shape;// = "Sphere";
-	std::string shader;// = "Phong";
+    bool visible;// = false;
+    // Let's pretend this is a matrix that was built.
+    std::string transform;// = "(0, 0, 0)";
+    std::string colour;// = "Red";
+    std::string shape;// = "Sphere";
+    std::string shader;// = "Phong";
 
-	// Reference to structs
-	Effect* effect;
-	std::shared_ptr<gl::Mesh> mesh;
+    // Reference to structs
+    Effect* effect;
+    std::shared_ptr<gl::Mesh> mesh;
 };
 
 struct render_component : public component
@@ -45,29 +45,29 @@ private:
     std::shared_ptr<render_data> _data;
 
     std::shared_ptr<entity> _parent;
-	GLuint programID;
+    GLuint programID;
 public:
-	render_component(std::shared_ptr<entity> e, std::shared_ptr<render_data> data);
+    render_component(std::shared_ptr<entity> e, std::shared_ptr<render_data> data);
 
-	bool initialise() override final;
-	
-	bool load_content() override final;
-	
-	void update(float delta_time) override final;
-	
-	void render() override final;
-	 
-	void unload_content() override final;
-	
-	void shutdown() override final;
-}; 
+    bool initialise() override final;
+
+    bool load_content() override final;
+
+    void update(float delta_time) override final;
+
+    void render() override final;
+
+    void unload_content() override final;
+
+    void shutdown() override final;
+};
 
 class renderer : public subsystem
 {
 private:
     std::vector<render_component*> _components;
 
-	renderer();
+    renderer();
 
 public:
 
@@ -77,22 +77,22 @@ public:
         return instance;
     }
 
-	std::shared_ptr<render_component> build_component(std::shared_ptr<entity> &e, std::string colour, std::string shape, std::string shader, effect effType, std::string mesh);
-	
-	bool initialise();
+    std::shared_ptr<render_component> build_component(std::shared_ptr<entity> &e, std::string colour, std::string shape, std::string shader, effect effType, std::string mesh);
 
-	bool load_content();
+    bool initialise();
 
-	void update(float delta_time);
+    bool load_content();
+
+    void update(float delta_time);
 
 
     void render();
 
 
-	void unload_content();
-	void shutdown();
+    void unload_content();
+    void shutdown();
 
 
-	GLuint programID;
+    GLuint programID;
 
 };
