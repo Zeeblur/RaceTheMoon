@@ -2,7 +2,7 @@
 #include <string>
 #include <unordered_map>
 #include <memory>
-#include "component.h"
+#include "components/component.h"
 #include <iostream>
 
 struct transform

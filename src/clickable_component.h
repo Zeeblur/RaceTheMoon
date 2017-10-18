@@ -1,6 +1,6 @@
 #pragma once
 #include "entity.h"
-#include "component.h"
+#include "components/component.h"
 #include <glm/glm.hpp>
 #include "engine_state.h"
 

@@ -14,6 +14,7 @@
 #include "pause_state.h"
 #include "systems/input_handler.h"
 #include "clickable_system.h"
+#include "systems/camera_system.h"
 
 // Include GLEW
 #include <GL/glew.h>
@@ -39,6 +40,7 @@ int main() {
     eng->add_subsystem("state_machine", engine_state_machine::get());
     eng->add_subsystem("input_handler", input_handler::get());
 	eng->add_subsystem("clickable_system", clickable_system::get());
+	eng->add_subsystem("camera_system", camera_system::get());
 
     engine_state_machine::get()->add_state("menu_state", std::make_shared<menu_state>(), state_type::MENU);
     engine_state_machine::get()->add_state("game_state", std::make_shared<game_state>(), state_type::GAME);
@@ -49,6 +51,8 @@ int main() {
     e->add_component("physics", physics_system::get()->build_component(e));
     e->add_component("input", input_handler::get()->build_component(e));
     e->add_component("render", renderer::get()->build_component(e, "Blue", "Sphere", "Gouraud", simple, "res/models/bat.obj"));
+	e->add_component("camera", camera_system::get()->build_component(e, camera_type::FREE));
+
 
 	int x_size = 0;
 	int y_size = 0;

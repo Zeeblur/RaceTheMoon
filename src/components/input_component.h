@@ -5,7 +5,7 @@
 #ifndef RACETHEMOON_INPUT_COMPONENT_H
 #define RACETHEMOON_INPUT_COMPONENT_H
 
-#include "../component.h"
+#include "component.h"
 #include "../entity.h"
 
 class input_handler;
@@ -20,7 +20,7 @@ private:
     std::shared_ptr<input_handler> _handler;
 
 public:
-    input_component(std::shared_ptr<entity> &e);// std::shared_ptr<input_handler> &ih);
+    input_component(std::shared_ptr<entity> &e);
 
     bool initialise() override final;
 

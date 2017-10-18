@@ -2,7 +2,7 @@
 // Created by zoe on 10/10/17.
 //
 
-#include "../component.h"
+#include "component.h"
 #include "../entity.h"
 #include "glm/glm.hpp"
 

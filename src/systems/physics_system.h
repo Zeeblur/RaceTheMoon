@@ -4,10 +4,8 @@
 #include <vector>
 #include <string>
 #include "../entity.h"
-#include "../component.h"
+#include "../components/component.h"
 #include "../subsystem.h"
-
-
 #include "../components/physics_component.h"
 
 class physics_system : public subsystem
