@@ -1,6 +1,6 @@
 #include "clickable_system.h"
-#include "glfw.h"
-#include "engine_state_machine.h"
+#include "../glfw.h"
+#include "../engine_state_machine.h"
 
 clickable_system::clickable_system()
 {

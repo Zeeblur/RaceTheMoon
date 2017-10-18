@@ -13,7 +13,7 @@
 #include "menu_state.h"
 #include "pause_state.h"
 #include "systems/input_handler.h"
-#include "clickable_system.h"
+#include "systems/clickable_system.h"
 #include "systems/camera_system.h"
 
 // Include GLEW
