@@ -1,7 +1,7 @@
 #include "clickable_system.h"
 #include "../glfw.h"
 #include "../engine_state_machine.h"
-
+#include "../entity_manager.h"
 clickable_system::clickable_system()
 {
     _visible = false;
@@ -48,7 +48,8 @@ void clickable_system::update(float delta_time)
 
             int state = glfwGetMouseButton(glfw::window, GLFW_MOUSE_BUTTON_LEFT);
 
-            if (state == GLFW_PRESS && x_pos >= d.x_bounds.x && x_pos <= d.x_bounds.y && y_pos >= d.y_bounds.x && y_pos <= d.y_bounds.y)
+            if (state == GLFW_PRESS && x_pos >= d.x_bounds.x && x_pos <= d.x_bounds.y && y_pos >= d.y_bounds.x && y_pos <= d.y_bounds.y 
+				&& engine_state_machine::get()->get_current_state_type() == entity_manager::get()->get_entity(d.parent_name)->state)
             {
                 std::cout << "Clicked button with name: " << d.parent_name << std::endl;
                 // Save currently clicked component

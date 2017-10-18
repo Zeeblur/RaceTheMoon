@@ -11,6 +11,7 @@ struct clickable_data
     glm::dvec2 x_bounds;
     glm::dvec2 y_bounds;
     std::string parent_name;
+
 };
 
 struct clickable_component : public component
