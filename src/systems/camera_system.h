@@ -10,7 +10,7 @@
 
 enum camera_type
 {
-	FREE,
+	CHASE,
 	ORTHO,
 };
 

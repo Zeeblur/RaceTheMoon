@@ -50,17 +50,15 @@ void render_component::render()
 
 		mat4 projMat_, viewMat_;
 
-		if (camera != nullptr)
+	/*	if (camera != nullptr)
 		{
 			projMat_ = camera->get_projection();
 			viewMat_ = camera->get_view();
 		}
-		else
+		else*/
 		{
 			projMat_ = glm::perspective(1.0472f, (16.0f / 9.0f), 0.01f, 1000.0f);
-
 			viewMat_ = glm::lookAt(glm::vec3(100.0f), glm::vec3(), glm::vec3(0, 1.0f, 0));
-
 		}
 
 		auto MVP = projMat_ * viewMat_ * trans;

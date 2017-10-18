@@ -26,14 +26,15 @@ struct render_data
 {
 	bool visible;// = false;
 	// Let's pretend this is a matrix that was built.
-	std::string transform;// = "(0, 0, 0)";
+	std::string transform = "(0, 0, 0)";
 	std::string colour;// = "Red";
-	std::string shape;// = "Sphere";
 	std::string shader;// = "Phong";
 
 	// Reference to structs
 	Effect* effect;
-	std::shared_ptr<gl::Mesh> mesh;
+
+	// shape is now mesh
+	std::shared_ptr<gl::mesh_geom> mesh;
 };
 
 struct render_component : public component

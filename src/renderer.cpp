@@ -15,23 +15,14 @@ renderer::renderer()
     _active = false;
 }
 
-std::shared_ptr<render_component> renderer::build_component(std::shared_ptr<entity> &e, std::string colour, std::string shape, std::string shader, effect effType, std::string mesh)
+std::shared_ptr<render_component> renderer::build_component(std::shared_ptr<entity> &e, std::string colour, std::string shape, std::string shader, effect effType)
 {
     auto _rd = std::make_shared<render_data>();
     _rd->colour = colour;
-    _rd->shape = shape;
+
     _rd->shader = shader;
 
-
-    // TODO: check if it actually has a model
-
-    if (shape == "rectangle")
-        _rd->mesh = gl::generate_rect();
-    else if (shape == "plane")
-        // This is a pretty hefty way to add objects to the scene, right? - Beej
-        _rd->mesh = gl::generate_plane();
-    else
-        _rd->mesh = gl::loadModel(mesh);
+    _rd->mesh = gl::load_mesh(shape);
 
 
     return std::make_shared<render_component>(e, _rd);

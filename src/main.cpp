@@ -47,19 +47,19 @@ int main()
     engine_state_machine::get()->add_state("pause_state", std::make_shared<pause_state>(), state_type::PAUSE);
     engine_state_machine::get()->change_state("game_state");
 
-    auto e = entity_manager::get()->create_entity("Bat", state_type::GAME);
-    e->add_component("physics", physics_system::get()->build_component(e));
-    e->add_component("input", input_handler::get()->build_component(e));
-    e->add_component("render", renderer::get()->build_component(e, "Blue", "Sphere", "Gouraud", simple, "res/models/bat.obj"));
-	e->add_component("camera", camera_system::get()->build_component(e, camera_type::FREE));
+
+	// Adding plane
+	auto p = entity_manager::get()->create_entity("Plane", state_type::GAME);
+	p->add_component("physics", physics_system::get()->build_component(p));
+	p->add_component("render", renderer::get()->build_component(p, "Red", "plane", "Gouraud", simple));
+
+	auto e = entity_manager::get()->create_entity("Bat", state_type::GAME);
+	e->add_component("physics", physics_system::get()->build_component(e));
+	e->add_component("input", input_handler::get()->build_component(e));
+	e->add_component("render", renderer::get()->build_component(e, "Blue", "res/models/bat.obj", "Gouraud", simple));
+	e->add_component("camera", camera_system::get()->build_component(e, camera_type::CHASE));
 
 
-    // Adding plane
-    auto p = entity_manager::get()->create_entity("Plane", state_type::GAME);
-    p->add_component("physics", physics_system::get()->build_component(p));
-    // Remove the input component, this is to test geometry
-    p->add_component("input", input_handler::get()->build_component(p));
-    p->add_component("render", renderer::get()->build_component(p, "Red", "plane", "Gouraud", simple, ""));
 
     int x_size = 0;
     int y_size = 0;
@@ -76,7 +76,7 @@ int main()
     // Menu buttons
     auto button_play = entity_manager::get()->create_entity("buttonPlay", state_type::MENU);
     button_play->add_component("clickable", clickable_system::get()->build_component(button_play, glm::vec2(x_center - x_button_size, x_center + x_button_size), glm::vec2(y_center - y_button_size, y_center + y_button_size)));
-    button_play->add_component("render", renderer::get()->build_component(button_play, "Blue", "rectangle", "Gouraud", simple, ""));
+    button_play->add_component("render", renderer::get()->build_component(button_play, "Blue", "rectangle", "Gouraud", simple));
 
     auto button_exit = entity_manager::get()->create_entity("buttonExit", state_type::MENU);
     button_exit->add_component("clickable", clickable_system::get()->build_component(button_exit, glm::vec2(x_center - x_button_size, x_center + x_button_size), glm::vec2(button_offset + y_center - y_button_size, button_offset + y_center + y_button_size)));

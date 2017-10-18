@@ -20,7 +20,7 @@ public:
         return instance;
     }
 
-    std::shared_ptr<render_component> build_component(std::shared_ptr<entity> &e, std::string colour, std::string shape, std::string shader, effect effType, std::string mesh);
+    std::shared_ptr<render_component> build_component(std::shared_ptr<entity> &e, std::string colour, std::string shape, std::string shader, effect effType);
 
     bool initialise();
 

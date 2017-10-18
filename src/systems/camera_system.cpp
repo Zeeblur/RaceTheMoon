@@ -15,7 +15,7 @@ std::shared_ptr<camera_component> camera_system::build_component(std::shared_ptr
 
 	switch (type)
 	{
-	case camera_type::FREE:
+	case camera_type::CHASE:
 		proj.fov = 1.0472f;
 		proj.aspect = (16.0f / 9.0f);
 		proj.near = 0.01f;
