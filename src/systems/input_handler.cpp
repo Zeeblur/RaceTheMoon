@@ -64,16 +64,16 @@ std::vector<Command*> input_handler::handle_input()
 {
     std::vector<Command*> commands;
 
-    if(glfwGetKey(glfw::window, GLFW_KEY_W))
+    if (glfwGetKey(glfw::window, GLFW_KEY_W))
         commands.push_back(buttonUp_);
 
-    if(glfwGetKey(glfw::window, GLFW_KEY_S))
+    if (glfwGetKey(glfw::window, GLFW_KEY_S))
         commands.push_back(buttonDown_);
 
-    if(glfwGetKey(glfw::window, GLFW_KEY_A))
+    if (glfwGetKey(glfw::window, GLFW_KEY_A))
         commands.push_back(buttonLeft_);
 
-    if(glfwGetKey(glfw::window, GLFW_KEY_D))
+    if (glfwGetKey(glfw::window, GLFW_KEY_D))
         commands.push_back(buttonRight_);
 
 

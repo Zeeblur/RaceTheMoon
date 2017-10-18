@@ -32,7 +32,7 @@ private:
 
 public:
     entity_state_machine(std::shared_ptr<entity> owner)
-    : _owner(owner)
+        : _owner(owner)
     {
         _visible = false;
     }

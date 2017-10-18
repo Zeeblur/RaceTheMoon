@@ -56,7 +56,7 @@ void physics_system::update(float delta_time)
                 if (d.currentVelocity.x > 0) d.currentVelocity.x -= deceleration.x;
 
                 // if speed within epsilon of zero. Reset to zero
-                if (d.currentVelocity.x > 0 && d.currentVelocity.x <  deceleration.x) d.currentVelocity.x = 0;
+                if (d.currentVelocity.x > 0 && d.currentVelocity.x < deceleration.x) d.currentVelocity.x = 0;
                 if (d.currentVelocity.x < 0 && d.currentVelocity.x > -deceleration.x) d.currentVelocity.x = 0;
 
                 // forwards movement

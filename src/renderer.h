@@ -10,7 +10,7 @@ class renderer : public subsystem
 private:
     std::vector<render_component*> _components;
 
-	renderer();
+    renderer();
 
 public:
 
@@ -20,22 +20,22 @@ public:
         return instance;
     }
 
-	std::shared_ptr<render_component> build_component(std::shared_ptr<entity> &e, std::string colour, std::string shape, std::string shader, effect effType, std::string mesh);
-	
-	bool initialise();
+    std::shared_ptr<render_component> build_component(std::shared_ptr<entity> &e, std::string colour, std::string shape, std::string shader, effect effType, std::string mesh);
 
-	bool load_content();
+    bool initialise();
 
-	void update(float delta_time);
+    bool load_content();
+
+    void update(float delta_time);
 
 
     void render();
 
 
-	void unload_content();
-	void shutdown();
+    void unload_content();
+    void shutdown();
 
 
-	GLuint programID;
+    GLuint programID;
 
 };

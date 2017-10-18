@@ -5,9 +5,9 @@
 class menu_state : public engine_state
 {
 public:
-	void on_enter();
+    void on_enter();
 
-	void on_update(float delta_time);
+    void on_update(float delta_time);
 
-	void on_exit();
+    void on_exit();
 };

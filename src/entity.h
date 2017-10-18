@@ -32,7 +32,7 @@ public:
 
     inline transform& get_trans() { return _trans; }
 
-	inline std::string get_name() { return _name; }
+    inline std::string get_name() { return _name; }
 
     inline bool initialise()
     {

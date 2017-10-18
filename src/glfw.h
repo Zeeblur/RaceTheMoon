@@ -21,7 +21,7 @@
 
 namespace glfw
 {
-	extern GLFWwindow* window;
-	int runWindow();
+    extern GLFWwindow* window;
+    int runWindow();
 
 }
