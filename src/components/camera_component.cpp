@@ -27,14 +27,22 @@ void camera_component::render() {} // should never be called
 void camera_component::unload_content() {}
 void camera_component::shutdown() {}
 
-
 void camera_component::set_projection(camera_projection &data)
 {
-
+	int width = 0, height = 0;
+	glfwGetWindowSize(glfw::window, &width, &height);
 	_data = data;
-	
-	// create proj matrix
-	_projection = glm::perspective(_data.fov, _data.aspect, _data.near, _data.far);
+	switch(data.type)
+	{
+	case CHASE:
+		// create proj matrix
+		_projection = glm::perspective(_data.fov, _data.aspect, _data.near, _data.far);
+		break;
+	case ORTHO:
+		_projection = glm::ortho(-0.5f * (float)width, 0.5f * (float)width, -0.5f * (float)height, 0.5f * (float)height, _data.near, _data.far);
+		break;
+	}
+
 }
 
 void camera_component::update(float delta_time)

@@ -11,6 +11,12 @@
 #include <glm/matrix.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
+#include "../glfw.h"
+enum camera_type
+{
+	CHASE,
+	ORTHO,
+};
 
 struct camera_projection
 {
@@ -18,6 +24,7 @@ struct camera_projection
 	float aspect;
 	float near;
 	float far;
+	camera_type type;
 };
 
 class camera_component : public component

@@ -8,11 +8,7 @@
 #include "../subsystem.h"
 #include "../components/camera_component.h"
 
-enum camera_type
-{
-	CHASE,
-	ORTHO,
-};
+
 
 class camera_system : public subsystem
 {
@@ -22,6 +18,8 @@ private:
     camera_system();
 
 public:
+	// List of all cameras
+	std::vector<std::shared_ptr<camera_component>> _cameras;
 
     static inline std::shared_ptr<camera_system> get()
     {

@@ -4,6 +4,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "camera_component.h"
+#include "../systems/camera_system.h"
 
 #define CHECK_GL_ERROR CheckGL(__LINE__, __FILE__)
 
@@ -47,8 +48,11 @@ void render_component::render()
 		mat4 trans = glm::translate(mat4(1.0f), transvec);
 
 		auto camera = static_cast<camera_component*>(_parent->get_component("camera").get());
-
+		//std::shared_ptr<camera_component> camera = std::static_pointer_cast<camera_component>(_parent->get_component("camera"));
+		//auto camera = camera_system::get()->_cameras[0].get();
 		mat4 projMat_, viewMat_;
+		//projMat_ = camera->get_projection();
+		//viewMat_ = camera->get_view();
 
 	/*	if (camera != nullptr)
 		{
@@ -57,8 +61,13 @@ void render_component::render()
 		}
 		else*/
 		{
+			// Perspective projection
 			projMat_ = glm::perspective(1.0472f, (16.0f / 9.0f), 0.01f, 1000.0f);
 			viewMat_ = glm::lookAt(glm::vec3(100.0f), glm::vec3(), glm::vec3(0, 1.0f, 0));
+			// For orthographic projection
+			//int width, height;
+			//glfwGetWindowSize(glfw::window, &width, &height);
+			//projMat_ = glm::ortho(-0.5f * (float)width, 0.5f * (float)width, -0.5f * (float)height, 0.5f * (float)height, -1000.0f, 1000.0f);
 		}
 
 		auto MVP = projMat_ * viewMat_ * trans;
