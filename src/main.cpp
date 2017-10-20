@@ -55,11 +55,10 @@ int main()
 
 	auto e = entity_manager::get()->create_entity("Bat", state_type::GAME);
 	e->add_component("physics", physics_system::get()->build_component(e));
+	e->add_component("collider", physics_system::get()->build_collider_component(e));
 	e->add_component("input", input_handler::get()->build_component(e));
 	e->add_component("render", renderer::get()->build_component(e, "Blue", "res/models/bat.obj", "Gouraud", simple));
 	e->add_component("camera", camera_system::get()->build_component(e, camera_type::CHASE));
-
-
 
     int x_size = 0;
     int y_size = 0;
