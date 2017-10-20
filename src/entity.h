@@ -4,7 +4,7 @@
 #include <memory>
 #include "components/component.h"
 #include <iostream>
-
+#include "engine_state.h"
 struct transform
 {
     float x = 1.0f;
@@ -24,6 +24,8 @@ private:
     transform _trans;
 
 public:
+	// Used to keep track of which state this entity belongs to
+	state_type state = state_type::NONE;
     inline entity(const std::string& name)
         : _name(name)
     {

@@ -18,6 +18,8 @@ private:
     camera_system();
 
 public:
+	// List of all cameras
+	std::vector<std::shared_ptr<camera_component>> _cameras;
 
     static inline std::shared_ptr<camera_system> get()
     {

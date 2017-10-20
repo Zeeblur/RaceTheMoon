@@ -51,6 +51,7 @@ void render_component::render()
 
 		auto camera = static_cast<camera_component*>(_parent->get_component("camera").get());
 
+
 		mat4 view_proj_mat;
 
 		if (camera != nullptr)

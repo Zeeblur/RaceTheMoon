@@ -11,6 +11,7 @@
 #include <glm/matrix.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
+#include "../glfw.h"
 
 enum camera_type
 {
@@ -27,6 +28,7 @@ struct camera_projection
 
 	camera_type type;
 	glm::mat4 model_view;
+
 };
 
 class camera_component : public component

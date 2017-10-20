@@ -1,6 +1,6 @@
 #include "engine_state_machine.h"
 #include "entity_manager.h"
-#include "clickable_system.h"
+#include "systems/clickable_system.h"
 
 
 engine_state_machine::engine_state_machine()
@@ -71,6 +71,7 @@ void engine_state_machine::update(float delta_time)
         std::shared_ptr<clickable_system> cs = std::static_pointer_cast<clickable_system>(engine::get()->get_subsystem("clickable_system"));
         if (cs->get_clicked_component_name() == "buttonPlay")
         {
+			std::cout << "Test" << std::endl;
             engine_state_machine::get()->change_state("game_state");
             cs->clear_clicked_component_name();
         }
