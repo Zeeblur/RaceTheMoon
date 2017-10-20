@@ -385,6 +385,7 @@ namespace gl
         return mesh;
     }
 
+    // Currently a 500x500 plane
     mesh_geom* generate_plane()
     {
         mesh_geom *mesh = new mesh_geom();
@@ -392,13 +393,13 @@ namespace gl
         std::vector<glm::vec3> positions
         {
 			// 1
-			glm::vec3(-100.0f, 0.0f, 100.0f),
-			glm::vec3(-100.0f,  0.0f, -100.0f),
-			glm::vec3(100.0f,  0.0f, -100.0f),
+			glm::vec3(-500.0f, 0.0f, 500.0f),
+			glm::vec3(-500.0f,  0.0f, -500.0f),
+			glm::vec3(500.0f,  0.0f, -500.0f),
 			// 2
-			glm::vec3(100.0f, 0.0f, -100.0f),
-			glm::vec3(100.0f, 0.0f, 100.0f),
-			glm::vec3(-100.0f,0.0f,  100.0f)
+			glm::vec3(500.0f, 0.0f, -500.0f),
+			glm::vec3(500.0f, 0.0f, 500.0f),
+			glm::vec3(-500.0f,0.0f, 500.0f)
 
         };
         // These are probably wrong
@@ -440,11 +441,210 @@ namespace gl
 
 	// add more generating functions 
 
+    // Currently a 50x50x50 cube using triangles
+    mesh_geom* generate_cube_triangles()
+    {
+        mesh_geom *mesh = new mesh_geom();
+
+        std::vector<glm::vec3> positions
+        {
+            // Front
+            glm::vec3(-50.0f, 50.0f, -200.0f),
+            glm::vec3(-100.0f, 50.0f, -200.0f),
+            glm::vec3(-100.0f, 0.0f, -200.0f),
+
+            glm::vec3(-100.0f, 0.0f, -200.0f),
+            glm::vec3(-50.0f, 0.0f, -200.0f),
+            glm::vec3(-50.0f, 50.0f, -200.0f),
+            
+            // Back
+            glm::vec3(-100.0f, 50.0f, -250.0f),
+            glm::vec3(-50.0f, 50.0f, -250.0f),
+            glm::vec3(-50.0f, 0.0f, -250.0f),
+
+            glm::vec3(-50.0f, 0.0f, -250.0f),
+            glm::vec3(-100.0f, 0.0f, -250.0f),
+            glm::vec3(-100.0f, 50.0f, -250.0f),
+
+            // Right
+            glm::vec3(-50.0f, 50.0f, -250.0f),
+            glm::vec3(-50.0f, 50.0f, -200.0f),
+            glm::vec3(-50.0f, 0.0f, -200.0f),
+
+            glm::vec3(-50.0f, 0.0f, -200.0f),
+            glm::vec3(-50.0f, 0.0f, -250.0f),
+            glm::vec3(-50.0f, 50.0f, -250.0f),
+
+            // Left 
+            glm::vec3(-100.0f, 50.0f, -200.0f),
+            glm::vec3(-100.0f, 50.0f, -250.0f),
+            glm::vec3(-100.0f, 0.0f, -250.0f),
+
+            glm::vec3(-100.0f, 0.0f, -250.0f),
+            glm::vec3(-100.0f, 0.0f, -200.0f),
+            glm::vec3(-100.0f, 50.0f, -200.0f),
+
+            // Top
+            glm::vec3(-50.0f, 50.0f, -250.0f),
+            glm::vec3(-100.0f, 50.0f, -250.0f),
+            glm::vec3(-100.0f, 50.0f, -200.0f),
+
+            glm::vec3(-100.0f, 50.0f, -200.0f),
+            glm::vec3(-50.0f, 50.0f, -200.0f),
+            glm::vec3(-50.0f, 50.0f, -250.0f),
+
+            // Bottom
+            glm::vec3(-100.0f, 0.0f, -200.0f),
+            glm::vec3(-100.0f, 0.0f, -250.0f),
+            glm::vec3(-50.0f, 0.0f, -250.0f),
+ 
+            glm::vec3(-50.0f, 0.0f, -250.0f),
+            glm::vec3(-50.0f, 0.0f, -200.0f),
+            glm::vec3(-100.0f, 0.0f, -200.0f)
+
+        };
+        // These are probably wrong
+        std::vector<glm::vec2> tex_coords
+        {
+            glm::vec2(0.5, 1),
+            glm::vec2(0, 0),
+            glm::vec2(1, 0),
+            glm::vec2(1, 0),
+            glm::vec2(0, 0),
+            glm::vec2(0.5, 1)
+        };
+
+        // Colours
+        std::vector<glm::vec4> colours
+        {
+            glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 0.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 0.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 0.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 0.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)
+        };
+
+        //// Calculate the minimal and maximal
+        //mesh->min = mesh->positions[0];
+        //mesh->max = mesh->positions[0];
+        //for (auto &v : mesh->positions) {
+        //	mesh->min = glm::min(mesh->min, v);
+        //	mesh->max = glm::max(mesh->max, v);
+        //}
+
+        mesh->positions = positions;
+        mesh->tex_coords = tex_coords;
+        /*mesh->colours = colours;*/
+
+        return mesh;
+    }
+
+    // Currently a 50x50x50 cube using indices
+    mesh_geom* generate_cube()
+    {
+        mesh_geom *mesh = new mesh_geom();
+
+        std::vector<glm::vec3> positions
+        {
+            // Front
+            glm::vec3(-50.0f, 50.0f, -200.0f),
+            glm::vec3(-100.0f, 50.0f, -200.0f),
+            glm::vec3(-100.0f, 0.0f, -200.0f),
+
+            glm::vec3(-100.0f, 0.0f, -200.0f),
+            glm::vec3(-50.0f, 0.0f, -200.0f),
+            glm::vec3(-50.0f, 50.0f, -200.0f),
+
+            // Back
+            glm::vec3(-100.0f, 50.0f, -250.0f),
+            glm::vec3(-50.0f, 50.0f, -250.0f),
+            glm::vec3(-50.0f, 0.0f, -250.0f),
+
+            glm::vec3(-50.0f, 0.0f, -250.0f),
+            glm::vec3(-100.0f, 0.0f, -250.0f),
+            glm::vec3(-100.0f, 50.0f, -250.0f),
+
+            // Right
+            glm::vec3(-50.0f, 50.0f, -250.0f),
+            glm::vec3(-50.0f, 50.0f, -200.0f),
+            glm::vec3(-50.0f, 0.0f, -200.0f),
+
+            glm::vec3(-50.0f, 0.0f, -200.0f),
+            glm::vec3(-50.0f, 0.0f, -250.0f),
+            glm::vec3(-50.0f, 50.0f, -250.0f),
+
+            // Left 
+            glm::vec3(-100.0f, 50.0f, -200.0f),
+            glm::vec3(-100.0f, 50.0f, -250.0f),
+            glm::vec3(-100.0f, 0.0f, -250.0f),
+
+            glm::vec3(-100.0f, 0.0f, -250.0f),
+            glm::vec3(-100.0f, 0.0f, -200.0f),
+            glm::vec3(-100.0f, 50.0f, -200.0f),
+
+            // Top
+            glm::vec3(-50.0f, 50.0f, -250.0f),
+            glm::vec3(-100.0f, 50.0f, -250.0f),
+            glm::vec3(-100.0f, 50.0f, -200.0f),
+
+            glm::vec3(-100.0f, 50.0f, -200.0f),
+            glm::vec3(-50.0f, 50.0f, -200.0f),
+            glm::vec3(-50.0f, 50.0f, -250.0f),
+
+            // Bottom
+            glm::vec3(-100.0f, 0.0f, -200.0f),
+            glm::vec3(-100.0f, 0.0f, -250.0f),
+            glm::vec3(-50.0f, 0.0f, -250.0f),
+
+            glm::vec3(-50.0f, 0.0f, -250.0f),
+            glm::vec3(-50.0f, 0.0f, -200.0f),
+            glm::vec3(-100.0f, 0.0f, -200.0f)
+
+        };
+        // These are probably wrong
+        std::vector<glm::vec2> tex_coords
+        {
+            glm::vec2(0.5, 1),
+            glm::vec2(0, 0),
+            glm::vec2(1, 0),
+            glm::vec2(1, 0),
+            glm::vec2(0, 0),
+            glm::vec2(0.5, 1)
+        };
+
+        // Colours
+        std::vector<glm::vec4> colours
+        {
+            glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 0.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 0.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 0.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 0.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)
+        };
+
+        //// Calculate the minimal and maximal
+        //mesh->min = mesh->positions[0];
+        //mesh->max = mesh->positions[0];
+        //for (auto &v : mesh->positions) {
+        //	mesh->min = glm::min(mesh->min, v);
+        //	mesh->max = glm::max(mesh->max, v);
+        //}
+
+        mesh->positions = positions;
+        mesh->tex_coords = tex_coords;
+        /*mesh->colours = colours;*/
+
+        return mesh;
+    }
+
 	// map of functions for different shapes
 	std::map<std::string, std::function<mesh_geom*()>> generation_functions =
-	{
-		{ "rectangle", generate_rect },
-		{ "plane", generate_plane },
+    {
+        { "rectangle", generate_rect },
+        { "plane", generate_plane },
+        { "cube", generate_cube },
 	};
 
 	// depending on whether a file or shape has been inputted - create the mesh.

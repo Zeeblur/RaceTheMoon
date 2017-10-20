@@ -49,9 +49,11 @@ int main()
 
 
 	// Adding plane
-	auto p = entity_manager::get()->create_entity("Plane", state_type::GAME);
-	p->add_component("physics", physics_system::get()->build_component(p));
-	p->add_component("render", renderer::get()->build_component(p, "Red", "plane", "Gouraud", simple));
+	//auto p = entity_manager::get()->create_entity("Plane", state_type::GAME);
+	//p->add_component("physics", physics_system::get()->build_component(p));
+	//p->add_component("render", renderer::get()->build_component(p, "Red", "plane", "Gouraud", simple));
+
+
 
 	auto e = entity_manager::get()->create_entity("Bat", state_type::GAME);
 	e->add_component("physics", physics_system::get()->build_component(e));
@@ -59,7 +61,11 @@ int main()
 	e->add_component("render", renderer::get()->build_component(e, "Blue", "res/models/bat.obj", "Gouraud", simple));
 	e->add_component("camera", camera_system::get()->build_component(e, camera_type::CHASE));
 
-
+    // Adding cube
+    auto c = entity_manager::get()->create_entity("Cube", state_type::GAME);
+    c->add_component("physics", physics_system::get()->build_component(c));
+    c->add_component("input", input_handler::get()->build_component(c));
+    c->add_component("render", renderer::get()->build_component(c, "Green", "cube", "Gouraud", simple));
 
     int x_size = 0;
     int y_size = 0;

@@ -73,7 +73,7 @@ void render_component::render()
 		auto MVP = projMat_ * viewMat_ * trans;
 		gl::glData *om = static_cast<gl::glData *>(_data->mesh->GpuData);
 		
-		glDisable(GL_CULL_FACE);
+		glEnable(GL_CULL_FACE);
 		//glDisable(GL_DEPTH_TEST);
 		
 
