@@ -51,12 +51,15 @@ void render_component::render()
 
 		auto camera = static_cast<camera_component*>(_parent->get_component("camera").get());
 
-
+		int width, height;
+		glfwGetWindowSize(glfw::window, &width, &height);
 		mat4 view_proj_mat;
 
 		if (camera != nullptr)
 		{
 			view_proj_mat = camera->get_projection() * camera->get_view();
+			view_proj_mat = glm::ortho(-0.5f * (float)width, 0.5f * (float)width, -0.5f * (float)height, 0.5f * (float)height, -1000.0f, 1000.0f) * glm::lookAt(glm::vec3(100.0f), glm::vec3(), glm::vec3(0, 1.0f, 0));
+
 		}
 		else
 		{

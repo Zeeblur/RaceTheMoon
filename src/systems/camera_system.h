@@ -13,13 +13,11 @@
 class camera_system : public subsystem
 {
 private:
-    std::vector<camera_projection> _data;
+    std::vector<std::shared_ptr<camera_projection>> _data;
 
     camera_system();
 
 public:
-	// List of all cameras
-	std::vector<std::shared_ptr<camera_component>> _cameras;
 
     static inline std::shared_ptr<camera_system> get()
     {

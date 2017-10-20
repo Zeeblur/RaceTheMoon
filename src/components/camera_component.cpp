@@ -5,7 +5,7 @@
 
 #include "camera_component.h"
 
-camera_component::camera_component(std::shared_ptr<entity> &e, camera_projection &data)
+camera_component::camera_component(std::shared_ptr<entity> &e, std::shared_ptr<camera_projection> data)
 	: _parent(e), _data(data)
 {}
 
@@ -14,10 +14,7 @@ bool camera_component::initialise()
 	// initialise the camera.
 
 	// set perspective.
-	set_projection(_data);
-
-	// set view
-	_view = glm::lookAt(_position, _target, _up);
+	set_projection_view(_data);
 
 	return true;
 }
@@ -27,19 +24,23 @@ void camera_component::render() {} // should never be called
 void camera_component::unload_content() {}
 void camera_component::shutdown() {}
 
-void camera_component::set_projection(camera_projection &data)
+void camera_component::set_projection_view(std::shared_ptr<camera_projection> data)
 {
 	int width = 0, height = 0;
 	glfwGetWindowSize(glfw::window, &width, &height);
 	_data = data;
-	switch(data.type)
+	switch(data->type)
 	{
 	case CHASE:
 		// create proj matrix
-		_projection = glm::perspective(_data.fov, _data.aspect, _data.near, _data.far);
+		_projection = glm::perspective(_data->fov, _data->aspect, _data->near, _data->far);
+		// set view
+		_view = glm::lookAt(_position, _target, _up);
 		break;
 	case ORTHO:
-		_projection = glm::ortho(-0.5f * (float)width, 0.5f * (float)width, -0.5f * (float)height, 0.5f * (float)height, _data.near, _data.far);
+		_projection = glm::ortho(_data->left, _data->left*-1.0f, _data->bottom, _data->bottom * -1.0f, _data->near, _data->far);
+		_view = glm::lookAt(_position, glm::vec3(), glm::vec3(0, 1.0f, 0));
+		
 		break;
 	}
 
@@ -48,6 +49,8 @@ void camera_component::set_projection(camera_projection &data)
 void camera_component::update(float delta_time)
 {
 	// update chase 
+	if (_data->type == ORTHO)
+		return;
 
 	glm::vec3 target_pos = glm::vec3(_parent->get_trans().x, _parent->get_trans().y, _parent->get_trans().z);
 
@@ -72,11 +75,13 @@ void camera_component::update(float delta_time)
 	//_view = glm::lookAt(_position, _target, _up);
 	_view = glm::lookAt(desired_position, _target, _up);
 
-	_data.model_view = _projection * _view;
+	_data->model_view = _projection * _view;
 }
 
 void camera_component::move(const glm::vec3 &translation)
 {
 	// Just add translation vector to current translation
 	//_translation += translation;
+
+
 }

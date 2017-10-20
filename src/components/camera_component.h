@@ -25,6 +25,8 @@ struct camera_projection
 	float aspect;
 	float near;
 	float far;
+	float left = 0;
+	float bottom = 0;
 
 	camera_type type;
 	glm::mat4 model_view;
@@ -36,11 +38,11 @@ class camera_component : public component
 
 private:
 	// ptr to perspective data
-	camera_projection &_data;
+	std::shared_ptr<camera_projection> _data;
 
 	std::shared_ptr<entity> _parent;
 
-	glm::vec3 _position = glm::vec3(100.f, 100.f, 100.f);
+	glm::vec3 _position = glm::vec3(00.0, 0.0, 10.0f);
 	glm::vec3 _target = glm::vec3(0.f, 0.f, 0.0f);
 	glm::vec3 _up = glm::vec3(0.f, 1.f, 0.f);
 
@@ -62,7 +64,7 @@ private:
 
 	
 public:
-	camera_component(std::shared_ptr<entity> &e, camera_projection &data);
+	camera_component(std::shared_ptr<entity> &e, std::shared_ptr<camera_projection> data);
 
 	bool initialise() override final;
 
@@ -76,7 +78,7 @@ public:
 
 	void shutdown() override final;
 
-	void set_projection(camera_projection &data);
+	void set_projection_view(std::shared_ptr<camera_projection> data);
 
 	// Moves the camera
 	void move(const glm::vec3 &translation);
