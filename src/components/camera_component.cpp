@@ -27,7 +27,6 @@ void camera_component::render() {} // should never be called
 void camera_component::unload_content() {}
 void camera_component::shutdown() {}
 
-
 void camera_component::set_projection(camera_projection &data)
 {
 
@@ -63,6 +62,8 @@ void camera_component::update(float delta_time)
 	// Calculate view matrix
 	//_view = glm::lookAt(_position, _target, _up);
 	_view = glm::lookAt(desired_position, _target, _up);
+
+	_data.model_view = _projection * _view;
 }
 
 void camera_component::move(const glm::vec3 &translation)

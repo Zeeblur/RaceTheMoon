@@ -8,11 +8,7 @@
 #include "../subsystem.h"
 #include "../components/camera_component.h"
 
-enum camera_type
-{
-	CHASE,
-	ORTHO,
-};
+
 
 class camera_system : public subsystem
 {
@@ -28,6 +24,8 @@ public:
         static std::shared_ptr<camera_system> instance = std::shared_ptr<camera_system>(new camera_system());
         return instance;
     }
+
+	glm::mat4 player_cam_MV;
 
     std::shared_ptr<camera_component> build_component(std::shared_ptr<entity> e, camera_type type);
 

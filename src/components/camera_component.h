@@ -12,12 +12,21 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
 
+enum camera_type
+{
+	CHASE,
+	ORTHO,
+};
+
 struct camera_projection
 {
 	float fov;
 	float aspect;
 	float near;
 	float far;
+
+	camera_type type;
+	glm::mat4 model_view;
 };
 
 class camera_component : public component
@@ -41,7 +50,7 @@ private:
 
 
 	// The offset of the camera from its desired position
-	glm::vec3 _pos_offset = glm::vec3(20.f);
+	glm::vec3 _pos_offset = glm::vec3(100.f);
 
 	// The offset of the camera relative to the target
 	glm::vec3 _target_offset;

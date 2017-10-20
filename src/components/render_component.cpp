@@ -4,6 +4,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "camera_component.h"
+#include "../systems/camera_system.h"
 
 #define CHECK_GL_ERROR CheckGL(__LINE__, __FILE__)
 
@@ -44,29 +45,27 @@ void render_component::render()
 
 		vec3 transvec = vec3(_parent->get_trans().x, _parent->get_trans().y, _parent->get_trans().z);
 
+		std::cout << "rendering the: " + _parent->get_name() << " at (" << transvec.x << ", " << transvec.y << ", " << transvec.z << ")" << std::endl;
+
 		mat4 trans = glm::translate(mat4(1.0f), transvec);
 
 		auto camera = static_cast<camera_component*>(_parent->get_component("camera").get());
 
-		mat4 projMat_, viewMat_;
+		mat4 view_proj_mat;
 
-	/*	if (camera != nullptr)
+		if (camera != nullptr)
 		{
-			projMat_ = camera->get_projection();
-			viewMat_ = camera->get_view();
+			view_proj_mat = camera->get_projection() * camera->get_view();
 		}
-		else*/
+		else
 		{
-			projMat_ = glm::perspective(1.0472f, (16.0f / 9.0f), 0.01f, 1000.0f);
-			viewMat_ = glm::lookAt(glm::vec3(100.0f), glm::vec3(), glm::vec3(0, 1.0f, 0));
+			view_proj_mat = camera_system::get()->player_cam_MV;
 		}
 
-		auto MVP = projMat_ * viewMat_ * trans;
+		auto MVP = view_proj_mat * trans;
 		gl::glData *om = static_cast<gl::glData *>(_data->mesh->GpuData);
 		
 		glDisable(GL_CULL_FACE);
-		//glDisable(GL_DEPTH_TEST);
-		
 
 		glUseProgram(programID);
 		auto loc = glGetUniformLocation(programID, "MVP");
