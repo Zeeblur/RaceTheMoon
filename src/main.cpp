@@ -47,16 +47,23 @@ int main()
     engine_state_machine::get()->add_state("pause_state", std::make_shared<pause_state>(), state_type::PAUSE);
     engine_state_machine::get()->change_state("game_state");
 
-	// Adding plane
-	auto p = entity_manager::get()->create_entity("Plane", state_type::GAME);
-	p->add_component("physics", physics_system::get()->build_component(p));
-	p->add_component("render", renderer::get()->build_component(p, "Red", "plane", "Gouraud", simple));
+    // Adding plane
+    auto p = entity_manager::get()->create_entity("Plane", state_type::GAME);
+    p->add_component("physics", physics_system::get()->build_component(p));
+    p->add_component("input", input_handler::get()->build_component(p));
+    p->add_component("render", renderer::get()->build_component(p, "Red", "plane", "Gouraud", simple));
 
-	auto e = entity_manager::get()->create_entity("Bat", state_type::GAME);
-	e->add_component("physics", physics_system::get()->build_component(e));
-	e->add_component("input", input_handler::get()->build_component(e));
-	e->add_component("render", renderer::get()->build_component(e, "Blue", "res/models/bat.obj", "Gouraud", simple));
-	e->add_component("camera", camera_system::get()->build_component(e, camera_type::CHASE));
+    // Adding cube
+    auto c = entity_manager::get()->create_entity("Cube", state_type::GAME);
+    c->add_component("physics", physics_system::get()->build_component(c));
+    c->add_component("render", renderer::get()->build_component(c, "Green", "cube", "Gouraud", simple));
+
+    // Bat entity
+    auto e = entity_manager::get()->create_entity("Bat", state_type::GAME);
+    e->add_component("physics", physics_system::get()->build_component(e));
+    e->add_component("input", input_handler::get()->build_component(e));
+    e->add_component("render", renderer::get()->build_component(e, "Blue", "res/models/bat.obj", "Gouraud", simple));
+    e->add_component("camera", camera_system::get()->build_component(e, camera_type::CHASE));
 
     int x_size = 0;
     int y_size = 0;

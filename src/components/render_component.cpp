@@ -69,7 +69,8 @@ void render_component::render()
 		auto MVP = view_proj_mat * trans;
 		gl::glData *om = static_cast<gl::glData *>(_data->mesh->GpuData);
 		
-		glDisable(GL_CULL_FACE);
+
+		glEnable(GL_CULL_FACE);
 
 		glUseProgram(programID);
 		auto loc = glGetUniformLocation(programID, "MVP");
