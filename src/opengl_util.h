@@ -88,4 +88,6 @@ namespace gl
 
 	mesh_geom* generate_rect();
     mesh_geom* get_model_mesh(const std::string &file);
+
+	void render(glData* om, GLuint programID, glm::mat4 MVP);
 }

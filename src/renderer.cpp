@@ -12,7 +12,7 @@ using namespace glm;
 
 renderer::renderer()
 {
-    _active = false;
+    _active = false; 
 }
 
 std::shared_ptr<render_component> renderer::build_component(std::shared_ptr<entity> &e, std::string colour, std::string shape, std::string shader, effect effType)
@@ -21,16 +21,16 @@ std::shared_ptr<render_component> renderer::build_component(std::shared_ptr<enti
     _rd->colour = colour;
 
     _rd->shader = shader;
-
     _rd->mesh = gl::load_mesh(shape);
-
-
-    return std::make_shared<render_component>(e, _rd);
+	
+	_dataList.push_back(_rd);
+	return std::make_shared<render_component>(e, std::ref(_dataList.back()));
 }
 
 bool renderer::initialise()
 {
     std::cout << "Renderer initialising" << std::endl;
+	programID = gl::LoadShaders("res/shaders/simple.vert", "res/shaders/simple.frag");
     return true;
 }
 
@@ -47,27 +47,44 @@ void renderer::update(float delta_time)
 
 }
 
+
 void renderer::render()
 {
-    //std::cout << "Renderer rendering" << std::endl;
-    // Clear the screen.
-    //glClearColor(((float)(rand() % 255))/255.0f, 0.2, 0.6, 1.0);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glDepthMask(true);
-    glEnable(GL_DEPTH_TEST);
+	glfwMakeContextCurrent(glfw::window);
+	auto e = glGetError();
+	int x_size = 0;
+	int y_size = 0;
 
-    for (auto &c : _components)
-    {
+	glfwGetWindowSize(glfw::window, &x_size, &y_size);
 
-        if (c->get_visible())
-        {
-            c->render();
-        }
-    }
+	glViewport(0, 0, x_size, y_size);
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+	
+	auto err = glGetError();
+
+	glClearColor(0.0, 1.0, 1.0, 0.0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	glEnable(GL_CULL_FACE);
+
+	
+	glUseProgram(programID);
+	auto err2 = glGetError();
+
+	for (auto &r : _dataList)
+	{
+		if (!r->visible)
+			continue;
+
+		gl::glData* geom = static_cast<gl::glData *>(r->mesh->GpuData);
+		gl::render(geom, programID, r->MVP);
+	}
+
+	glfwPollEvents();
 
     glfwSwapBuffers(glfw::window);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glfwPollEvents();
+
 }
 
 void renderer::unload_content()

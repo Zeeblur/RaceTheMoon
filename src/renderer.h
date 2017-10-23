@@ -8,9 +8,11 @@
 class renderer : public subsystem
 {
 private:
-    std::vector<render_component*> _components;
+    std::vector<std::shared_ptr<render_component>> _components;
 
     renderer();
+
+	GLuint vertexbuffer;
 
 public:
 
@@ -28,14 +30,14 @@ public:
 
     void update(float delta_time);
 
-
     void render();
 
-
     void unload_content();
-    void shutdown();
 
+	void shutdown();
 
     GLuint programID;
+
+	std::vector<std::shared_ptr<render_data>> _dataList;
 
 };

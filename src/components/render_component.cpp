@@ -5,6 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "camera_component.h"
 #include "../systems/camera_system.h"
+#include "../renderer.h"
 
 #define CHECK_GL_ERROR CheckGL(__LINE__, __FILE__)
 
@@ -39,15 +40,29 @@ void render_component::render()
 	if (_data->visible)
 	{
 		// "Generate" the transform matrix.
-		std::stringstream ss;
-		ss << "(" << _parent->get_trans().x << ", " << _parent->get_trans().y << ", " << _parent->get_trans().z << ")" << std::endl;
-		_data->transform = ss.str();
-
 		vec3 transvec = vec3(_parent->get_trans().x, _parent->get_trans().y, _parent->get_trans().z);
 
 		std::cout << "rendering the: " + _parent->get_name() << " at (" << transvec.x << ", " << transvec.y << ", " << transvec.z << ")" << std::endl;
 
 		mat4 trans = glm::translate(mat4(1.0f), transvec);
+
+		mat4 rotation;
+
+		glm::vec3 rot = _parent->get_trans().rotation;
+		glm::vec3 scal = _parent->get_trans().scale;
+
+		if (_parent->get_trans().rotation == vec3(0.0, 0.0, 0.0))  // if no rotation is given R is just identity matrix
+		{
+			rotation = mat4(1.0f);
+		}
+		else
+		{
+			rotation = glm::rotate(mat4(1.0f), _parent->get_trans().theta, rot);
+		}
+
+		mat4 scale = glm::scale(mat4(1.0f), scal);
+
+		mat4 model = trans * (rotation * scale);
 
 		auto camera = static_cast<camera_component*>(_parent->get_component("camera").get());
 
@@ -66,68 +81,13 @@ void render_component::render()
 			view_proj_mat = camera_system::get()->player_cam_MV;
 		}
 
-		auto MVP = view_proj_mat * trans;
-		gl::glData *om = static_cast<gl::glData *>(_data->mesh->GpuData);
+		auto MVP = view_proj_mat * model;
+
 		
+		// create render job here
 
-		glEnable(GL_CULL_FACE);
-
-		glUseProgram(programID);
-		auto loc = glGetUniformLocation(programID, "MVP");
-		glUniformMatrix4fv(loc, 1, GL_FALSE, value_ptr(MVP));
-
-		// Bind the vertex array object for the
-		glBindVertexArray(om->vao);
-		glEnableVertexAttribArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, om->buffers[1]);
-		// Check for any OpenGL errors
-		if (gl::CHECK_GL_ERROR)
-		{
-			// Display error
-			std::cerr << "ERROR - rendering geometry" << std::endl;
-			std::cerr << "Could not bind vertex array object" << std::endl;
-			// Throw exception
-			throw std::runtime_error("Error rendering geometry");
-		}
-		// If there is an index buffer then use to render
-		if (om->has_indices)
-		{
-			// Bind index buffer
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, om->index_buffer);
-			// Check for error
-			if (gl::CHECK_GL_ERROR)
-			{
-				std::cerr << "ERROR - rendering geometry" << std::endl;
-				std::cerr << "Could not bind index buffer" << std::endl;
-				// Throw exception
-				throw std::runtime_error("Error rendering geometry");
-			}
-
-			// Draw elements
-			glDrawElements(om->type, om->indice_count, GL_UNSIGNED_INT, nullptr);
-			// Check for error
-			if (gl::CHECK_GL_ERROR)
-			{
-				// Display error
-				std::cerr << "ERROR - rendering geometry" << std::endl;
-				std::cerr << "Could not draw elements from indices" << std::endl;
-				// Throw exception
-				throw std::runtime_error("Error rendering geometry");
-			}
-		}
-		else
-		{
-			// Draw arrays
-			glDrawArrays(om->type, 0, om->vertex_count);
-			// Check for error
-			if (gl::CHECK_GL_ERROR)
-			{
-				std::cerr << "ERROR - rendering geometry" << std::endl;
-				std::cerr << "Could not draw arrays" << std::endl;
-				// Throw exception
-				throw std::runtime_error("Error rendering geometry");
-			}
-		}
+		_data->MVP = MVP;
+		
 	}
 }
 

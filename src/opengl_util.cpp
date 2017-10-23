@@ -10,6 +10,8 @@
 #include <sstream>
 #include <functional>
 #include <map>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #define CHECK_GL_ERROR CheckGL(__LINE__, __FILE__)
 
@@ -385,7 +387,7 @@ namespace gl
         return mesh;
     }
 
-    // Currently a red 500x500 plane
+    // Currently a red 100x100 plane
     mesh_geom* generate_plane()
     {
         mesh_geom *mesh = new mesh_geom();
@@ -393,11 +395,11 @@ namespace gl
         std::vector<glm::vec3> positions
         {
 			// 1
-			glm::vec3(500.0f, 0.0f, -500.0f),
-			glm::vec3(-500.0f,  0.0f, -500.0f),
-			glm::vec3(-500.0f,  0.0f, 500.0f),
+			glm::vec3(100.0f, 0.0f, -100.0f),
+			glm::vec3(-100.0f,  0.0f, -100.0f),
+			glm::vec3(-100.0f,  0.0f, 100.0f),
 			// 2
-			glm::vec3(-500.0f, 0.0f, 500.0f),
+			glm::vec3(-100.0f, 0.0f, 500.0f),
 			glm::vec3(500.0f, 0.0f, 500.0f),
 			glm::vec3(500.0f,0.0f, -500.0f)
 
@@ -441,7 +443,7 @@ namespace gl
 
 	// add more generating functions 
 
-    // Currently a blue 50x50x50 cube using triangles
+    // Currently a blue 10x10x10 cube using triangles
     mesh_geom* generate_cube()
     {
         mesh_geom *mesh = new mesh_geom();
@@ -449,58 +451,58 @@ namespace gl
         std::vector<glm::vec3> positions
         {
             // Front
-            glm::vec3(-50.0f, 50.0f, -200.0f),
-            glm::vec3(-100.0f, 50.0f, -200.0f),
-            glm::vec3(-100.0f, 0.0f, -200.0f),
+            glm::vec3(-0.5f, 0.5f, -2.0f),
+            glm::vec3(-1.0f, 0.5f, -2.0f),
+            glm::vec3(-1.0f, 0.0f, -2.0f),
 
-            glm::vec3(-100.0f, 0.0f, -200.0f),
-            glm::vec3(-50.0f, 0.0f, -200.0f),
-            glm::vec3(-50.0f, 50.0f, -200.0f),
+            glm::vec3(-1.0f, 0.0f, -2.0f),
+            glm::vec3(-0.5f, 0.0f, -2.0f),
+            glm::vec3(-0.5f, 0.5f, -2.0f),
             
             // Back
-            glm::vec3(-100.0f, 50.0f, -250.0f),
-            glm::vec3(-50.0f, 50.0f, -250.0f),
-            glm::vec3(-50.0f, 0.0f, -250.0f),
+            glm::vec3(-1.0f, 0.5f, -2.5f),
+            glm::vec3(-0.5f, 0.5f, -2.5f),
+            glm::vec3(-0.5f, 0.0f, -2.5f),
 
-            glm::vec3(-50.0f, 0.0f, -250.0f),
-            glm::vec3(-100.0f, 0.0f, -250.0f),
-            glm::vec3(-100.0f, 50.0f, -250.0f),
+            glm::vec3(-0.5f, 0.0f, -2.5f),
+            glm::vec3(-1.0f, 0.0f, -2.5f),
+            glm::vec3(-1.0f, 0.5f, -2.5f),
 
             // Right
-            glm::vec3(-50.0f, 50.0f, -250.0f),
-            glm::vec3(-50.0f, 50.0f, -200.0f),
-            glm::vec3(-50.0f, 0.0f, -200.0f),
+            glm::vec3(-0.5f, 0.5f, -2.5f),
+            glm::vec3(-0.5f, 0.5f, -2.0f),
+            glm::vec3(-0.5f, 0.0f, -2.0f),
 
-            glm::vec3(-50.0f, 0.0f, -200.0f),
-            glm::vec3(-50.0f, 0.0f, -250.0f),
-            glm::vec3(-50.0f, 50.0f, -250.0f),
+            glm::vec3(-0.5f, 0.0f, -2.0f),
+            glm::vec3(-0.5f, 0.0f, -2.5f),
+            glm::vec3(-0.5f, 0.5f, -2.5f),
 
             // Left 
-            glm::vec3(-100.0f, 50.0f, -200.0f),
-            glm::vec3(-100.0f, 50.0f, -250.0f),
-            glm::vec3(-100.0f, 0.0f, -250.0f),
+            glm::vec3(-1.0f, 0.5f, -2.0f),
+            glm::vec3(-1.0f, 0.5f, -2.5f),
+            glm::vec3(-1.0f, 0.0f, -2.5f),
 
-            glm::vec3(-100.0f, 0.0f, -250.0f),
-            glm::vec3(-100.0f, 0.0f, -200.0f),
-            glm::vec3(-100.0f, 50.0f, -200.0f),
+            glm::vec3(-1.0f, 0.0f, -2.5f),
+            glm::vec3(-1.0f, 0.0f, -2.0f),
+            glm::vec3(-1.0f, 0.5f, -2.0f),
 
             // Top
-            glm::vec3(-50.0f, 50.0f, -250.0f),
-            glm::vec3(-100.0f, 50.0f, -250.0f),
-            glm::vec3(-100.0f, 50.0f, -200.0f),
+            glm::vec3(-0.5f, 0.5f, -2.5f),
+            glm::vec3(-1.0f, 0.5f, -2.5f),
+            glm::vec3(-1.0f, 0.5f, -2.0f),
 
-            glm::vec3(-100.0f, 50.0f, -200.0f),
-            glm::vec3(-50.0f, 50.0f, -200.0f),
-            glm::vec3(-50.0f, 50.0f, -250.0f),
+            glm::vec3(-1.0f, 0.5f, -2.0f),
+            glm::vec3(-0.5f, 0.5f, -2.0f),
+            glm::vec3(-0.5f, 0.5f, -2.5f),
 
             // Bottom
-            glm::vec3(-100.0f, 0.0f, -200.0f),
-            glm::vec3(-100.0f, 0.0f, -250.0f),
-            glm::vec3(-50.0f, 0.0f, -250.0f),
+            glm::vec3(-1.0f, 0.0f, -2.0f),
+            glm::vec3(-1.0f, 0.0f, -2.5f),
+            glm::vec3(-0.5f, 0.0f, -2.5f),
  
-            glm::vec3(-50.0f, 0.0f, -250.0f),
-            glm::vec3(-50.0f, 0.0f, -200.0f),
-            glm::vec3(-100.0f, 0.0f, -200.0f)
+            glm::vec3(-0.5f, 0.0f, -2.5f),
+            glm::vec3(-0.5f, 0.0f, -2.0f),
+            glm::vec3(-1.0f, 0.0f, -2.0f)
 
         };
         // These are probably wrong
@@ -581,7 +583,7 @@ namespace gl
 	// depending on whether a file or shape has been inputted - create the mesh.
     std::shared_ptr<mesh_geom> load_mesh(std::string msh_)
     {
-        
+		auto e = glGetError();
 		mesh_geom* mesh = nullptr;
 		if (generation_functions.count(msh_))
 		{
@@ -602,7 +604,7 @@ namespace gl
         glData *om = new glData();
         mesh->GpuData = om;
         om->type = GL_TRIANGLES;
-
+		e = glGetError();
         // Add the buffers to the geometry
 
         add_buffer(*om, mesh->positions, BUFFER_INDEXES::POSITION_BUFFER);
@@ -627,11 +629,69 @@ namespace gl
         {
             om->vertex_count = mesh->positions.size();
         }
-
+		e = glGetError();
         return std::shared_ptr<mesh_geom>(mesh);
     }
 
+	void gl::render(glData *om, GLuint programID, glm::mat4 MVP)
+	{
+		auto e1 = glGetError();
+		auto loc = glGetUniformLocation(programID, "MVP");
 
+		glUniformMatrix4fv(loc, 1, GL_FALSE, value_ptr(MVP));
+		auto e3 = glGetError();
+		// Bind the vertex array object for the
+		glBindVertexArray(om->vao);
+		auto e4 = glGetError();
+		// Check for any OpenGL errors
+		if (gl::CHECK_GL_ERROR)
+		{
+			// Display error
+			std::cerr << "ERROR - rendering geometry" << std::endl;
+			std::cerr << "Could not bind vertex array object" << std::endl;
+			// Throw exception
+			throw std::runtime_error("Error rendering geometry");
+		}
+		// If there is an index buffer then use to render
+		if (om->has_indices)
+		{
+			// Bind index buffer
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, om->index_buffer);
+			// Check for error
+			if (gl::CHECK_GL_ERROR)
+			{
+				std::cerr << "ERROR - rendering geometry" << std::endl;
+				std::cerr << "Could not bind index buffer" << std::endl;
+				// Throw exception
+				throw std::runtime_error("Error rendering geometry");
+			}
+
+			// Draw elements
+			glDrawElements(om->type, om->indice_count, GL_UNSIGNED_INT, nullptr);
+			// Check for error
+			if (gl::CHECK_GL_ERROR)
+			{
+				// Display error
+				std::cerr << "ERROR - rendering geometry" << std::endl;
+				std::cerr << "Could not draw elements from indices" << std::endl;
+				// Throw exception
+				throw std::runtime_error("Error rendering geometry");
+			}
+		}
+		else
+		{
+			// Draw arrays
+			glDrawArrays(om->type, 0, om->vertex_count);
+			// Check for error
+			if (gl::CHECK_GL_ERROR)
+			{
+				std::cerr << "ERROR - rendering geometry" << std::endl;
+				std::cerr << "Could not draw arrays" << std::endl;
+				// Throw exception
+				throw std::runtime_error("Error rendering geometry");
+			}
+		}
+	}
 
 
 
