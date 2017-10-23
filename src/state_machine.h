@@ -2,7 +2,7 @@
 
 #include <unordered_map>
 #include "entity.h"
-#include "component.h"
+#include "components/component.h"
 #include "engine.h"
 #include "subsystem.h"
 #include "engine_state.h"

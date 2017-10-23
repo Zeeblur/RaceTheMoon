@@ -45,7 +45,7 @@ namespace gl
     };
 
     // Mesh struct
-    struct Mesh
+    struct mesh_geom
     {
         std::vector<glm::vec3> positions;
         glm::vec3 min;
@@ -82,9 +82,12 @@ namespace gl
 
     extern GLuint LoadShaders(char const* vertex_file_path, char const* fragment_file_path);
 
-    std::shared_ptr<Mesh> loadModel(std::string msh);
-    std::shared_ptr<Mesh> generate_rect();
-    std::shared_ptr<Mesh> generate_plane();
+    std::shared_ptr<mesh_geom> load_mesh(std::string msh);
 
-    Mesh* GetMesh(const std::string &file);
+    mesh_geom* generate_plane();
+
+	mesh_geom* generate_rect();
+    mesh_geom* get_model_mesh(const std::string &file);
+
+	void render(glData* om, GLuint programID, glm::mat4 MVP);
 }

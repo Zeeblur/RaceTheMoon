@@ -13,8 +13,10 @@ physics_system::physics_system()
 
 std::shared_ptr<physics_component> physics_system::build_component(std::shared_ptr<entity> e)
 {
-    _data.push_back(physics_data());
-    return std::make_shared<physics_component>(e, std::ref(_data.back()));
+	auto pd = std::make_shared<physics_data>(physics_data());
+
+	_data.push_back(pd);
+    return std::make_shared<physics_component>(e, pd);
 }
 
 bool physics_system::initialise()
@@ -35,41 +37,41 @@ void physics_system::update(float delta_time)
     for (auto &d : _data)
     {
         // If active physics object add 1 to each component.
-        if (d.active)
+        if (d->active)
         {
             //cap speed.
-            cap_speed(d.currentVelocity);
+            cap_speed(d->currentVelocity);
 
             // change by speed and delta-time.
-            auto movement = d.currentVelocity * delta_time;
+            auto movement = d->currentVelocity * delta_time;
 
             // movement test here....
-            d.x += movement.x;
-            d.y += movement.y;
-            d.z += movement.z;
+            d->x += movement.x;
+            d->y += movement.y;
+            d->z += movement.z;
 
-            if (!d.moveRequest)
+            if (!d->moveRequest)
             {
                 //std::cout << moveSpeed.x << ", " << moveSpeed.y << std::endl;
                 // lateral movement
-                if (d.currentVelocity.x < 0) d.currentVelocity.x += deceleration.x;
-                if (d.currentVelocity.x > 0) d.currentVelocity.x -= deceleration.x;
+                if (d->currentVelocity.x < 0) d->currentVelocity.x += deceleration.x;
+                if (d->currentVelocity.x > 0) d->currentVelocity.x -= deceleration.x;
 
                 // if speed within epsilon of zero. Reset to zero
-                if (d.currentVelocity.x > 0 && d.currentVelocity.x < deceleration.x) d.currentVelocity.x = 0;
-                if (d.currentVelocity.x < 0 && d.currentVelocity.x > -deceleration.x) d.currentVelocity.x = 0;
+                if (d->currentVelocity.x > 0 && d->currentVelocity.x < deceleration.x) d->currentVelocity.x = 0;
+                if (d->currentVelocity.x < 0 && d->currentVelocity.x > -deceleration.x) d->currentVelocity.x = 0;
 
                 // forwards movement
-                if (d.currentVelocity.z < 0) d.currentVelocity.z += deceleration.z;
-                if (d.currentVelocity.z > 0) d.currentVelocity.z -= deceleration.z;
+                if (d->currentVelocity.z < 0) d->currentVelocity.z += deceleration.z;
+                if (d->currentVelocity.z > 0) d->currentVelocity.z -= deceleration.z;
 
                 // if speed within epsilon of zero. Reset to zero
-                if (d.currentVelocity.z > 0 && d.currentVelocity.z < deceleration.z) d.currentVelocity.z = 0;
-                if (d.currentVelocity.z < 0 && d.currentVelocity.z > -deceleration.z) d.currentVelocity.z = 0;
+                if (d->currentVelocity.z > 0 && d->currentVelocity.z < deceleration.z) d->currentVelocity.z = 0;
+                if (d->currentVelocity.z < 0 && d->currentVelocity.z > -deceleration.z) d->currentVelocity.z = 0;
             }
 
             // reset move request
-            d.moveRequest = false;
+            d->moveRequest = false;
         }
     }
 }

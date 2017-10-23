@@ -27,9 +27,19 @@ public:
         return instance;
     }
 
-    std::shared_ptr<entity> create_entity(const std::string &name, state_type state)
+	std::shared_ptr<entity> get_entity(std::string name)
+	{
+		// Returns the entity of the given name
+		for (auto &entLists : _entities)
+			for (auto &e : entLists)
+				if (e.first == name)
+					return e.second;
+	}
+
+    std::shared_ptr<entity> create_entity(const std::string &name, state_type state, transform_data trans = transform_data())
     {
-        auto e = std::make_shared<entity>(name);
+        auto e = std::make_shared<entity>(name, trans);
+		e->state = state;
         _entities[state][name] = e;
         return e;
     }

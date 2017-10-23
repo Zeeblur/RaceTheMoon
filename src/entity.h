@@ -2,14 +2,20 @@
 #include <string>
 #include <unordered_map>
 #include <memory>
-#include "component.h"
+#include "components/component.h"
 #include <iostream>
+#include "engine_state.h"
+#include <glm/glm.hpp>
 
-struct transform
+struct transform_data
 {
     float x = 1.0f;
     float y = 1.0f;
     float z = 1.0f;
+
+	float theta = 0.0f;
+	glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
 };
 
 class entity
@@ -21,16 +27,18 @@ private:
     size_t _id = 0;
     std::string _name = "";
     std::unordered_map<std::string, std::shared_ptr<component>> _components;
-    transform _trans;
+	transform_data _trans;
 
 public:
-    inline entity(const std::string& name)
-        : _name(name)
-    {
-        _id = counter++;
-    }
+	// Used to keep track of which state this entity belongs to
+	state_type state = state_type::NONE;
+	inline entity(const std::string& name, transform_data trans)
+		: _name(name), _trans(trans)
+	{
+		_id = counter++;
+	}
 
-    inline transform& get_trans() { return _trans; }
+    inline transform_data& get_trans() { return _trans; }
 
     inline std::string get_name() { return _name; }
 

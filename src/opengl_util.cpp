@@ -8,8 +8,13 @@
 #include "opengl_util.h"
 #include <memory>
 #include <sstream>
+#include <functional>
+#include <map>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #define CHECK_GL_ERROR CheckGL(__LINE__, __FILE__)
+
 
 
 namespace gl
@@ -229,7 +234,7 @@ namespace gl
         return add_buffer(data, &buffer[0], 4, static_cast<GLuint>(buffer.size() * sizeof(glm::vec4)), index, buffer_type);
     }
 
-    Mesh* GetMesh(const std::string &file)
+    mesh_geom* get_model_mesh(const std::string &file)
     {
         std::string path = file;
 
@@ -258,7 +263,7 @@ namespace gl
         // TODO - mesh hierarchy?
         // TODO - bones
         // TODO - multiple colour values
-        Mesh *ret = new Mesh();
+        mesh_geom *ret = new mesh_geom();
 
         unsigned int vertex_begin = 0;
         // Iterate through each sub-mesh in the model
@@ -330,9 +335,9 @@ namespace gl
         return ret;
     }
 
-    std::shared_ptr<Mesh> generate_rect()
+    mesh_geom* generate_rect()
     {
-        Mesh *mesh = new Mesh();
+        mesh_geom *mesh = new mesh_geom();
 
         std::vector<glm::vec3> positions
         {
@@ -377,51 +382,26 @@ namespace gl
 
         mesh->positions = positions;
         mesh->tex_coords = tex_coords;
-        /*mesh->colours = colours;*/
+        mesh->colours = colours;
 
-        glData *om = new glData();
-        mesh->GpuData = om;
-        om->type = GL_TRIANGLES;
-        // Add the buffers to the geometry
-
-
-        add_buffer(*om, mesh->positions, BUFFER_INDEXES::POSITION_BUFFER);
-        if (mesh->colours.size() != 0)
-            add_buffer(*om, mesh->colours, BUFFER_INDEXES::COLOUR_BUFFER);
-        if (mesh->normals.size() != 0) {
-            add_buffer(*om, mesh->normals, BUFFER_INDEXES::NORMAL_BUFFER);
-            // generate_tb(normals);
-        }
-        if (mesh->tex_coords.size() != 0) {
-            add_buffer(*om, mesh->tex_coords, BUFFER_INDEXES::TEXTURE_COORDS_0);
-        }
-        if (mesh->indices.size() != 0) {
-            add_index_buffer(*om, mesh->indices);
-            om->has_indices = true;
-        }
-        else
-        {
-            om->vertex_count = mesh->positions.size();
-        }
-
-
-        return std::shared_ptr<Mesh>(mesh);
+        return mesh;
     }
 
-    std::shared_ptr<Mesh> generate_plane()
+    // Currently a red 100x100 plane
+    mesh_geom* generate_plane()
     {
-        Mesh *mesh = new Mesh();
+        mesh_geom *mesh = new mesh_geom();
 
         std::vector<glm::vec3> positions
         {
-            // 1
-            glm::vec3(-100.0f, 100.0f, 100.0f),
-            glm::vec3(-100.0f, -100.0f, -100.0f),
-            glm::vec3(100.0f, -100.0f, -100.0f),
-            // 2
-            glm::vec3(100.0f, -100.0f, -100.0f),
-            glm::vec3(100.0f, 100.0f, 100.0f),
-            glm::vec3(-100.0f, 100.0f, 100.0f)
+			// 1
+			glm::vec3(100.0f, 0.0f, -100.0f),
+			glm::vec3(-100.0f,  0.0f, -100.0f),
+			glm::vec3(-100.0f,  0.0f, 100.0f),
+			// 2
+			glm::vec3(-100.0f, 0.0f, 100.0f),
+			glm::vec3(100.0f, 0.0f, 100.0f),
+			glm::vec3(100.0f,0.0f, -100.0f)
 
         };
         // These are probably wrong
@@ -439,11 +419,11 @@ namespace gl
         std::vector<glm::vec4> colours
         {
             glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),
-            glm::vec4(0.0f, 0.0f, 0.0f, 1.0f),
-            glm::vec4(0.0f, 0.0f, 0.0f, 1.0f),
-            glm::vec4(0.0f, 0.0f, 0.0f, 1.0f),
-            glm::vec4(0.0f, 0.0f, 0.0f, 1.0f),
-            glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)
+            glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),
+            glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),
+            glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),
+            glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),
+            glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),
         };
 
         //// Calculate the minimal and maximal
@@ -456,68 +436,192 @@ namespace gl
 
         mesh->positions = positions;
         mesh->tex_coords = tex_coords;
-        /*mesh->colours = colours;*/
+        mesh->colours = colours;
 
-        glData *om = new glData();
-        mesh->GpuData = om;
-        om->type = GL_TRIANGLES;
-        // Add the buffers to the geometry
-
-
-        add_buffer(*om, mesh->positions, BUFFER_INDEXES::POSITION_BUFFER);
-        if (mesh->colours.size() != 0)
-            add_buffer(*om, mesh->colours, BUFFER_INDEXES::COLOUR_BUFFER);
-        if (mesh->normals.size() != 0) {
-            add_buffer(*om, mesh->normals, BUFFER_INDEXES::NORMAL_BUFFER);
-            // generate_tb(normals);
-        }
-        if (mesh->tex_coords.size() != 0) {
-            add_buffer(*om, mesh->tex_coords, BUFFER_INDEXES::TEXTURE_COORDS_0);
-        }
-        if (mesh->indices.size() != 0) {
-            add_index_buffer(*om, mesh->indices);
-            om->has_indices = true;
-        }
-        else
-        {
-            om->vertex_count = mesh->positions.size();
-        }
-
-
-        return std::shared_ptr<Mesh>(mesh);
+		return mesh;
     }
 
-    std::shared_ptr<Mesh> loadModel(std::string msh)
+	// add more generating functions 
+
+    // Currently a blue 10x10x10 cube using triangles
+    mesh_geom* generate_cube()
     {
-        // load model here
-        auto mesh = GetMesh(msh);
+        mesh_geom *mesh = new mesh_geom();
 
+        std::vector<glm::vec3> positions
+        {
+            // Front
+            glm::vec3(-0.5f, 0.5f, -2.0f),
+            glm::vec3(-1.0f, 0.5f, -2.0f),
+            glm::vec3(-1.0f, 0.0f, -2.0f),
 
+            glm::vec3(-1.0f, 0.0f, -2.0f),
+            glm::vec3(-0.5f, 0.0f, -2.0f),
+            glm::vec3(-0.5f, 0.5f, -2.0f),
+            
+            // Back
+            glm::vec3(-1.0f, 0.5f, -2.5f),
+            glm::vec3(-0.5f, 0.5f, -2.5f),
+            glm::vec3(-0.5f, 0.0f, -2.5f),
+
+            glm::vec3(-0.5f, 0.0f, -2.5f),
+            glm::vec3(-1.0f, 0.0f, -2.5f),
+            glm::vec3(-1.0f, 0.5f, -2.5f),
+
+            // Right
+            glm::vec3(-0.5f, 0.5f, -2.5f),
+            glm::vec3(-0.5f, 0.5f, -2.0f),
+            glm::vec3(-0.5f, 0.0f, -2.0f),
+
+            glm::vec3(-0.5f, 0.0f, -2.0f),
+            glm::vec3(-0.5f, 0.0f, -2.5f),
+            glm::vec3(-0.5f, 0.5f, -2.5f),
+
+            // Left 
+            glm::vec3(-1.0f, 0.5f, -2.0f),
+            glm::vec3(-1.0f, 0.5f, -2.5f),
+            glm::vec3(-1.0f, 0.0f, -2.5f),
+
+            glm::vec3(-1.0f, 0.0f, -2.5f),
+            glm::vec3(-1.0f, 0.0f, -2.0f),
+            glm::vec3(-1.0f, 0.5f, -2.0f),
+
+            // Top
+            glm::vec3(-0.5f, 0.5f, -2.5f),
+            glm::vec3(-1.0f, 0.5f, -2.5f),
+            glm::vec3(-1.0f, 0.5f, -2.0f),
+
+            glm::vec3(-1.0f, 0.5f, -2.0f),
+            glm::vec3(-0.5f, 0.5f, -2.0f),
+            glm::vec3(-0.5f, 0.5f, -2.5f),
+
+            // Bottom
+            glm::vec3(-1.0f, 0.0f, -2.0f),
+            glm::vec3(-1.0f, 0.0f, -2.5f),
+            glm::vec3(-0.5f, 0.0f, -2.5f),
+ 
+            glm::vec3(-0.5f, 0.0f, -2.5f),
+            glm::vec3(-0.5f, 0.0f, -2.0f),
+            glm::vec3(-1.0f, 0.0f, -2.0f)
+
+        };
+        // These are probably wrong
+        std::vector<glm::vec2> tex_coords
+        {
+            glm::vec2(0.5, 1),
+            glm::vec2(0, 0),
+            glm::vec2(1, 0),
+            glm::vec2(1, 0),
+            glm::vec2(0, 0),
+            glm::vec2(0.5, 1)
+        };
+
+        // Colours
+        std::vector<glm::vec4> colours
+        {
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f)
+        };
+
+        //// Calculate the minimal and maximal
+        //mesh->min = mesh->positions[0];
+        //mesh->max = mesh->positions[0];
+        //for (auto &v : mesh->positions) {
+        //	mesh->min = glm::min(mesh->min, v);
+        //	mesh->max = glm::max(mesh->max, v);
+        //}
+
+        mesh->positions = positions;
+        mesh->tex_coords = tex_coords;
+        mesh->colours = colours;
+
+        return mesh;
+    }
+
+	// map of functions for different shapes
+	std::map<std::string, std::function<mesh_geom*()>> generation_functions =
+    {
+        { "rectangle", generate_rect },
+        { "plane", generate_plane },
+        { "cube", generate_cube },
+	};
+
+	// depending on whether a file or shape has been inputted - create the mesh.
+    std::shared_ptr<mesh_geom> load_mesh(std::string msh_)
+    {
+		auto e = glGetError();
+		mesh_geom* mesh = nullptr;
+		if (generation_functions.count(msh_))
+		{
+			mesh = generation_functions[msh_]();
+		}
+		else if (msh_.size() > 0)
+		{
+			mesh = get_model_mesh(msh_);
+		}
+		else
+		{
+			std::cerr << "ERROR - empty string" << std::endl;
+			throw std::runtime_error("Error loading mesh");
+			return nullptr;
+		}
+		
+		// create buffer objects 
         glData *om = new glData();
         mesh->GpuData = om;
         om->type = GL_TRIANGLES;
+		e = glGetError();
         // Add the buffers to the geometry
-
-    /*	mesh->positions.clear();
-
-        mesh->positions.push_back(glm::vec3(-1.0, -1.0f, 0.0));
-        mesh->positions.push_back(glm::vec3(1.0, -1.0f, 0.0));
-        mesh->positions.push_back(glm::vec3(0.0, 1.0f, 0.0));*/
-
 
         add_buffer(*om, mesh->positions, BUFFER_INDEXES::POSITION_BUFFER);
 
-        //add_buffer(*om, mesh->positions, BUFFER_INDEXES::POSITION_BUFFER);
         if (mesh->colours.size() != 0)
             add_buffer(*om, mesh->colours, BUFFER_INDEXES::COLOUR_BUFFER);
-        if (mesh->normals.size() != 0) {
+        if (mesh->normals.size() != 0)
+		{
             add_buffer(*om, mesh->normals, BUFFER_INDEXES::NORMAL_BUFFER);
             // generate_tb(normals);
         }
-        if (mesh->tex_coords.size() != 0) {
+        if (mesh->tex_coords.size() != 0) 
             add_buffer(*om, mesh->tex_coords, BUFFER_INDEXES::TEXTURE_COORDS_0);
-        }
-        if (mesh->indices.size() != 0) {
+        
+
+        if (mesh->indices.size() != 0)
+		{
             add_index_buffer(*om, mesh->indices);
             om->has_indices = true;
         }
@@ -525,12 +629,69 @@ namespace gl
         {
             om->vertex_count = mesh->positions.size();
         }
-
-
-        return std::shared_ptr<Mesh>(mesh);
+		e = glGetError();
+        return std::shared_ptr<mesh_geom>(mesh);
     }
 
+	void gl::render(glData *om, GLuint programID, glm::mat4 MVP)
+	{
+		auto e1 = glGetError();
+		auto loc = glGetUniformLocation(programID, "MVP");
 
+		glUniformMatrix4fv(loc, 1, GL_FALSE, value_ptr(MVP));
+		auto e3 = glGetError();
+		// Bind the vertex array object for the
+		glBindVertexArray(om->vao);
+		auto e4 = glGetError();
+		// Check for any OpenGL errors
+		if (gl::CHECK_GL_ERROR)
+		{
+			// Display error
+			std::cerr << "ERROR - rendering geometry" << std::endl;
+			std::cerr << "Could not bind vertex array object" << std::endl;
+			// Throw exception
+			throw std::runtime_error("Error rendering geometry");
+		}
+		// If there is an index buffer then use to render
+		if (om->has_indices)
+		{
+			// Bind index buffer
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, om->index_buffer);
+			// Check for error
+			if (gl::CHECK_GL_ERROR)
+			{
+				std::cerr << "ERROR - rendering geometry" << std::endl;
+				std::cerr << "Could not bind index buffer" << std::endl;
+				// Throw exception
+				throw std::runtime_error("Error rendering geometry");
+			}
+
+			// Draw elements
+			glDrawElements(om->type, om->indice_count, GL_UNSIGNED_INT, nullptr);
+			// Check for error
+			if (gl::CHECK_GL_ERROR)
+			{
+				// Display error
+				std::cerr << "ERROR - rendering geometry" << std::endl;
+				std::cerr << "Could not draw elements from indices" << std::endl;
+				// Throw exception
+				throw std::runtime_error("Error rendering geometry");
+			}
+		}
+		else
+		{
+			// Draw arrays
+			glDrawArrays(om->type, 0, om->vertex_count);
+			// Check for error
+			if (gl::CHECK_GL_ERROR)
+			{
+				std::cerr << "ERROR - rendering geometry" << std::endl;
+				std::cerr << "Could not draw arrays" << std::endl;
+				// Throw exception
+				throw std::runtime_error("Error rendering geometry");
+			}
+		}
+	}
 
 
 

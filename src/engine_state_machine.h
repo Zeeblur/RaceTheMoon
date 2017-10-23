@@ -1,5 +1,5 @@
 #include <unordered_map>
-#include "component.h"
+#include "components/component.h"
 #include "engine.h"
 #include "subsystem.h"
 #include "engine_state.h"
