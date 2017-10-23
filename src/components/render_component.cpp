@@ -73,7 +73,7 @@ void render_component::render()
 		if (camera != nullptr)
 		{
 			view_proj_mat = camera->get_projection() * camera->get_view();
-			view_proj_mat = glm::ortho(-0.5f * (float)width, 0.5f * (float)width, -0.5f * (float)height, 0.5f * (float)height, -1000.0f, 1000.0f) * glm::lookAt(glm::vec3(100.0f), glm::vec3(), glm::vec3(0, 1.0f, 0));
+		//view_proj_mat = glm::ortho(-0.5f * (float)width, 0.5f * (float)width, -0.5f * (float)height, 0.5f * (float)height, -1000.0f, 1000.0f);
 
 		}
 		else
@@ -87,6 +87,8 @@ void render_component::render()
 		// create render job here
 
 		_data->MVP = MVP;
+
+		renderer::get()->_dataList.push_back(_data);
 		
 	}
 }

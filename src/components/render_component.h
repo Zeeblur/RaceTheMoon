@@ -24,7 +24,7 @@ enum effect
 
 struct render_data
 {
-	bool visible = true;
+	bool visible;// = true;
 	// Let's pretend this is a matrix that was built.
 	std::string colour;// = "Red";
 	std::string shader;// = "Phong";

@@ -38,9 +38,8 @@ void camera_component::set_projection_view(std::shared_ptr<camera_projection> da
 		_view = glm::lookAt(_position, _target, _up);
 		break;
 	case ORTHO:
-		_projection = glm::ortho(_data->left, _data->left*-1.0f, _data->bottom, _data->bottom * -1.0f, _data->near, _data->far);
-		_view = glm::lookAt(_position, glm::vec3(), glm::vec3(0, 1.0f, 0));
-		
+		_projection = glm::ortho(_data->left, _data->left*-1.0f, _data->bottom, _data->bottom * -1.0f, _data->near, _data->far);		
+		_data->model_view = _projection;
 		break;
 	}
 

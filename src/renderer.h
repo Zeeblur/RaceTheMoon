@@ -8,8 +8,6 @@
 class renderer : public subsystem
 {
 private:
-    std::vector<std::shared_ptr<render_component>> _components;
-
     renderer();
 
 	GLuint vertexbuffer;

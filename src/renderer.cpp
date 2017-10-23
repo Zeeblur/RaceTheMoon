@@ -23,8 +23,7 @@ std::shared_ptr<render_component> renderer::build_component(std::shared_ptr<enti
     _rd->shader = shader;
     _rd->mesh = gl::load_mesh(shape);
 	
-	_dataList.push_back(_rd);
-	return std::make_shared<render_component>(e, std::ref(_dataList.back()));
+	return std::make_shared<render_component>(e, _rd);
 }
 
 bool renderer::initialise()
@@ -50,6 +49,7 @@ void renderer::update(float delta_time)
 
 void renderer::render()
 {
+
 	glfwMakeContextCurrent(glfw::window);
 	auto e = glGetError();
 	int x_size = 0;
@@ -74,9 +74,6 @@ void renderer::render()
 
 	for (auto &r : _dataList)
 	{
-		if (!r->visible)
-			continue;
-
 		gl::glData* geom = static_cast<gl::glData *>(r->mesh->GpuData);
 		gl::render(geom, programID, r->MVP);
 	}
@@ -84,7 +81,7 @@ void renderer::render()
 	glfwPollEvents();
 
     glfwSwapBuffers(glfw::window);
-
+	_dataList.clear();
 }
 
 void renderer::unload_content()

@@ -382,7 +382,7 @@ namespace gl
 
         mesh->positions = positions;
         mesh->tex_coords = tex_coords;
-        /*mesh->colours = colours;*/
+        mesh->colours = colours;
 
         return mesh;
     }
@@ -399,9 +399,9 @@ namespace gl
 			glm::vec3(-100.0f,  0.0f, -100.0f),
 			glm::vec3(-100.0f,  0.0f, 100.0f),
 			// 2
-			glm::vec3(-100.0f, 0.0f, 500.0f),
-			glm::vec3(500.0f, 0.0f, 500.0f),
-			glm::vec3(500.0f,0.0f, -500.0f)
+			glm::vec3(-100.0f, 0.0f, 100.0f),
+			glm::vec3(100.0f, 0.0f, 100.0f),
+			glm::vec3(100.0f,0.0f, -100.0f)
 
         };
         // These are probably wrong

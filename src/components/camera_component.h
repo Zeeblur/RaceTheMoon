@@ -42,7 +42,7 @@ private:
 
 	std::shared_ptr<entity> _parent;
 
-	glm::vec3 _position = glm::vec3(00.0, 0.0, 10.0f);
+	glm::vec3 _position = glm::vec3(0.0, 0.0, -10.0f);
 	glm::vec3 _target = glm::vec3(0.f, 0.f, 0.0f);
 	glm::vec3 _up = glm::vec3(0.f, 1.f, 0.f);
 
@@ -54,7 +54,7 @@ private:
 
 
 	// The offset of the camera from its desired position
-	glm::vec3 _pos_offset = glm::vec3(100.f);
+	glm::vec3 _pos_offset = glm::vec3(200.f);
 
 	// The offset of the camera relative to the target
 	glm::vec3 _target_offset;
