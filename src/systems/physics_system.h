@@ -11,7 +11,7 @@
 class physics_system : public subsystem
 {
 private:
-    std::vector<physics_data> _data;
+    std::vector<std::shared_ptr<physics_data>> _data;
 
     physics_system();
 

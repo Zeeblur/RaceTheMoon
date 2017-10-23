@@ -24,14 +24,14 @@ struct physics_component : public component
 private:
     // We'll just keep a reference here.  The physics system
     // will maintain the actual data.
-    physics_data &_data;
+    std::shared_ptr<physics_data> _data;
 
     // We'll also keep a reference to the parent entity
     std::shared_ptr<entity> _parent;
 
     glm::vec3 acceleration = glm::vec3(0.2f);
 public:
-    physics_component(std::shared_ptr<entity> &e, physics_data &data);
+    physics_component(std::shared_ptr<entity> &e, std::shared_ptr<physics_data> &data);
 
     bool initialise() override final;
 
