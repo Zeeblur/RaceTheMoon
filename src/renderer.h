@@ -8,10 +8,8 @@
 class renderer : public subsystem
 {
 private:
+	std::map<effectType, std::shared_ptr<Effect>> programIDs;
     renderer();
-
-	GLuint vertexbuffer;
-
 public:
 
     inline static std::shared_ptr<renderer> get()
@@ -20,7 +18,7 @@ public:
         return instance;
     }
 
-    std::shared_ptr<render_component> build_component(std::shared_ptr<entity> &e, std::string colour, std::string shape, std::string shader, effect effType);
+    std::shared_ptr<render_component> build_component(std::shared_ptr<entity> &e, std::string colour, std::string shape, std::string shader, effectType effType);
 
     bool initialise();
 
@@ -33,8 +31,6 @@ public:
     void unload_content();
 
 	void shutdown();
-
-    GLuint programID;
 
 	std::vector<std::shared_ptr<render_data>> _dataList;
 

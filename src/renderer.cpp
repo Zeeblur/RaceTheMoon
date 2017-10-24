@@ -13,9 +13,15 @@ using namespace glm;
 renderer::renderer()
 {
     _active = false; 
+	programIDs[simple] = std::make_shared<Effect>();
+	programIDs[phong] = std::make_shared<Effect>();
+
+	programIDs[simple]->program = gl::LoadShaders("res/shaders/simple.vert", "res/shaders/simple.frag");
+	programIDs[phong]->program = gl::LoadShaders("res/shaders/phong.vert", "res/shaders/phong.frag");
+
 }
 
-std::shared_ptr<render_component> renderer::build_component(std::shared_ptr<entity> &e, std::string colour, std::string shape, std::string shader, effect effType)
+std::shared_ptr<render_component> renderer::build_component(std::shared_ptr<entity> &e, std::string colour, std::string shape, std::string shader, effectType effType)
 {
     auto _rd = std::make_shared<render_data>();
     _rd->colour = colour;
@@ -23,14 +29,16 @@ std::shared_ptr<render_component> renderer::build_component(std::shared_ptr<enti
     _rd->shader = shader;
     _rd->mesh = gl::load_mesh(shape);
 	
+	_rd->effect = programIDs[effType];
+
 	return std::make_shared<render_component>(e, _rd);
 }
 
 bool renderer::initialise()
 {
     std::cout << "Renderer initialising" << std::endl;
-	programID = gl::LoadShaders("res/shaders/simple.vert", "res/shaders/simple.frag");
-    return true;
+
+	return true;
 }
 
 bool renderer::load_content()
@@ -68,14 +76,18 @@ void renderer::render()
 
 	glEnable(GL_CULL_FACE);
 
+	// TODO: here can order data by shader then render.
 	
-	glUseProgram(programID);
+	//glUseProgram(programIDs[simple].program);
 	auto err2 = glGetError();
 
 	for (auto &r : _dataList)
 	{
+		auto effect = r->effect->program;
+		glUseProgram(effect);
+
 		gl::glData* geom = static_cast<gl::glData *>(r->mesh->GpuData);
-		gl::render(geom, programID, r->MVP);
+		gl::render(geom, effect, r->MVP);
 	}
 
 	glfwPollEvents();

@@ -14,11 +14,13 @@ struct Effect
 	bool has_geometry;
 	bool is_compute;
 	void *GpuData;
+	GLuint program;
 };
 
-enum effect
+enum effectType
 {
-	simple
+	simple,
+	phong
 };
 
 
@@ -29,10 +31,10 @@ struct render_data
 	std::string colour;// = "Red";
 	std::string shader;// = "Phong";
 
-	glm::mat4 MVP;
+	glm::mat4 MVP; 
 
 	// Reference to structs
-	Effect* effect;
+	std::shared_ptr<Effect> effect;
 
 	// shape is now mesh
 	std::shared_ptr<gl::mesh_geom> mesh;
