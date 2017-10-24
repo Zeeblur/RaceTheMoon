@@ -79,11 +79,3 @@ void camera_component::update(float delta_time)
 
 	_data->model_view = _projection * _view;
 }
-
-void camera_component::move(const glm::vec3 &translation)
-{
-	// Just add translation vector to current translation
-	//_translation += translation;
-
-
-}

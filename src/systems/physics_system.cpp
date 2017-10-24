@@ -13,7 +13,7 @@ physics_system::physics_system()
 
 std::shared_ptr<physics_component> physics_system::build_component(std::shared_ptr<entity> e)
 {
-	auto pd = std::make_shared<physics_data>(physics_data());
+	auto pd = std::make_shared<physics_data>(physics_data(e->get_trans()));
 
 	_data.push_back(pd);
     return std::make_shared<physics_component>(e, pd);

@@ -64,6 +64,7 @@ int main()
     c->add_component("render", renderer::get()->build_component(c, "Green", "cube", "Gouraud", simple));
 
 	transform_data batTrans;
+	batTrans.y = 5.0f;
 	batTrans.scale = glm::vec3(1.0f, 1.0f, 1.0f);
 
     // Bat entity

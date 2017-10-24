@@ -50,6 +50,12 @@ add_subdirectory(${glm_SOURCE_DIR} ${glm_BINARY_DIR})
 include_directories("${glm_SOURCE_DIR}")
 
 
+set(PNG_BUILD_ZLIB ON CACHE BOOL "" FORCE)
+set(PNG_TESTS OFF CACHE BOOL "" FORCE)
+set(PNG_STATIC OFF CACHE BOOL "" FORCE)
+set(SKIP_INSTALL_ALL ON CACHE BOOL "" FORCE)
+
+
 #---------------- ASSIMP
 set(ASSIMP_NO_EXPORT ON CACHE BOOL "" FORCE)
 
@@ -112,68 +118,17 @@ include_directories("${assimp_SOURCE_DIR}/include")
 
 #---------------- ASSIMP
 
-# #get zlib
-# download_project(PROJ zlib
-  # GIT_REPOSITORY	  https://github.com/madler/zlib.git
-  # ${UPDATE_DISCONNECTED_IF_AVAILABLE}
-# )
+#get freeimage
+download_project(PROJ FreeImage
+ GIT_REPOSITORY	  https://github.com/Kanma/FreeImage.git
+ ${UPDATE_DISCONNECTED_IF_AVAILABLE}
+)
 
-# add_subdirectory(${zlib_SOURCE_DIR} ${zlib_BINARY_DIR})
-# include_directories("${zlib_SOURCE_DIR}")
-
-# # TODO: fix this
-# set(ZLIB_INCLUDE_DIR ${ZLIB_INCLUDE_DIR} ${zlib_BINARY_DIR})
-# set(ZLIB_LIBRARY ${ZLIB_LIBRARY} ${zlib_SOURCE_DIR})
-
-# #get libpng
-# download_project(PROJ libpng
-  # GIT_REPOSITORY	  https://github.com/glennrp/libpng.git
-  # ${UPDATE_DISCONNECTED_IF_AVAILABLE}
-# )
-# add_subdirectory(${libpng_SOURCE_DIR} ${libpng_BINARY_DIR})
-# include_directories("${zlib_SOURCE_DIR}")
-
-# # TODO: fix this
-# set(PNG_INCLUDE_DIR ${PNG_INCLUDE_DIR} ${libpng_BINARY_DIR})
-# set(PNG_LIBRARY ${PNG_LIBRARY} ${libpng_SOURCE_DIR})
-
-# #get libjpeg
-
-# download_project(PROJ libjpeg
-  # GIT_REPOSITORY	  https://github.com/LuaDist/libjpeg.git
-  # ${UPDATE_DISCONNECTED_IF_AVAILABLE}
-# )
-# add_subdirectory(${libjpeg_SOURCE_DIR} ${libjpeg_BINARY_DIR})
-# include_directories("${libjpeg_SOURCE_DIR}")
-
-# # TODO: fix this
-# set(JPEG_INCLUDE_DIR ${JPEG_INCLUDE_DIR} ${libjpeg_BINARY_DIR})
-# set(JPEG_LIBRARY ${JPEG_LIBRARY} ${libjpeg_SOURCE_DIR})
-
-# #freeimage options
-# option(ENABLE_TIFF "" OFF)
-# option(ENABLE_WEBP "" OFF)
-# option(ENABLE_RAW "" OFF)
-# option(ENABLE_OPENJP "" OFF)
-# option(FREEIMAGE_BUILD_STATIC "" OFF)
-# option(FREEIMAGE_BUILD_DLL "" ON)
-
-# #get freeimage
-# download_project(PROJ FreeImage
-  # GIT_REPOSITORY	  https://github.com/imazen/freeimage.git
-  # ${UPDATE_DISCONNECTED_IF_AVAILABLE}
-# )
-
-
-
-# add_subdirectory(${FreeImage_SOURCE_DIR} ${FreeImage_BINARY_DIR})
-# include_directories("${FreeImage_SOURCE_DIR}/Source")
+add_subdirectory(${FreeImage_SOURCE_DIR} ${FreeImage_BINARY_DIR})
+include_directories("${FreeImage_SOURCE_DIR}/include")
 
 set(assets
-  #FreeImage
-  #zlib
-  #libjpeg
-  #libpng
+  freeimage
   assimp)
 
 find_package(OpenGL REQUIRED)
@@ -202,13 +157,12 @@ elseif()
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 # Add all files from a src folder
-file(GLOB_RECURSE SOURCES src/*.cpp src/*.h)
+file(GLOB_RECURSE SOURCES src/*.cpp src/*.h src/components/*.cpp src/components/*.h src/systems/*.cpp src/systems/*.h)
 
 # Add all shaders
 file(GLOB_RECURSE SHADER_FILES res/shaders/*.vert res/shaders/*.frag res/shaders/*.geom res/shaders/*.comp)
 
-add_executable(RaceTheMoon ${SOURCES} src/main.cpp src/glfw.h src/systems/input_handler.cpp src/components/input_component.cpp src/components/physics_component.cpp src/components/physics_component.h src/components/input_component.h src/systems/physics_system.cpp src/components/Command.cpp src/components/Command.h)
-
+add_executable(RaceTheMoon ${SOURCES}) 
 
 # add the shaderrrrrrrrrs!
 add_custom_command(TARGET RaceTheMoon POST_BUILD

@@ -9,9 +9,9 @@
 
 struct transform_data
 {
-    float x = 1.0f;
-    float y = 1.0f;
-    float z = 1.0f;
+    float x = 0.0f;
+    float y = 0.0f;
+    float z = 0.0f;
 
 	float theta = 0.0f;
 	glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f);

@@ -80,9 +80,6 @@ public:
 
 	void set_projection_view(std::shared_ptr<camera_projection> data);
 
-	// Moves the camera
-	void move(const glm::vec3 &translation);
-
 	glm::mat4 get_projection() const { return _projection; }
 	glm::mat4 get_view() const { return _view; }
 };
