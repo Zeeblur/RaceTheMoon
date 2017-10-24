@@ -64,7 +64,7 @@ int main()
     c->add_component("render", renderer::get()->build_component(c, "Green", "cube", "Gouraud", simple));
 
 	transform_data batTrans;
-	batTrans.scale = glm::vec3(10.0f, 10.0f, 10.0f);
+	batTrans.scale = glm::vec3(1.0f, 1.0f, 1.0f);
 
     // Bat entity
     auto e = entity_manager::get()->create_entity("Bat", state_type::GAME, batTrans);
