@@ -18,6 +18,21 @@
 
 namespace gl
 {
+
+	struct light_data
+	{
+		// Ambient intensity of the light
+		glm::vec4 _ambient = glm::vec4(0.7f, 0.7f, 0.7f, 1.0f);
+		// The colour of the light
+		glm::vec4 _colour = glm::vec4(0.9f, 0.9f, 0.9f, 1.0f);
+		// The direction the light is facing
+		glm::vec3 _direction = glm::vec3(1.0f, 0.0f, 0.0f);
+
+		// pos
+		glm::vec3 _position = glm::vec3(0.0, 0.0, 0.0f);
+	};
+
+
     enum BUFFER_INDEXES
     {
         // The position data
@@ -57,6 +72,36 @@ namespace gl
         void *GpuData;
     };
 
+	// Effect struct
+	struct Effect
+	{
+		std::string name;
+		bool has_geometry;
+		bool is_compute;
+		void *GpuData;
+		GLuint program;
+
+		std::vector<light_data> lights;
+	};
+
+	struct render_data
+	{
+		bool visible;// = true;
+					 // Let's pretend this is a matrix that was built.
+		std::string colour;// = "Red";
+		std::string shader;// = "Phong";
+
+		glm::mat4 M;
+		glm::mat3 N;
+		glm::mat4 MVP;
+
+		// Reference to structs
+		std::shared_ptr<gl::Effect> effect;
+
+		// shape is now mesh
+		std::shared_ptr<gl::mesh_geom> mesh;
+	};
+
     // store vao/vbos for obj
     struct glData
     {
@@ -89,5 +134,7 @@ namespace gl
 	mesh_geom* generate_rect();
     mesh_geom* get_model_mesh(const std::string &file);
 
-	void render(glData* om, GLuint programID, glm::mat4 MVP);
+	void bind_light(GLuint programID, light_data light);
+
+	void render(std::shared_ptr<render_data> rd);
 }

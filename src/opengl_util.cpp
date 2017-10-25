@@ -16,7 +16,6 @@
 #define CHECK_GL_ERROR CheckGL(__LINE__, __FILE__)
 
 
-
 namespace gl
 {
     // macro for gl check for error and println
@@ -633,12 +632,57 @@ namespace gl
         return std::shared_ptr<mesh_geom>(mesh);
     }
 
-	void gl::render(glData *om, GLuint programID, glm::mat4 MVP)
+	void gl::bind_light(GLuint programID, light_data light)
 	{
-		auto e1 = glGetError();
-		auto loc = glGetUniformLocation(programID, "MVP");
+		// Check for ambient intensity
+		auto idx = glGetUniformLocation(programID, "directional_light.ambient_intensity");
+		if (idx != -1)
+			glUniform4fv(idx, 1, glm::value_ptr(light._ambient));
+		// Check for light colour
+		idx = glGetUniformLocation(programID, "directional_light.light_colour");
+		if (idx != -1)
+			glUniform4fv(idx, 1, glm::value_ptr(light._colour));
+		// Check for light direction
+		idx = glGetUniformLocation(programID, "directional_light.light_dir");
+		if (idx != -1)
+			glUniform3fv(idx, 1, glm::value_ptr(light._direction));
+		// Check for error
+		if (CHECK_GL_ERROR)
+		{
+			std::cerr << "ERROR - binding directional light to renderer" << std::endl;
+			std::cerr << "OpenGL could not set the uniforms" << std::endl;
+			// Throw exception
+			throw std::runtime_error("Error using directional light with renderer");
+		}
+	}
 
-		glUniformMatrix4fv(loc, 1, GL_FALSE, value_ptr(MVP));
+	void gl::render(std::shared_ptr<render_data> rd)
+	{
+		auto programID = rd->effect->program;
+		glUseProgram(programID);
+
+		gl::glData* om = static_cast<gl::glData *>(rd->mesh->GpuData);
+
+		auto e1 = glGetError();
+
+		// bind the lights
+		for(auto &light : rd->effect->lights)
+			bind_light(programID, light);
+
+		// bind the matrices
+
+		auto loc = glGetUniformLocation(programID, "MVP");
+		if (loc != -1)
+			glUniformMatrix4fv(loc, 1, GL_FALSE, value_ptr(rd->MVP));
+
+		loc = glGetUniformLocation(programID, "M");
+		if (loc != -1)
+			glUniformMatrix4fv(loc, 1, GL_FALSE, value_ptr(rd->M));
+
+		loc = glGetUniformLocation(programID, "N");
+		if (loc != -1)
+			glUniformMatrix3fv(loc, 1, GL_FALSE, value_ptr(rd->N));
+
 		auto e3 = glGetError();
 		// Bind the vertex array object for the
 		glBindVertexArray(om->vao);

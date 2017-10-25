@@ -13,17 +13,19 @@ using namespace glm;
 renderer::renderer()
 {
     _active = false; 
-	programIDs[simple] = std::make_shared<Effect>();
-	programIDs[phong] = std::make_shared<Effect>();
+	programIDs[simple] = std::make_shared<gl::Effect>();
+	programIDs[phong] = std::make_shared<gl::Effect>();
 
 	programIDs[simple]->program = gl::LoadShaders("res/shaders/simple.vert", "res/shaders/simple.frag");
 	programIDs[phong]->program = gl::LoadShaders("res/shaders/phong.vert", "res/shaders/phong.frag");
 
+	// TODO add lights to effect
+	//programIDs[phong]->lights = 
 }
 
 std::shared_ptr<render_component> renderer::build_component(std::shared_ptr<entity> &e, std::string colour, std::string shape, std::string shader, effectType effType)
 {
-    auto _rd = std::make_shared<render_data>();
+    auto _rd = std::make_shared<gl::render_data>();
     _rd->colour = colour;
 
     _rd->shader = shader;
@@ -54,10 +56,15 @@ void renderer::update(float delta_time)
 
 }
 
+std::shared_ptr<light_component> renderer::build_light(std::shared_ptr<entity> &e)
+{
+	auto _ld = std::make_shared<gl::light_data>();
+
+	return std::make_shared<light_component>(e, _ld);
+}
 
 void renderer::render()
 {
-
 	glfwMakeContextCurrent(glfw::window);
 	auto e = glGetError();
 	int x_size = 0;
@@ -78,16 +85,12 @@ void renderer::render()
 
 	// TODO: here can order data by shader then render.
 	
-	//glUseProgram(programIDs[simple].program);
 	auto err2 = glGetError();
 
 	for (auto &r : _dataList)
 	{
-		auto effect = r->effect->program;
-		glUseProgram(effect);
-
-		gl::glData* geom = static_cast<gl::glData *>(r->mesh->GpuData);
-		gl::render(geom, effect, r->MVP);
+		// bind effect
+		gl::render(r);
 	}
 
 	glfwPollEvents();

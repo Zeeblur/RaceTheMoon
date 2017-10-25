@@ -48,7 +48,8 @@ int main()
     engine_state_machine::get()->change_state("game_state");
 
 	// can add a transformation in using struct now
-
+	auto light = entity_manager::get()->create_entity("Light", state_type::GAME);
+	light->add_component("light", renderer::get()->build_light(light));
 
     // Adding plane
 	auto p = entity_manager::get()->create_entity("Plane", state_type::GAME);

@@ -12,11 +12,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
 #include "../glfw.h"
-
-struct light_data
-{
-
-};
+#include "../opengl_util.h"
 
 class light_component : public component
 {
@@ -24,10 +20,13 @@ class light_component : public component
 private:
 	std::shared_ptr<entity> _parent;
 
-	glm::vec3 _position = glm::vec3(0.0, 0.0, 0.0f);
+	std::shared_ptr<gl::light_data> _light;
+
+	glm::vec3 _position;
+	glm::vec3 _direction;
 
 public:
-	light_component(std::shared_ptr<entity> &e, std::shared_ptr<light_data> data);
+	light_component(std::shared_ptr<entity> &e, std::shared_ptr<gl::light_data> &data);
 
 	bool initialise() override final;
 
@@ -40,6 +39,10 @@ public:
 	void unload_content() override final;
 
 	void shutdown() override final;
+
+	void rotate(const glm::vec3 &rotation);
+
+	void rotate(const glm::quat &rotation);
 };
 
 

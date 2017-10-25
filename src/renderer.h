@@ -2,13 +2,15 @@
 
 #include <iostream>
 #include "entity.h"
+#include "opengl_util.h"
 #include "components/render_component.h"
 #include "subsystem.h"
+#include "components/light_component.h"
 
 class renderer : public subsystem
 {
 private:
-	std::map<effectType, std::shared_ptr<Effect>> programIDs;
+	std::map<effectType, std::shared_ptr<gl::Effect>> programIDs;
     renderer();
 public:
 
@@ -19,6 +21,8 @@ public:
     }
 
     std::shared_ptr<render_component> build_component(std::shared_ptr<entity> &e, std::string colour, std::string shape, std::string shader, effectType effType);
+
+	std::shared_ptr<light_component> build_light(std::shared_ptr<entity> &e);
 
     bool initialise();
 
@@ -32,6 +36,6 @@ public:
 
 	void shutdown();
 
-	std::vector<std::shared_ptr<render_data>> _dataList;
+	std::vector<std::shared_ptr<gl::render_data>> _dataList;
 
 };

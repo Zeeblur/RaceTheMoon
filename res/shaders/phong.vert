@@ -10,7 +10,7 @@ in vec3 normal;
 in vec4 in_colour;
 
 out vec3 vertex_pos;
-out vec3 trans_normal;
+smooth out vec3 trans_normal;
 out vec4 frag_colour;
 
 void main()

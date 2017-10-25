@@ -11,7 +11,7 @@
 
 using namespace glm;
 
-render_component::render_component(std::shared_ptr<entity> e, std::shared_ptr<render_data> data)
+render_component::render_component(std::shared_ptr<entity> e, std::shared_ptr<gl::render_data> data)
 	: _parent(e), _data(data)
 {
 	_active = false;
