@@ -4,6 +4,9 @@
 
 #include "physics_component.h"
 
+physics_data::physics_data(transform_data trans) : x(trans.x), y(trans.y), z(trans.z)
+{}
+
 physics_component::physics_component(std::shared_ptr<entity> &e, std::shared_ptr<physics_data> &data)
     : _parent(e), _data(data)
 {

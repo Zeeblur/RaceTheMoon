@@ -17,6 +17,7 @@ struct physics_data
     float z = 0.0f;
     glm::vec3 currentVelocity = glm::vec3(0.0f, 0.0f, 0.0f);
     bool moveRequest = false;
+	physics_data(transform_data trans);
 };
 
 struct physics_component : public component

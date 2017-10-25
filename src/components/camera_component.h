@@ -54,13 +54,13 @@ private:
 
 
 	// The offset of the camera from its desired position
-	glm::vec3 _pos_offset = glm::vec3(200.f);
+	glm::vec3 _pos_offset = glm::vec3(0.0f, 20.0f, 50.f);
 
 	// The offset of the camera relative to the target
 	glm::vec3 _target_offset;
 
 	// Springiness factor of the camera
-	float _springiness = 5.0f;
+	float _springiness = 2.0f;
 
 	
 public:
@@ -79,9 +79,6 @@ public:
 	void shutdown() override final;
 
 	void set_projection_view(std::shared_ptr<camera_projection> data);
-
-	// Moves the camera
-	void move(const glm::vec3 &translation);
 
 	glm::mat4 get_projection() const { return _projection; }
 	glm::mat4 get_view() const { return _view; }
