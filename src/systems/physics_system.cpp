@@ -13,13 +13,24 @@ physics_system::physics_system()
 
 std::shared_ptr<physics_component> physics_system::build_component(std::shared_ptr<entity> e)
 {
-    _data.push_back(physics_data());
-    return std::make_shared<physics_component>(e, std::ref(_data.back()));
+	auto pd = std::make_shared<physics_data>(physics_data(e->get_trans()));
+
+	_data.push_back(pd);
+    return std::make_shared<physics_component>(e, pd);
 }
 
 std::shared_ptr<collider_component> physics_system::build_collider_component(std::shared_ptr<entity> e)
 {
 	_collider_data.push_back(collider_data());
+	return std::make_shared<collider_component>(e, std::ref(_collider_data.back()));
+}
+
+std::shared_ptr<collider_component> physics_system::build_collider_component(std::shared_ptr<entity> e, glm::vec3 scale)
+{
+	_collider_data.push_back(collider_data());
+	_collider_data.back().collider.radius[0] = scale.x;
+	_collider_data.back().collider.radius[1] = scale.y;
+	_collider_data.back().collider.radius[2] = scale.z;
 	return std::make_shared<collider_component>(e, std::ref(_collider_data.back()));
 }
 
@@ -57,48 +68,51 @@ void physics_system::update(float delta_time)
     for (auto &d : _data)
     {
         // If active physics object add 1 to each component.
-        if (d.active)
+        if (d->active)
         {
             //cap speed.
-            cap_speed(d.currentVelocity);
+            cap_speed(d->currentVelocity);
 
             // change by speed and delta-time.
-            auto movement = d.currentVelocity * delta_time;
+            auto movement = d->currentVelocity * delta_time;
 
             // movement test here....
-            d.x += movement.x;
-            d.y += movement.y;
-            d.z += movement.z;
+            d->x += movement.x;
+            d->y += movement.y;
+            d->z += movement.z;
 
-            if (!d.moveRequest)
+            if (!d->moveRequest)
             {
                 //std::cout << moveSpeed.x << ", " << moveSpeed.y << std::endl;
                 // lateral movement
-                if (d.currentVelocity.x < 0) d.currentVelocity.x += deceleration.x;
-                if (d.currentVelocity.x > 0) d.currentVelocity.x -= deceleration.x;
+                if (d->currentVelocity.x < 0) d->currentVelocity.x += deceleration.x;
+                if (d->currentVelocity.x > 0) d->currentVelocity.x -= deceleration.x;
 
                 // if speed within epsilon of zero. Reset to zero
-                if (d.currentVelocity.x > 0 && d.currentVelocity.x < deceleration.x) d.currentVelocity.x = 0;
-                if (d.currentVelocity.x < 0 && d.currentVelocity.x > -deceleration.x) d.currentVelocity.x = 0;
+                if (d->currentVelocity.x > 0 && d->currentVelocity.x < deceleration.x) d->currentVelocity.x = 0;
+                if (d->currentVelocity.x < 0 && d->currentVelocity.x > -deceleration.x) d->currentVelocity.x = 0;
 
                 // forwards movement
-                if (d.currentVelocity.z < 0) d.currentVelocity.z += deceleration.z;
-                if (d.currentVelocity.z > 0) d.currentVelocity.z -= deceleration.z;
+                if (d->currentVelocity.z < 0) d->currentVelocity.z += deceleration.z;
+                if (d->currentVelocity.z > 0) d->currentVelocity.z -= deceleration.z;
 
                 // if speed within epsilon of zero. Reset to zero
-                if (d.currentVelocity.z > 0 && d.currentVelocity.z < deceleration.z) d.currentVelocity.z = 0;
-                if (d.currentVelocity.z < 0 && d.currentVelocity.z > -deceleration.z) d.currentVelocity.z = 0;
+                if (d->currentVelocity.z > 0 && d->currentVelocity.z < deceleration.z) d->currentVelocity.z = 0;
+                if (d->currentVelocity.z < 0 && d->currentVelocity.z > -deceleration.z) d->currentVelocity.z = 0;
             }
 
             // reset move request
-            d.moveRequest = false;
+            d->moveRequest = false;
         }
     }
-
-	// Check for collisions
-	for (size_t i = 0; i < _collider_data.size() - 1; ++i)
+	// Don't bother checking for collisions unless there are at least 2 colliders
+	if (_collider_data.size() >= 2)
 	{
-		is_colliding(_collider_data[i].collider, _collider_data[i + 1].collider);
+		// Check for collisions
+		for (size_t i = 0; i < _collider_data.size() - 1; ++i)
+		{
+			is_colliding(_collider_data[i].collider, _collider_data[i + 1].collider);
+		}
 	}
 
 }

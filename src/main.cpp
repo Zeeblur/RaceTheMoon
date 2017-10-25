@@ -47,18 +47,34 @@ int main()
     engine_state_machine::get()->add_state("pause_state", std::make_shared<pause_state>(), state_type::PAUSE);
     engine_state_machine::get()->change_state("game_state");
 
+	// can add a transformation in using struct now
 
-	// Adding plane
+
+    // Adding plane
 	auto p = entity_manager::get()->create_entity("Plane", state_type::GAME);
-	p->add_component("physics", physics_system::get()->build_component(p));
-	p->add_component("render", renderer::get()->build_component(p, "Red", "plane", "Gouraud", simple));
+    p->add_component("physics", physics_system::get()->build_component(p));
+    p->add_component("render", renderer::get()->build_component(p, "Red", "plane", "Gouraud", simple));
 
-	auto e = entity_manager::get()->create_entity("Bat", state_type::GAME);
-	e->add_component("physics", physics_system::get()->build_component(e));
-	e->add_component("collider", physics_system::get()->build_collider_component(e));
-	e->add_component("input", input_handler::get()->build_component(e));
-	e->add_component("render", renderer::get()->build_component(e, "Blue", "res/models/bat.obj", "Gouraud", simple));
-	e->add_component("camera", camera_system::get()->build_component(e, camera_type::CHASE));
+	transform_data cubeTrans;
+	cubeTrans.scale = glm::vec3(100.0f, 100.0f, 100.0f);
+
+    // Adding cube
+    auto c = entity_manager::get()->create_entity("Cube", state_type::GAME, cubeTrans);
+    c->add_component("physics", physics_system::get()->build_component(c));
+    c->add_component("render", renderer::get()->build_component(c, "Green", "cube", "Gouraud", simple));
+	c->add_component("collider", physics_system::get()->build_collider_component(c, cubeTrans.scale));
+
+	transform_data batTrans;
+	batTrans.y = 5.0f;
+	batTrans.scale = glm::vec3(1.0f, 1.0f, 1.0f);
+
+    // Bat entity
+    auto e = entity_manager::get()->create_entity("Bat", state_type::GAME, batTrans);
+    e->add_component("physics", physics_system::get()->build_component(e));
+    e->add_component("input", input_handler::get()->build_component(e));
+    e->add_component("render", renderer::get()->build_component(e, "Blue", "res/models/bat.obj", "Gouraud", simple));
+    e->add_component("camera", camera_system::get()->build_component(e, camera_type::CHASE));
+	e->add_component("collider", physics_system::get()->build_collider_component(e, batTrans.scale * 10.0f));
 
     int x_size = 0;
     int y_size = 0;
@@ -70,12 +86,18 @@ int main()
 
     int x_button_size = 100;
     int y_button_size = 50;
+
+	// button trans
+	transform_data buttonTrans;
+	buttonTrans.scale = glm::vec3(x_button_size, y_button_size, 1.0f);
+
     // Y offset between buttons
     int button_offset = 100;
     // Menu buttons
-    auto button_play = entity_manager::get()->create_entity("buttonPlay", state_type::MENU);
+    auto button_play = entity_manager::get()->create_entity("buttonPlay", state_type::MENU, buttonTrans);
     button_play->add_component("clickable", clickable_system::get()->build_component(button_play, glm::vec2(x_center - x_button_size, x_center + x_button_size), glm::vec2(y_center - y_button_size, y_center + y_button_size)));
     button_play->add_component("render", renderer::get()->build_component(button_play, "Blue", "rectangle", "Gouraud", simple));
+	button_play->add_component("camera", camera_system::get()->build_component(button_play, camera_type::ORTHO));
 
     auto button_exit = entity_manager::get()->create_entity("buttonExit", state_type::MENU);
     button_exit->add_component("clickable", clickable_system::get()->build_component(button_exit, glm::vec2(x_center - x_button_size, x_center + x_button_size), glm::vec2(button_offset + y_center - y_button_size, button_offset + y_center + y_button_size)));

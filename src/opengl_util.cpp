@@ -10,6 +10,8 @@
 #include <sstream>
 #include <functional>
 #include <map>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #define CHECK_GL_ERROR CheckGL(__LINE__, __FILE__)
 
@@ -380,11 +382,12 @@ namespace gl
 
         mesh->positions = positions;
         mesh->tex_coords = tex_coords;
-        /*mesh->colours = colours;*/
+        mesh->colours = colours;
 
         return mesh;
     }
 
+    // Currently a red 100x100 plane
     mesh_geom* generate_plane()
     {
         mesh_geom *mesh = new mesh_geom();
@@ -392,13 +395,13 @@ namespace gl
         std::vector<glm::vec3> positions
         {
 			// 1
-			glm::vec3(-100.0f, 0.0f, 100.0f),
-			glm::vec3(-100.0f,  0.0f, -100.0f),
-			glm::vec3(100.0f,  0.0f, -100.0f),
-			// 2
 			glm::vec3(100.0f, 0.0f, -100.0f),
+			glm::vec3(-100.0f,  0.0f, -100.0f),
+			glm::vec3(-100.0f,  0.0f, 100.0f),
+			// 2
+			glm::vec3(-100.0f, 0.0f, 100.0f),
 			glm::vec3(100.0f, 0.0f, 100.0f),
-			glm::vec3(-100.0f,0.0f,  100.0f)
+			glm::vec3(100.0f,0.0f, -100.0f)
 
         };
         // These are probably wrong
@@ -416,11 +419,11 @@ namespace gl
         std::vector<glm::vec4> colours
         {
             glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),
-            glm::vec4(0.0f, 0.0f, 0.0f, 1.0f),
-            glm::vec4(0.0f, 0.0f, 0.0f, 1.0f),
-            glm::vec4(0.0f, 0.0f, 0.0f, 1.0f),
-            glm::vec4(0.0f, 0.0f, 0.0f, 1.0f),
-            glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)
+            glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),
+            glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),
+            glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),
+            glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),
+            glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),
         };
 
         //// Calculate the minimal and maximal
@@ -433,24 +436,154 @@ namespace gl
 
         mesh->positions = positions;
         mesh->tex_coords = tex_coords;
-        /*mesh->colours = colours;*/
+        mesh->colours = colours;
 
 		return mesh;
     }
 
 	// add more generating functions 
 
+    // Currently a blue 10x10x10 cube using triangles
+    mesh_geom* generate_cube()
+    {
+        mesh_geom *mesh = new mesh_geom();
+
+        std::vector<glm::vec3> positions
+        {
+            // Front
+            glm::vec3(-0.5f, 0.5f, -2.0f),
+            glm::vec3(-1.0f, 0.5f, -2.0f),
+            glm::vec3(-1.0f, 0.0f, -2.0f),
+
+            glm::vec3(-1.0f, 0.0f, -2.0f),
+            glm::vec3(-0.5f, 0.0f, -2.0f),
+            glm::vec3(-0.5f, 0.5f, -2.0f),
+            
+            // Back
+            glm::vec3(-1.0f, 0.5f, -2.5f),
+            glm::vec3(-0.5f, 0.5f, -2.5f),
+            glm::vec3(-0.5f, 0.0f, -2.5f),
+
+            glm::vec3(-0.5f, 0.0f, -2.5f),
+            glm::vec3(-1.0f, 0.0f, -2.5f),
+            glm::vec3(-1.0f, 0.5f, -2.5f),
+
+            // Right
+            glm::vec3(-0.5f, 0.5f, -2.5f),
+            glm::vec3(-0.5f, 0.5f, -2.0f),
+            glm::vec3(-0.5f, 0.0f, -2.0f),
+
+            glm::vec3(-0.5f, 0.0f, -2.0f),
+            glm::vec3(-0.5f, 0.0f, -2.5f),
+            glm::vec3(-0.5f, 0.5f, -2.5f),
+
+            // Left 
+            glm::vec3(-1.0f, 0.5f, -2.0f),
+            glm::vec3(-1.0f, 0.5f, -2.5f),
+            glm::vec3(-1.0f, 0.0f, -2.5f),
+
+            glm::vec3(-1.0f, 0.0f, -2.5f),
+            glm::vec3(-1.0f, 0.0f, -2.0f),
+            glm::vec3(-1.0f, 0.5f, -2.0f),
+
+            // Top
+            glm::vec3(-0.5f, 0.5f, -2.5f),
+            glm::vec3(-1.0f, 0.5f, -2.5f),
+            glm::vec3(-1.0f, 0.5f, -2.0f),
+
+            glm::vec3(-1.0f, 0.5f, -2.0f),
+            glm::vec3(-0.5f, 0.5f, -2.0f),
+            glm::vec3(-0.5f, 0.5f, -2.5f),
+
+            // Bottom
+            glm::vec3(-1.0f, 0.0f, -2.0f),
+            glm::vec3(-1.0f, 0.0f, -2.5f),
+            glm::vec3(-0.5f, 0.0f, -2.5f),
+ 
+            glm::vec3(-0.5f, 0.0f, -2.5f),
+            glm::vec3(-0.5f, 0.0f, -2.0f),
+            glm::vec3(-1.0f, 0.0f, -2.0f)
+
+        };
+        // These are probably wrong
+        std::vector<glm::vec2> tex_coords
+        {
+            glm::vec2(0.5, 1),
+            glm::vec2(0, 0),
+            glm::vec2(1, 0),
+            glm::vec2(1, 0),
+            glm::vec2(0, 0),
+            glm::vec2(0.5, 1)
+        };
+
+        // Colours
+        std::vector<glm::vec4> colours
+        {
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 1.0f)
+        };
+
+        //// Calculate the minimal and maximal
+        //mesh->min = mesh->positions[0];
+        //mesh->max = mesh->positions[0];
+        //for (auto &v : mesh->positions) {
+        //	mesh->min = glm::min(mesh->min, v);
+        //	mesh->max = glm::max(mesh->max, v);
+        //}
+
+        mesh->positions = positions;
+        mesh->tex_coords = tex_coords;
+        mesh->colours = colours;
+
+        return mesh;
+    }
+
 	// map of functions for different shapes
 	std::map<std::string, std::function<mesh_geom*()>> generation_functions =
-	{
-		{ "rectangle", generate_rect },
-		{ "plane", generate_plane },
+    {
+        { "rectangle", generate_rect },
+        { "plane", generate_plane },
+        { "cube", generate_cube },
 	};
 
 	// depending on whether a file or shape has been inputted - create the mesh.
     std::shared_ptr<mesh_geom> load_mesh(std::string msh_)
     {
-        
+		auto e = glGetError();
 		mesh_geom* mesh = nullptr;
 		if (generation_functions.count(msh_))
 		{
@@ -471,7 +604,7 @@ namespace gl
         glData *om = new glData();
         mesh->GpuData = om;
         om->type = GL_TRIANGLES;
-
+		e = glGetError();
         // Add the buffers to the geometry
 
         add_buffer(*om, mesh->positions, BUFFER_INDEXES::POSITION_BUFFER);
@@ -496,11 +629,69 @@ namespace gl
         {
             om->vertex_count = mesh->positions.size();
         }
-
+		e = glGetError();
         return std::shared_ptr<mesh_geom>(mesh);
     }
 
+	void gl::render(glData *om, GLuint programID, glm::mat4 MVP)
+	{
+		auto e1 = glGetError();
+		auto loc = glGetUniformLocation(programID, "MVP");
 
+		glUniformMatrix4fv(loc, 1, GL_FALSE, value_ptr(MVP));
+		auto e3 = glGetError();
+		// Bind the vertex array object for the
+		glBindVertexArray(om->vao);
+		auto e4 = glGetError();
+		// Check for any OpenGL errors
+		if (gl::CHECK_GL_ERROR)
+		{
+			// Display error
+			std::cerr << "ERROR - rendering geometry" << std::endl;
+			std::cerr << "Could not bind vertex array object" << std::endl;
+			// Throw exception
+			throw std::runtime_error("Error rendering geometry");
+		}
+		// If there is an index buffer then use to render
+		if (om->has_indices)
+		{
+			// Bind index buffer
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, om->index_buffer);
+			// Check for error
+			if (gl::CHECK_GL_ERROR)
+			{
+				std::cerr << "ERROR - rendering geometry" << std::endl;
+				std::cerr << "Could not bind index buffer" << std::endl;
+				// Throw exception
+				throw std::runtime_error("Error rendering geometry");
+			}
+
+			// Draw elements
+			glDrawElements(om->type, om->indice_count, GL_UNSIGNED_INT, nullptr);
+			// Check for error
+			if (gl::CHECK_GL_ERROR)
+			{
+				// Display error
+				std::cerr << "ERROR - rendering geometry" << std::endl;
+				std::cerr << "Could not draw elements from indices" << std::endl;
+				// Throw exception
+				throw std::runtime_error("Error rendering geometry");
+			}
+		}
+		else
+		{
+			// Draw arrays
+			glDrawArrays(om->type, 0, om->vertex_count);
+			// Check for error
+			if (gl::CHECK_GL_ERROR)
+			{
+				std::cerr << "ERROR - rendering geometry" << std::endl;
+				std::cerr << "Could not draw arrays" << std::endl;
+				// Throw exception
+				throw std::runtime_error("Error rendering geometry");
+			}
+		}
+	}
 
 
 

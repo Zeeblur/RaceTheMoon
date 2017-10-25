@@ -4,11 +4,14 @@
 
 #include "physics_component.h"
 
-physics_component::physics_component(std::shared_ptr<entity> &e, physics_data &data)
+physics_data::physics_data(transform_data trans) : x(trans.x), y(trans.y), z(trans.z)
+{}
+
+physics_component::physics_component(std::shared_ptr<entity> &e, std::shared_ptr<physics_data> &data)
     : _parent(e), _data(data)
 {
     _visible = false;
-    _data.active = true;
+    _data->active = true;
 }
 
 bool physics_component::initialise()
@@ -24,9 +27,9 @@ bool physics_component::load_content()
 void physics_component::update(float delta_time)
 {
     // We will just update the entity position.
-    _parent->get_trans().x = _data.x;
-    _parent->get_trans().y = _data.y;
-    _parent->get_trans().z = _data.z;
+    _parent->get_trans().x = _data->x;
+    _parent->get_trans().y = _data->y;
+    _parent->get_trans().z = _data->z;
 }
 
 void physics_component::render()
@@ -43,6 +46,6 @@ void physics_component::shutdown()
 
 void physics_component::add_impulse(glm::vec3& direction)
 {
-    _data.moveRequest = true;
-    _data.currentVelocity += (direction * acceleration);
+    _data->moveRequest = true;
+    _data->currentVelocity += (direction * acceleration);
 }

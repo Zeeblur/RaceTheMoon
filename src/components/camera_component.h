@@ -12,6 +12,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
 #include "../glfw.h"
+
 enum camera_type
 {
 	CHASE,
@@ -24,7 +25,12 @@ struct camera_projection
 	float aspect;
 	float near;
 	float far;
+	float left = 0;
+	float bottom = 0;
+
 	camera_type type;
+	glm::mat4 model_view;
+
 };
 
 class camera_component : public component
@@ -32,11 +38,11 @@ class camera_component : public component
 
 private:
 	// ptr to perspective data
-	camera_projection &_data;
+	std::shared_ptr<camera_projection> _data;
 
 	std::shared_ptr<entity> _parent;
 
-	glm::vec3 _position = glm::vec3(100.f, 100.f, 100.f);
+	glm::vec3 _position = glm::vec3(0.0, 0.0, -10.0f);
 	glm::vec3 _target = glm::vec3(0.f, 0.f, 0.0f);
 	glm::vec3 _up = glm::vec3(0.f, 1.f, 0.f);
 
@@ -48,17 +54,17 @@ private:
 
 
 	// The offset of the camera from its desired position
-	glm::vec3 _pos_offset = glm::vec3(20.f);
+	glm::vec3 _pos_offset = glm::vec3(0.0f, 20.0f, 50.f);
 
 	// The offset of the camera relative to the target
 	glm::vec3 _target_offset;
 
 	// Springiness factor of the camera
-	float _springiness = 5.0f;
+	float _springiness = 2.0f;
 
 	
 public:
-	camera_component(std::shared_ptr<entity> &e, camera_projection &data);
+	camera_component(std::shared_ptr<entity> &e, std::shared_ptr<camera_projection> data);
 
 	bool initialise() override final;
 
@@ -72,10 +78,7 @@ public:
 
 	void shutdown() override final;
 
-	void set_projection(camera_projection &data);
-
-	// Moves the camera
-	void move(const glm::vec3 &translation);
+	void set_projection_view(std::shared_ptr<camera_projection> data);
 
 	glm::mat4 get_projection() const { return _projection; }
 	glm::mat4 get_view() const { return _view; }

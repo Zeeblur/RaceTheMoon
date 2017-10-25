@@ -54,7 +54,8 @@ namespace glfw
             return -1;
         }
 
-        glGetError();
+        auto f = glGetError();
+		auto g = glGetError();
 
         glViewport(0, 0, 1024, 768);
 
@@ -63,6 +64,7 @@ namespace glfw
 
         // Dark blue background
         glClearColor(0.0f, 0.0f, 0.4f, 1.0f);
+		auto e = glGetError();
 
         return 0;
 

@@ -24,11 +24,12 @@ enum effect
 
 struct render_data
 {
-	bool visible;// = false;
+	bool visible;// = true;
 	// Let's pretend this is a matrix that was built.
-	std::string transform = "(0, 0, 0)";
 	std::string colour;// = "Red";
 	std::string shader;// = "Phong";
+
+	glm::mat4 MVP;
 
 	// Reference to structs
 	Effect* effect;

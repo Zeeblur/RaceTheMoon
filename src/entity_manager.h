@@ -36,9 +36,9 @@ public:
 					return e.second;
 	}
 
-    std::shared_ptr<entity> create_entity(const std::string &name, state_type state)
+    std::shared_ptr<entity> create_entity(const std::string &name, state_type state, transform_data trans = transform_data())
     {
-        auto e = std::make_shared<entity>(name);
+        auto e = std::make_shared<entity>(name, trans);
 		e->state = state;
         _entities[state][name] = e;
         return e;

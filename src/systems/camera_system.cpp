@@ -12,6 +12,8 @@ camera_system::camera_system()
 std::shared_ptr<camera_component> camera_system::build_component(std::shared_ptr<entity> e, camera_type type)
 {
 	camera_projection proj;
+	int width = 0, height = 0;
+	glfwGetWindowSize(glfw::window, &width, &height);
 
 	switch (type)
 	{
@@ -25,14 +27,15 @@ std::shared_ptr<camera_component> camera_system::build_component(std::shared_ptr
 	case camera_type::ORTHO:
 		proj.fov = 1.0472f;
 		proj.aspect = (16.0f / 9.0f);
-		proj.near = 0.01f;
+		proj.near = -1000.0f;
 		proj.far = 1000.0f;
+		proj.left = -0.5f * (float)width;
+		proj.bottom = -0.5f * (float)height;
 		proj.type = ORTHO;
 		break;
 	}
 
-	_data.push_back(proj);
-	_cameras.push_back(std::make_shared<camera_component>(e, std::ref(_data.back())));
+	_data.push_back(std::make_shared<camera_projection>(proj));
 	return std::make_shared<camera_component>(e, std::ref(_data.back()));
 }
 
@@ -51,6 +54,18 @@ bool camera_system::load_content()
 void camera_system::update(float delta_time)
 {
 
+	// may need to update modelview
+	for (auto &c : _data)
+	{
+		switch (c->type)
+		{
+		case camera_type::CHASE:
+			player_cam_MV = c->model_view;
+			break;
+		case camera_type::ORTHO:
+			break;
+		}
+	}
 }
 
 void camera_system::render()

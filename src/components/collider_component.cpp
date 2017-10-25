@@ -29,10 +29,15 @@ void collider_component::update(float delta_time)
 		_data.collider.centerPoint.y = _parent->get_trans().y;
 		_data.collider.centerPoint.z = _parent->get_trans().z;
 
-		// Test values - will eventually take the scale of the object as radius
-		_data.collider.radius[0] = 5.0;
-		_data.collider.radius[1] = 5.0;
-		_data.collider.radius[2] = 5.0;
+		// Update radius based on scale
+		//_data.collider.radius[0] = _parent->get_trans().scale.x;
+		//_data.collider.radius[1] = _parent->get_trans().scale.y;
+		//_data.collider.radius[2] = _parent->get_trans().scale.z;
+
+		//std::cout << _parent->get_name() << ", pos, x: " << _parent->get_trans().x << ", y: " << _parent->get_trans().y << ", z: " << _parent->get_trans().z << std::endl;
+
+		//std::cout << _parent->get_name() << ", scale, x: " << _parent->get_trans().scale.x << ", y: " << _parent->get_trans().scale.y << ", z: " << _parent->get_trans().scale.z << std::endl;
+
 		//std::cout << "center point is x: " << _data.collider.centerPoint.x << ", y: " << _data.collider.centerPoint.y << ", z: " << _data.collider.centerPoint.z << std::endl;
 		//std::cout << "radius dx is: " << _data.collider.radius[0] << ", dy: " << _data.collider.radius[1] << ", dz: " << _data.collider.radius[2] << std::endl;
 	}
