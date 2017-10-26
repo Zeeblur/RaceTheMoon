@@ -42,7 +42,7 @@ void render_component::render()
 		// "Generate" the transform matrix.
 		vec3 transvec = vec3(_parent->get_trans().x, _parent->get_trans().y, _parent->get_trans().z);
 
-		std::cout << "rendering the: " + _parent->get_name() << " at (" << transvec.x << ", " << transvec.y << ", " << transvec.z << ")" << std::endl;
+		//std::cout << "rendering the: " + _parent->get_name() << " at (" << transvec.x << ", " << transvec.y << ", " << transvec.z << ")" << std::endl;
 
 		mat4 trans = glm::translate(mat4(1.0f), transvec);
 

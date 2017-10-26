@@ -64,6 +64,7 @@ int main()
     auto c = entity_manager::get()->create_entity("Cube", state_type::GAME, cubeTrans);
     c->add_component("physics", physics_system::get()->build_component(c));
     c->add_component("render", renderer::get()->build_component(c, "Green", "cube", "Gouraud", simple));
+	c->add_component("collider", physics_system::get()->build_collider_component(c, cubeTrans.scale));
 
 	transform_data batTrans;
 	batTrans.y = 5.0f;
@@ -77,6 +78,7 @@ int main()
     e->add_component("input", input_handler::get()->build_component(e));
     e->add_component("render", renderer::get()->build_component(e, "Blue", "res/models/bat.obj", "Gouraud", phong));
     e->add_component("camera", camera_system::get()->build_component(e, camera_type::CHASE));
+	e->add_component("collider", physics_system::get()->build_collider_component(e, batTrans.scale * 10.0f));
 
     int x_size = 0;
     int y_size = 0;
