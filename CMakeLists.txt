@@ -1,9 +1,3 @@
-
-
-
-
-
-
 cmake_minimum_required(VERSION 3.9)
 # Compiler flags
 if (MSVC)
@@ -12,14 +6,39 @@ endif(MSVC)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+#====================================================================
+
 project(RaceTheMoon)
 
-file(GLOB_RECURSE SOURCE_FILES src/*.cpp src/*.h)
-add_executable(RaceTheMoon ${SOURCE_FILES})
-target_include_directories(RaceTheMoon PUBLIC src)
-	
+SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/bin")
+SET (CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/lib")
+SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/lib")
 
-set(GLEW_HEADERS)
+file(GLOB_RECURSE SOURCE_FILES src/*.cpp src/*.h)
+# Add all shaders
+file(GLOB_RECURSE SHADER_FILES res/shaders/*.vert res/shaders/*.frag res/shaders/*.geom res/shaders/*.comp)
+add_executable(RaceTheMoon ${SOURCE_FILES} ${SHADER_FILES})
+
+add_custom_target(
+	copy_resources ALL COMMAND ${CMAKE_COMMAND} -E copy_directory  "${PROJECT_SOURCE_DIR}/res" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<CONFIG>/res"
+)
+
+#====================================================================
+
+
+#GLEW options
+if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+	set(GLEW_HEADERS)
+elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+	set(GLEW_HEADERS)
+else()
+	option(BUILD_UTILS "" OFF)
+	option(BUILD_SHARED_LIBS "" ON)
+	option(glew-cmake_BUILD_MULTI_CONTEXT "" OFF)
+	option(glew-cmake_BUILD_SHARED "" ON)
+	option(glew-cmake_BUILD_SINGLE_CONTEXT "" ON)
+	option(glew-cmake_BUILD_STATIC "" OFF)
+endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 #GLFW options
 option(GLFW_BUILD_DOCS "" OFF)
@@ -27,13 +46,6 @@ option(GLFW_BUILD_EXAMPLES "" OFF)
 option(GLFW_BUILD_TESTS "" OFF)
 option(GLFW_DOCUMENT_INTERNALS "" OFF)
 option(GLFW_INSTALL "" OFF)
-#GLEW options
-option(BUILD_UTILS "" OFF)
-option(BUILD_SHARED_LIBS "" ON)
-option(glew-cmake_BUILD_MULTI_CONTEXT "" OFF)
-option(glew-cmake_BUILD_SHARED "" ON)
-option(glew-cmake_BUILD_SINGLE_CONTEXT "" ON)
-option(glew-cmake_BUILD_STATIC "" OFF)
 #GLM options
 option(GLM_DYNAMIC_LIBRARY_ENABLE "" OFF)
 option(GLM_TEST_ENABLE_FAST_MATH "" ON)
@@ -123,12 +135,6 @@ set(PNG_BUILD_ZLIB ON CACHE BOOL "" FORCE)
 add_subdirectory("lib/glfw")
 target_include_directories(RaceTheMoon PUBLIC "lib/glfw/include/")
 #================================================
-# GLEW https://github.com/Perlmint/glew-cmake.git ea68a21
-add_subdirectory("lib/glew")
-target_include_directories(RaceTheMoon PUBLIC "lib/glew/include")
-## get library for os
-GET_DIRECTORY_PROPERTY(glew DIRECTORY "lib/glew" DEFINITION GLEW_NAME)
-#================================================
 # GLM https://github.com/g-truc/glm.git 77332664
 add_subdirectory("lib/glm")
 target_include_directories(RaceTheMoon PUBLIC "lib/glm")
@@ -161,56 +167,85 @@ add_subdirectory("lib/devil/DevIL")
 target_include_directories(RaceTheMoon PUBLIC "lib/devil/DevIL/include")
 target_include_directories(IL PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/lib/libpng")
 target_include_directories(IL PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/lib/libjpeg")
-
-
 #================================================
 # OpenGL
 FIND_PACKAGE( OpenGL REQUIRED)
 if(NOT ${OPENGL_FOUND})
   message(FATAL_ERROR "OPENGL NOT FOUND")
 endif()
-
 #====================================================================
-
-
-find_package(OpenGL REQUIRED)
-
-add_definitions(-DGLEW_STATIC)
+# GLEW
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+	add_definitions(-DGLEW_STATIC)
+	# GLEW https://github.com/menpo/glew.git
+	add_subdirectory("lib/glew")
+	target_include_directories(RaceTheMoon PUBLIC "lib/glew/include")
+	## get library for os
+	GET_DIRECTORY_PROPERTY(glew DIRECTORY "lib/glew" DEFINITION GLEW_NAME)
+
     set(glew
             ${OPENGL_LIBRARIES}
             -lGL -lGLU -lXrandr -lXext -lX11 -lrt
             ${CMAKE_DL_LIBS}
 	    glm
-	    ${glew}
-            )
+		 ${glew}
+         )
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     set(glew
             ${OPENGL_LIBRARIES}
             ${CMAKE_DL_LIBS}
 	    glm
-	    ${glew}
-            )
-elseif()
-    set(glew
-	    glm
-	    ${glew}
-            )
+			${glew}
+		)
+else()
+	# GLEW https://github.com/Perlmint/glew-cmake.git ea68a21
+	add_subdirectory("lib/glew_windows")
+	target_include_directories(RaceTheMoon PUBLIC "lib/glew_windows/include")
+	set(GLEWLIB libglew_shared) 
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
+#====================================================================
+
+#Glew and Devil are dumb and don't listen to our build directories, so manually set it.
+set(IL_RUNTIME_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} CACHE PATH "Output location for Devil .dlls/.so" FORCE)
+set(IL_LIBRARY_DIR ${CMAKE_LIBRARY_OUTPUT_DIRECTORY} CACHE PATH "Output location for Devil .libs" FORCE)
+
+set_target_properties(IL PROPERTIES
+  RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+  ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
+  LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+)
+set_target_properties(ILU PROPERTIES
+  RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+  ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
+  LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+)
+
+set_target_properties(${GLEWLIB} PROPERTIES
+  RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+  ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
+  LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+)
+
+#====================================================================
+
 target_link_libraries(RaceTheMoon 
-	PUBLIC ${glew} 
+	PUBLIC ${GLEWLIB}
 	PUBLIC glfw
 	PUBLIC assimp 
 	PUBLIC ILU 
 	PUBLIC zlib
 )
+add_dependencies(RaceTheMoon
+	copy_resources
+)
+
 #====================================================================
 set(junk 
 	pngfix png-fix-itxt IrrXML genfiles uninstall glm_dummy 
 	UpdateAssimpLibsDebugSymbolsAndDLLs example zlibstatic minigzip
 )
-set(deps glfw zlib jpeg png IL ILU assimp )
+set(deps glfw zlib jpeg png IL ILU assimp ${GLEWLIB} )
 
 FOREACH(jnk ${junk})
 	#Hide junks in junk VS project folder

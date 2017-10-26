@@ -1,7 +1,7 @@
 //
 // Created by zoe on 24/10/17.
 //
-
+#define GLM_ENABLE_EXPERIMENTAL
 #include "light_component.h"
 
 light_component::light_component(std::shared_ptr<entity> &e, std::shared_ptr<gl::light_data> &data) : _parent(e), _light(data)

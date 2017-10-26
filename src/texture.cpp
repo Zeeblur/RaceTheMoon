@@ -1,9 +1,10 @@
 #include <assert.h>
 #include "texture.h"
 #define FREEIMAGE_LIB
-#include <FreeImage-src/FreeImage.h>
+//#include <FreeImage-src/FreeImage.h>
 
-	// Creates a new texture object from the given file with mipmaps and anisotropic filtering defined
+/*
+// Creates a new texture object from the given file with mipmaps and anisotropic filtering defined
 texture::texture(const std::string &filename, bool mipmaps, bool anisotropic) throw (...)
 {
 		//assert(check_file_exists(filename));
@@ -18,7 +19,7 @@ texture::texture(const std::string &filename, bool mipmaps, bool anisotropic) th
 		FreeImage_Unload(temp);
 	
 }
-
+*/
 //	// Check if file exists
 //	assert(check_file_exists(filename));
 //

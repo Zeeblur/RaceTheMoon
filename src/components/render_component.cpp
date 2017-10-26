@@ -1,3 +1,4 @@
+#define GLM_ENABLE_EXPERIMENTAL
 #include "render_component.h"
 #include <sstream>
 #include <fstream>

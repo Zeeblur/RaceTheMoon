@@ -1,7 +1,7 @@
 //
 // Created by zoe on 28/09/17.
 //
-
+#define GLM_ENABLE_EXPERIMENTAL
 #include <iostream>
 #include "engine.h"
 #include "entity_manager.h"
@@ -15,7 +15,7 @@
 #include "systems/input_handler.h"
 #include "systems/clickable_system.h"
 #include "systems/camera_system.h"
-#include <FreeImage-src\FreeImage.h>
+//#include <FreeImage-src\FreeImage.h>
 
 // Include GLEW
 #include <GL/glew.h>
@@ -27,6 +27,7 @@ using namespace std;
 // Include GLM
 #include <glm/glm.hpp>
 using namespace glm;
+
 
 
 int main() 

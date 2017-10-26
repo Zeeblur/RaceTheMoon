@@ -22,3 +22,6 @@
 [submodule "lib/assimp"]
 	path = lib/assimp
 	url = https://github.com/assimp/assimp.git
+[submodule "lib/glew_windows"]
+	path = lib/glew_windows
+	url = https://github.com/Perlmint/glew-cmake.git

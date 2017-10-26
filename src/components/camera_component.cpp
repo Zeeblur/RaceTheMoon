@@ -1,7 +1,7 @@
 //
 // Created by zoe on 18/10/17.
 //
-
+#define GLM_ENABLE_EXPERIMENTAL
 #include "camera_component.h"
 
 camera_component::camera_component(std::shared_ptr<entity> &e, std::shared_ptr<camera_projection> data)

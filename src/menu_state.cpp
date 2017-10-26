@@ -1,8 +1,10 @@
+#define GLM_ENABLE_EXPERIMENTAL
 #include "menu_state.h"
 #include "entity_manager.h"
 #include "systems/clickable_system.h"
 #include "renderer.h"
 #include <iostream>
+
 void menu_state::on_enter()
 {
     // Switch off entities, physics, renderer

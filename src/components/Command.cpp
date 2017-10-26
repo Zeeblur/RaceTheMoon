@@ -2,7 +2,7 @@
 // Created by zoe on 11/10/17.
 //
 
-#include <glm-src/glm/ext.hpp>
+#include "glm/ext.hpp"
 #include "Command.h"
 #include "physics_component.h"
 
