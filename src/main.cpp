@@ -15,6 +15,7 @@
 #include "systems/input_handler.h"
 #include "systems/clickable_system.h"
 #include "systems/camera_system.h"
+#include <FreeImage-src\FreeImage.h>
 
 // Include GLEW
 #include <GL/glew.h>
@@ -67,6 +68,8 @@ int main()
 	transform_data batTrans;
 	batTrans.y = 5.0f;
 	batTrans.scale = glm::vec3(1.0f, 1.0f, 1.0f);
+	batTrans.rotation = glm::vec3(1.0f, 0.0f, 0.0f);
+	batTrans.theta = 90;
 
     // Bat entity
     auto e = entity_manager::get()->create_entity("Bat", state_type::GAME, batTrans);

@@ -1,11 +1,25 @@
-//#include <assert.h>
-//#include "texture.h"
-//#include "util.h"
-//#include "FreeImage.h"
-//
-//	// Creates a new texture object from the given file with mipmaps and anisotropic filtering defined
-//texture::texture(const std::string &filename, bool mipmaps, bool anisotropic) throw (...)
-//{
+#include <assert.h>
+#include "texture.h"
+#define FREEIMAGE_LIBRARY_STATIC
+
+#include <FreeImage-src/FreeImage.h>
+
+	// Creates a new texture object from the given file with mipmaps and anisotropic filtering defined
+texture::texture(const std::string &filename, bool mipmaps, bool anisotropic) throw (...)
+{
+		//assert(check_file_exists(filename));
+	
+		// Get format of image
+		auto format = FreeImage_GetFileType(filename.c_str());
+		// Load image data
+		auto image = FreeImage_Load(format, filename.c_str(), 0);
+		// Convert image to 32bit format
+		auto temp = image;
+		image = FreeImage_ConvertTo32Bits(image);
+		FreeImage_Unload(temp);
+	
+}
+
 //	// Check if file exists
 //	assert(check_file_exists(filename));
 //

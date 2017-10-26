@@ -60,6 +60,8 @@ std::shared_ptr<light_component> renderer::build_light(std::shared_ptr<entity> &
 {
 	auto _ld = std::make_shared<gl::light_data>();
 
+	programIDs[phong]->lights.push_back(*_ld);
+
 	return std::make_shared<light_component>(e, _ld);
 }
 
