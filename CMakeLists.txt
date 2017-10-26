@@ -1,42 +1,57 @@
-cmake_minimum_required (VERSION 2.6)
-project (RaceTheMoon)
-
-#set c++ standard
-set (CMAKE_CXX_STANDARD 11)
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread")
-
-# add the binary tree to the search path for include files
-include_directories ("${PROJECT_BINARY_DIR}")
 
 
-# Add all files from a src folder
-file(GLOB_RECURSE SOURCES src/*.cpp src/*.h src/components/*.cpp src/components/*.h src/systems/*.cpp src/systems/*.h)
 
-# Add all shaders
-file(GLOB_RECURSE SHADER_FILES res/shaders/*.vert res/shaders/*.frag res/shaders/*.geom res/shaders/*.comp)
 
-add_executable(RaceTheMoon ${SOURCES}) 
 
-# add the shaderrrrrrrrrs!
-add_custom_command(TARGET RaceTheMoon POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy_directory  "${PROJECT_SOURCE_DIR}/res" $<TARGET_FILE_DIR:RaceTheMoon>/res)
+
+cmake_minimum_required(VERSION 3.9)
+# Compiler flags
+if (MSVC)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP /EHsc" CACHE INTERNAL "" FORCE)
+endif(MSVC)
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+project(RaceTheMoon)
+
+file(GLOB_RECURSE SOURCE_FILES src/*.cpp src/*.h)
+add_executable(RaceTheMoon ${SOURCE_FILES})
+target_include_directories(RaceTheMoon PUBLIC src)
+	
 
 set(GLEW_HEADERS)
 
-# don't download glfw project shit
+#GLFW options
 option(GLFW_BUILD_DOCS "" OFF)
 option(GLFW_BUILD_EXAMPLES "" OFF)
 option(GLFW_BUILD_TESTS "" OFF)
 option(GLFW_DOCUMENT_INTERNALS "" OFF)
 option(GLFW_INSTALL "" OFF)
-
-set(PNG_BUILD_ZLIB ON CACHE BOOL "" FORCE)
+#GLEW options
+option(BUILD_UTILS "" OFF)
+option(BUILD_SHARED_LIBS "" ON)
+option(glew-cmake_BUILD_MULTI_CONTEXT "" OFF)
+option(glew-cmake_BUILD_SHARED "" ON)
+option(glew-cmake_BUILD_SINGLE_CONTEXT "" ON)
+option(glew-cmake_BUILD_STATIC "" OFF)
+#GLM options
+option(GLM_DYNAMIC_LIBRARY_ENABLE "" OFF)
+option(GLM_TEST_ENABLE_FAST_MATH "" ON)
+option(GLM_TEST_ENABLE_LANG_EXTENSIONS "" ON)
+option(GLM_TEST_ENABLE_SIMD_AVX2 "" ON)
+option(GLM_TEST_ENABLE_SIMD_SSE3 "" ON)
+#ASSIMP
+option(ASSIMP_BUILD_ASSIMP_TOOLS "" OFF)
+option(ASSIMP_BUILD_TESTS "" OFF)
+set(LIBRARY_SUFFIX "" CACHE STRING "the suffix for the assimp windows library")
+set(ASSIMP_INSTALL_PDB OFF CACHE BOOL "" FORCE)
+set(ASSIMP_BUILD_ZLIB ON CACHE BOOL "" FORCE)
+#LIBPNG
 set(PNG_TESTS OFF CACHE BOOL "" FORCE)
 set(PNG_STATIC OFF CACHE BOOL "" FORCE)
 set(SKIP_INSTALL_ALL ON CACHE BOOL "" FORCE)
 
-
-#---------------- ASSIMP
+#TODO: go back and enable this, submit bug report
 set(ASSIMP_NO_EXPORT ON CACHE BOOL "" FORCE)
 
 set(ASSIMP_BUILD_MDC_IMPORTER OFF CACHE BOOL "" FORCE)
@@ -84,80 +99,79 @@ set(ASSIMP_BUILD_3D_IMPORTER OFF CACHE BOOL "" FORCE)
 set(ASSIMP_BUILD_X_IMPORTER OFF CACHE BOOL "" FORCE)
 set(ASSIMP_BUILD_GLTF_IMPORTER OFF CACHE BOOL "" FORCE)
 set(ASSIMP_BUILD_3MF_IMPORTER OFF CACHE BOOL "" FORCE)
-#set(addGTest_FOUND OFF CACHE BOOL "" FORCE)
 set(BuildTests OFF CACHE BOOL "" FORCE)
-set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(IL_TESTS OFF CACHE BOOL "" FORCE)
 set(IL_BUILD_ILUT OFF CACHE BOOL "" FORCE)
+#todo tell IL to calm down and not parse everything
 
-
-#---------------- ASSIMP
-
-#get zlib
+#====================================================================
+#### Add External Dependencies ####
+# ZLIB https://github.com/madler/zlib cacf7f1
 add_subdirectory("lib/zlib")
-target_include_directories(RaceTheMoon PRIVATE "lib/zlib")
-target_include_directories(RaceTheMoon PRIVATE "$(CMAKE_CURRENT_BINARY_DIR)/lib/zlib")
-
+target_include_directories(RaceTheMoon PUBLIC "lib/zlib")
+target_include_directories(RaceTheMoon PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/lib/zlib")
+#link_directories("${CMAKE_BINARY_DIR}/lib/zlib")
 SET(ZLIB_FOUND 1)
 #This is for assimp
 SET(ZLIB_LIBRARIES zlib)
 #This is for libpng
 SET(ZLIB_LIBRARY zlib)
-SET(ZLIB_INCLUDE_DIR "$(CMAKE_CURRENT_SOURCE_DIR)/lib/zlib")
-SET(PNG_BUILD_ZLIB ON CACHE BOOL "" FORCE)
-
-#get glfw
+SET(ZLIB_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib/zlib/")
+set(PNG_BUILD_ZLIB ON CACHE BOOL "" FORCE)
+#================================================
+# GLFW https://github.com/glfw/glfw.git 56ecd62f
 add_subdirectory("lib/glfw")
-target_include_directories(RaceTheMoon PRIVATE "lib/glfw/include")
-
-#get glew
-            # 896c62c
-
+target_include_directories(RaceTheMoon PUBLIC "lib/glfw/include/")
+#================================================
+# GLEW https://github.com/Perlmint/glew-cmake.git ea68a21
 add_subdirectory("lib/glew")
-target_include_directories(RaceTheMoon PRIVATE "lib/glew/include")
-
+target_include_directories(RaceTheMoon PUBLIC "lib/glew/include")
 ## get library for os
 GET_DIRECTORY_PROPERTY(glew DIRECTORY "lib/glew" DEFINITION GLEW_NAME)
-
-#get glm
+#================================================
+# GLM https://github.com/g-truc/glm.git 77332664
 add_subdirectory("lib/glm")
-target_include_directories(RaceTheMoon PRIVATE "lib/glm")
-
-#get ASSIMP
+target_include_directories(RaceTheMoon PUBLIC "lib/glm")
+#================================================
+# assimp https://github.com/assimp/assimp 114c48b
 add_subdirectory("lib/assimp")
-target_include_directories(RaceTheMoon PRIVATE "lib/assimp/include")
-target_include_directories(RaceTheMoon PRIVATE "$(CMAKE_CURRENT_BINARY_DIR)/lib/assimp/include")
-target_include_directories(assimp PRIVATE "$(CMAKE_CURRENT_BINARY_DIR)/lib/zlib")
-
-
-#get png
+target_include_directories(RaceTheMoon PUBLIC "lib/assimp/include")
+target_include_directories(RaceTheMoon PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/lib/assimp/include")
+target_include_directories(assimp PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/lib/zlib")
+#================================================
+# libpng https://github.com/glennrp/libpng.git c1effe1bb
 add_subdirectory("lib/libpng")
 SET(PNG_INCLUDE_DIRS "lib/libpng" "${CMAKE_CURRENT_BINARY_DIR}/lib/libpng" CACHE PATH "")
-target_include_directories(RaceTheMoon PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/lib/libpng")
-target_include_directories(png PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/lib/zlib")
-target_include_directories(pngfix PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/lib/zlib")
-target_include_directories(png-fix-itxt PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/lib/zlib")
+target_include_directories(RaceTheMoon PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/lib/libpng")
+target_include_directories(png PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/lib/zlib")
+target_include_directories(pngfix PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/lib/zlib")
+target_include_directories(png-fix-itxt PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/lib/zlib")
 SET(PNG_LIBRARIES png CACHE STRING "")
 SET(IL_PNG_LIB ON CACHE BOOL "" FORCE)
-
-
-#get libjpeg
+#================================================
+# libjpeg https://github.com/dooglz/libjpeg.git
 add_subdirectory("lib/libjpeg")
 SET(JPEG_INCLUDE_DIRS "lib/libjpeg" "${CMAKE_CURRENT_BINARY_DIR}/lib/libjpeg" CACHE PATH "" FORCE)
-target_include_directories(RaceTheMoon PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/lib/libjpeg")
+target_include_directories(RaceTheMoon PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/lib/libjpeg")
 SET(JPEG_LIBRARIES jpeg CACHE STRING "" FORCE)
 SET(IL_JPEG_LIB ON CACHE BOOL "" FORCE)
-
-#get devil
+#================================================
+# devil https://github.com/dooglz/DevIL.git
 add_subdirectory("lib/devil/DevIL")
-target_include_directories(RaceTheMoon PRIVATE "lib/devil/DevIL/include")
-target_include_directories(IL PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/lib/libpng")
-target_include_directories(IL PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/lib/libjpeg")
+target_include_directories(RaceTheMoon PUBLIC "lib/devil/DevIL/include")
+target_include_directories(IL PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/lib/libpng")
+target_include_directories(IL PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/lib/libjpeg")
 
-set(assets
-IL
-ILU
-  assimp)
+
+#================================================
+# OpenGL
+FIND_PACKAGE( OpenGL REQUIRED)
+if(NOT ${OPENGL_FOUND})
+  message(FATAL_ERROR "OPENGL NOT FOUND")
+endif()
+
+#====================================================================
+
 
 find_package(OpenGL REQUIRED)
 
@@ -184,5 +198,47 @@ elseif()
             )
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
+target_link_libraries(RaceTheMoon 
+	PUBLIC ${glew} 
+	PUBLIC glfw
+	PUBLIC assimp 
+	PUBLIC ILU 
+	PUBLIC zlib
+)
+#====================================================================
+set(junk 
+	pngfix png-fix-itxt IrrXML genfiles uninstall glm_dummy 
+	UpdateAssimpLibsDebugSymbolsAndDLLs example zlibstatic minigzip
+)
+set(deps glfw zlib jpeg png IL ILU assimp )
 
-target_link_libraries(RaceTheMoon glfw ${glew} ${assets})
+FOREACH(jnk ${junk})
+	#Hide junks in junk VS project folder
+	set_target_properties(${jnk} PROPERTIES FOLDER "JUNK")
+ENDFOREACH()
+
+FOREACH(dep ${deps})
+	#Hide deps in dep VS project folder
+	set_target_properties(${dep} PROPERTIES FOLDER "DEPS")
+	#Disable warnings for deps
+	target_compile_options(${dep} PUBLIC "/W0")
+	#use all core compilation
+	target_compile_options(${dep} PUBLIC "/MP")
+ENDFOREACH()
+
+if(${ENU_GFX_TEST})
+	add_custom_command(TARGET framework_test POST_BUILD
+		COMMAND ${CMAKE_COMMAND} -E copy_directory
+		"${PROJECT_SOURCE_DIR}/res"
+		"$<TARGET_FILE_DIR:framework_test>"
+	)
+
+	FOREACH(dep ${deps})
+		add_custom_command(TARGET framework_test POST_BUILD
+			COMMAND ${CMAKE_COMMAND} -E copy_if_different
+			$<TARGET_FILE:${dep}>
+			$<TARGET_FILE_DIR:framework_test>
+		)
+	ENDFOREACH()
+endif()
+
