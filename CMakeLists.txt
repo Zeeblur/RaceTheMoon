@@ -8,7 +8,20 @@ set (CMAKE_CXX_STANDARD 11)
 # add the binary tree to the search path for include files
 include_directories ("${PROJECT_BINARY_DIR}")
 
-include(DownloadProject.cmake)
+
+# Add all files from a src folder
+file(GLOB_RECURSE SOURCES src/*.cpp src/*.h src/components/*.cpp src/components/*.h src/systems/*.cpp src/systems/*.h)
+
+# Add all shaders
+file(GLOB_RECURSE SHADER_FILES res/shaders/*.vert res/shaders/*.frag res/shaders/*.geom res/shaders/*.comp)
+
+add_executable(RaceTheMoon ${SOURCES}) 
+
+# add the shaderrrrrrrrrs!
+add_custom_command(TARGET RaceTheMoon POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy_directory  "${PROJECT_SOURCE_DIR}/res" $<TARGET_FILE_DIR:RaceTheMoon>/res)
+
+set(GLEW_HEADERS)
 
 # don't download glfw project shit
 option(GLFW_BUILD_DOCS "" OFF)
@@ -16,39 +29,6 @@ option(GLFW_BUILD_EXAMPLES "" OFF)
 option(GLFW_BUILD_TESTS "" OFF)
 option(GLFW_DOCUMENT_INTERNALS "" OFF)
 option(GLFW_INSTALL "" OFF)
- 
-#get glfw
-download_project(PROJ glfw
-  GIT_REPOSITORY      https://github.com/glfw/glfw.git
-  GIT_TAG             0f488ac
-  ${UPDATE_DISCONNECTED_IF_AVAILABLE}
-)
-
-add_subdirectory(${glfw_SOURCE_DIR} ${glfw_BINARY_DIR})
-include_directories("${glfw_SOURCE_DIR}/include")
-
-#get glew
-download_project(PROJ glew
-  GIT_REPOSITORY      https://github.com/menpo/glew.git
-  GIT_TAG             896c62c
-  ${UPDATE_DISCONNECTED_IF_AVAILABLE}
-)
-
-add_subdirectory(${glew_SOURCE_DIR} ${glew_BINARY_DIR})
-include_directories("${glew_SOURCE_DIR}/include")
-
-## get library for os
-GET_DIRECTORY_PROPERTY(glew DIRECTORY ${glew_SOURCE_DIR} DEFINITION GLEW_NAME)
-
-#get glm
-download_project(PROJ glm
-  GIT_REPOSITORY      https://github.com/g-truc/glm.git
-  GIT_TAG             6a1e2ec
-  ${UPDATE_DISCONNECTED_IF_AVAILABLE}
-)
-add_subdirectory(${glm_SOURCE_DIR} ${glm_BINARY_DIR})
-include_directories("${glm_SOURCE_DIR}")
-
 
 set(PNG_BUILD_ZLIB ON CACHE BOOL "" FORCE)
 set(PNG_TESTS OFF CACHE BOOL "" FORCE)
@@ -107,28 +87,76 @@ set(ASSIMP_BUILD_3MF_IMPORTER OFF CACHE BOOL "" FORCE)
 #set(addGTest_FOUND OFF CACHE BOOL "" FORCE)
 set(BuildTests OFF CACHE BOOL "" FORCE)
 set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(IL_TESTS OFF CACHE BOOL "" FORCE)
+set(IL_BUILD_ILUT OFF CACHE BOOL "" FORCE)
 
-download_project(PROJ assimp
-        GIT_REPOSITORY      https://github.com/assimp/assimp
-        GIT_TAG             a8673d4
-        ${UPDATE_DISCONNECTED_IF_AVAILABLE}
-        )
-add_subdirectory(${assimp_SOURCE_DIR} ${assimp_BINARY_DIR})
-include_directories("${assimp_SOURCE_DIR}/include")
 
 #---------------- ASSIMP
 
-#get freeimage
-download_project(PROJ FreeImage
- GIT_REPOSITORY	  https://github.com/Kanma/FreeImage.git
- ${UPDATE_DISCONNECTED_IF_AVAILABLE}
-)
+#get zlib
+add_subdirectory("lib/zlib")
+target_include_directories(RaceTheMoon PRIVATE "lib/zlib")
+target_include_directories(RaceTheMoon PRIVATE "$(CMAKE_CURRENT_BINARY_DIR)/lib/zlib")
 
-add_subdirectory(${FreeImage_SOURCE_DIR} ${FreeImage_BINARY_DIR})
-include_directories("${FreeImage_SOURCE_DIR}/include")
+SET(ZLIB_FOUND 1)
+#This is for assimp
+SET(ZLIB_LIBRARIES zlib)
+#This is for libpng
+SET(ZLIB_LIBRARY zlib)
+SET(ZLIB_INCLUDE_DIR "$(CMAKE_CURRENT_SOURCE_DIR)/lib/zlib")
+SET(PNG_BUILD_ZLIB ON CACHE BOOL "" FORCE)
+
+#get glfw
+add_subdirectory("lib/glfw")
+target_include_directories(RaceTheMoon PRIVATE "lib/glfw/include")
+
+#get glew
+            # 896c62c
+
+add_subdirectory("lib/glew")
+target_include_directories(RaceTheMoon PRIVATE "lib/glew/include")
+
+## get library for os
+GET_DIRECTORY_PROPERTY(glew DIRECTORY "lib/glew" DEFINITION GLEW_NAME)
+
+#get glm
+add_subdirectory("lib/glm")
+target_include_directories(RaceTheMoon PRIVATE "lib/glm")
+
+#get ASSIMP
+add_subdirectory("lib/assimp")
+target_include_directories(RaceTheMoon PRIVATE "lib/assimp/include")
+target_include_directories(RaceTheMoon PRIVATE "$(CMAKE_CURRENT_BINARY_DIR)/lib/assimp/include")
+target_include_directories(assimp PRIVATE "$(CMAKE_CURRENT_BINARY_DIR)/lib/zlib")
+
+
+#get png
+add_subdirectory("lib/libpng")
+SET(PNG_INCLUDE_DIRS "lib/libpng" "${CMAKE_CURRENT_BINARY_DIR}/lib/libpng" CACHE PATH "")
+target_include_directories(RaceTheMoon PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/lib/libpng")
+target_include_directories(png PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/lib/zlib")
+target_include_directories(pngfix PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/lib/zlib")
+target_include_directories(png-fix-itxt PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/lib/zlib")
+SET(PNG_LIBRARIES png CACHE STRING "")
+SET(IL_PNG_LIB ON CACHE BOOL "" FORCE)
+
+
+#get libjpeg
+add_subdirectory("lib/libjpeg")
+SET(JPEG_INCLUDE_DIRS "lib/libjpeg" "${CMAKE_CURRENT_BINARY_DIR}/lib/libjpeg" CACHE PATH "" FORCE)
+target_include_directories(RaceTheMoon PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/lib/libjpeg")
+SET(JPEG_LIBRARIES jpeg CACHE STRING "" FORCE)
+SET(IL_JPEG_LIB ON CACHE BOOL "" FORCE)
+
+#get devil
+add_subdirectory("lib/devil/DevIL")
+target_include_directories(RaceTheMoon PRIVATE "lib/devil/DevIL/include")
+target_include_directories(IL PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/lib/libpng")
+target_include_directories(IL PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/lib/libjpeg")
 
 set(assets
-  freeimage
+IL
+ILU
   assimp)
 
 find_package(OpenGL REQUIRED)
@@ -156,22 +184,5 @@ elseif()
             )
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
-# Add all files from a src folder
-file(GLOB_RECURSE SOURCES src/*.cpp src/*.h src/components/*.cpp src/components/*.h src/systems/*.cpp src/systems/*.h)
 
-# Add all shaders
-file(GLOB_RECURSE SHADER_FILES res/shaders/*.vert res/shaders/*.frag res/shaders/*.geom res/shaders/*.comp)
-
-add_executable(RaceTheMoon ${SOURCES}) 
-
-# add the shaderrrrrrrrrs!
-add_custom_command(TARGET RaceTheMoon POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy_directory  "${PROJECT_SOURCE_DIR}/res" $<TARGET_FILE_DIR:RaceTheMoon>/res)
-
-set(GLEW_HEADERS)
-
-
-add_dependencies(RaceTheMoon glfw ${glew} ${assets})
 target_link_libraries(RaceTheMoon glfw ${glew} ${assets})
-
-

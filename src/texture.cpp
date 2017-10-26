@@ -1,7 +1,6 @@
 #include <assert.h>
 #include "texture.h"
-#define FREEIMAGE_LIBRARY_STATIC
-
+#define FREEIMAGE_LIB
 #include <FreeImage-src/FreeImage.h>
 
 	// Creates a new texture object from the given file with mipmaps and anisotropic filtering defined
