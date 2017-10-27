@@ -4,6 +4,8 @@
 
 #include "input_handler.h"
 
+#include "../entity_manager.h"
+
 
 input_handler::input_handler()
 {
@@ -75,7 +77,6 @@ std::vector<Command*> input_handler::handle_input()
 
     if (glfwGetKey(glfw::window, GLFW_KEY_D))
         commands.push_back(buttonRight_);
-
-
+	
     return commands;
 }

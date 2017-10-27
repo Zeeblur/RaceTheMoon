@@ -49,17 +49,11 @@ void render_component::render()
 
 		mat4 rotation;
 
-		glm::vec3 rot = _parent->get_trans().rotation;
+		glm::quat rot = _parent->get_trans().rotation;
 		glm::vec3 scal = _parent->get_trans().scale;
 
-		if (_parent->get_trans().rotation == vec3(0.0, 0.0, 0.0))  // if no rotation is given R is just identity matrix
-		{
-			rotation = mat4(1.0f);
-		}
-		else
-		{
-			rotation = glm::rotate(mat4(1.0f), _parent->get_trans().theta, rot);
-		}
+
+		rotation = mat4_cast(rot);
 
 		mat4 scale = glm::scale(mat4(1.0f), scal);
 
@@ -74,7 +68,6 @@ void render_component::render()
 		if (camera != nullptr)
 		{
 			view_proj_mat = camera->get_projection() * camera->get_view();
-		//view_proj_mat = glm::ortho(-0.5f * (float)width, 0.5f * (float)width, -0.5f * (float)height, 0.5f * (float)height, -1000.0f, 1000.0f);
 
 		}
 		else
