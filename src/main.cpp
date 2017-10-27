@@ -70,8 +70,8 @@ int main()
 	transform_data batTrans;
 	batTrans.y = 5.0f;
 	batTrans.scale = glm::vec3(1.0f, 1.0f, 1.0f);
-	batTrans.rotation = glm::vec3(1.0f, 0.0f, 0.0f);
-	batTrans.theta = 90;
+	//batTrans.rotation = glm::vec3(1.0f, 0.0f, 0.0f);
+	//batTrans.theta = 90;
 
     // Bat entity
     auto e = entity_manager::get()->create_entity("Bat", state_type::GAME, batTrans);

@@ -54,7 +54,7 @@ private:
 
 
 	// The offset of the camera from its desired position
-	glm::vec3 _pos_offset = glm::vec3(0.0f, 0.0f, 50.f);
+	glm::vec3 _pos_offset = glm::vec3(0.0f, 20.0f, 50.f);
 
 	// The offset of the camera relative to the target
 	glm::vec3 _target_offset;
