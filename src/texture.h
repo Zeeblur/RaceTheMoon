@@ -1,5 +1,6 @@
 #pragma once
 #include "GL\glew.h"
+//#include "glfw.h"
 #include <vector>
 /*
 Stores the image information for texturing objects

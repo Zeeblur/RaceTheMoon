@@ -15,6 +15,7 @@
 #include <assimp/scene.h>
 #include <memory>
 #include <vector>
+#include "texture.h"
 
 namespace gl
 {
@@ -100,6 +101,9 @@ namespace gl
 
 		// shape is now mesh
 		std::shared_ptr<gl::mesh_geom> mesh;
+		texture tex;
+		// Reference to texture object
+		std::shared_ptr<texture> texture;
 	};
 
     // store vao/vbos for obj
@@ -135,6 +139,8 @@ namespace gl
     mesh_geom* get_model_mesh(const std::string &file);
 
 	void bind_light(GLuint programID, light_data light);
+
+	void bind_texture(texture tex, int index);
 
 	void render(std::shared_ptr<render_data> rd);
 }

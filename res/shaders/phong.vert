@@ -9,6 +9,10 @@ in vec3 position;
 in vec3 normal;
 in vec4 in_colour;
 
+in vec2 tex_coord_in;
+
+out vec2 tex_coord;
+
 out vec3 vertex_pos;
 smooth out vec3 trans_normal;
 out vec4 frag_colour;
@@ -21,4 +25,6 @@ void main()
 	vertex_pos = vec3(M * vec4(position, 1.0f));
 	trans_normal = N * normal;
 	frag_colour = in_colour;
+
+	tex_coord = tex_coord_in;
 }

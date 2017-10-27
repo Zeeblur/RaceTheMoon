@@ -308,6 +308,19 @@ namespace gl
             //		break;
             //	}
             //}
+
+			for (size_t count = 0; count < 8; count++)
+			{
+				if (mesh->HasTextureCoords(count))
+				{
+					for (size_t i = 0; i < mesh->mNumVertices; i++)
+					{
+						auto tex_coord = mesh->mTextureCoords[count][i];
+						ret->tex_coords.push_back(glm::vec2(tex_coord.x, tex_coord.y));
+					}
+				}
+			}
+
             // If we have face information, then add to index buffer
             if (mesh->HasFaces())
                 for (unsigned int f = 0; f < mesh->mNumFaces; ++f) {
@@ -450,58 +463,58 @@ namespace gl
         std::vector<glm::vec3> positions
         {
             // Front
-            glm::vec3(-0.5f, 0.5f, -2.0f),
-            glm::vec3(-1.0f, 0.5f, -2.0f),
-            glm::vec3(-1.0f, 0.0f, -2.0f),
+            glm::vec3(0.5f, 1.0f, 0.5f),
+            glm::vec3(-0.5f, 1.0f, 0.5f),
+            glm::vec3(-0.5f, 0.0f, 0.5f),
 
-            glm::vec3(-1.0f, 0.0f, -2.0f),
-            glm::vec3(-0.5f, 0.0f, -2.0f),
-            glm::vec3(-0.5f, 0.5f, -2.0f),
+            glm::vec3(-0.5f, 0.0f, 0.5f),
+            glm::vec3(0.5f, 0.0f, 0.5f),
+            glm::vec3(0.5f, 1.0f, 0.5f),
             
             // Back
-            glm::vec3(-1.0f, 0.5f, -2.5f),
-            glm::vec3(-0.5f, 0.5f, -2.5f),
-            glm::vec3(-0.5f, 0.0f, -2.5f),
+            glm::vec3(-0.5f, 1.0f, -0.5f),
+            glm::vec3(0.5f, 1.0f, -0.5f),
+            glm::vec3(0.5f, 0.0f, -0.5f),
 
-            glm::vec3(-0.5f, 0.0f, -2.5f),
-            glm::vec3(-1.0f, 0.0f, -2.5f),
-            glm::vec3(-1.0f, 0.5f, -2.5f),
+            glm::vec3(0.5f, 0.0f, -0.5f),
+            glm::vec3(-0.5f, 0.0f, -0.5f),
+            glm::vec3(-0.5f, 1.0f, -0.5f),
 
             // Right
-            glm::vec3(-0.5f, 0.5f, -2.5f),
-            glm::vec3(-0.5f, 0.5f, -2.0f),
-            glm::vec3(-0.5f, 0.0f, -2.0f),
+            glm::vec3(0.5f, 1.0f, -0.5f),
+            glm::vec3(0.5f, 1.0f, 0.5f),
+            glm::vec3(0.5f, 0.0f, 0.5f),
 
-            glm::vec3(-0.5f, 0.0f, -2.0f),
-            glm::vec3(-0.5f, 0.0f, -2.5f),
-            glm::vec3(-0.5f, 0.5f, -2.5f),
+            glm::vec3(0.5f, 0.0f, 0.5f),
+            glm::vec3(0.5f, 0.0f, -0.5f),
+            glm::vec3(0.5f, 1.0f, -0.5f),
 
             // Left 
-            glm::vec3(-1.0f, 0.5f, -2.0f),
-            glm::vec3(-1.0f, 0.5f, -2.5f),
-            glm::vec3(-1.0f, 0.0f, -2.5f),
+            glm::vec3(-0.5f, 1.0f, 0.5f),
+            glm::vec3(-0.5f, 1.0f, -0.5f),
+            glm::vec3(-0.5f, 0.0f, -0.5f),
 
-            glm::vec3(-1.0f, 0.0f, -2.5f),
-            glm::vec3(-1.0f, 0.0f, -2.0f),
-            glm::vec3(-1.0f, 0.5f, -2.0f),
+            glm::vec3(-0.5f, 0.0f, -0.5f),
+            glm::vec3(-0.5f, 0.0f, 0.5f),
+            glm::vec3(-0.5f, 1.0f, 0.5f),
 
             // Top
-            glm::vec3(-0.5f, 0.5f, -2.5f),
-            glm::vec3(-1.0f, 0.5f, -2.5f),
-            glm::vec3(-1.0f, 0.5f, -2.0f),
+            glm::vec3(0.5f, 1.0f, -0.5f),
+            glm::vec3(-0.5f, 1.0f, -0.5f),
+            glm::vec3(-0.5f, 1.0f, 0.5f),
 
-            glm::vec3(-1.0f, 0.5f, -2.0f),
-            glm::vec3(-0.5f, 0.5f, -2.0f),
-            glm::vec3(-0.5f, 0.5f, -2.5f),
+            glm::vec3(-0.5f, 1.0f, 0.5f),
+            glm::vec3(0.5f, 1.0f, 0.5f),
+            glm::vec3(0.5f, 1.0f, -0.5f),
 
             // Bottom
-            glm::vec3(-1.0f, 0.0f, -2.0f),
-            glm::vec3(-1.0f, 0.0f, -2.5f),
-            glm::vec3(-0.5f, 0.0f, -2.5f),
+            glm::vec3(-0.5f, 0.0f, 0.5f),
+            glm::vec3(-0.5f, 0.0f, -0.5f),
+            glm::vec3(0.5f, 0.0f, -0.5f),
  
-            glm::vec3(-0.5f, 0.0f, -2.5f),
-            glm::vec3(-0.5f, 0.0f, -2.0f),
-            glm::vec3(-1.0f, 0.0f, -2.0f)
+            glm::vec3(0.5f, 0.0f, -0.5f),
+            glm::vec3(0.5f, 0.0f, 0.5f),
+            glm::vec3(-0.5f, 0.0f, 0.5f)
 
         };
         // These are probably wrong
@@ -676,18 +689,41 @@ namespace gl
 		}
 	}
 
+	void gl::bind_texture(texture tex, int index)
+	{
+		// Check texture is valid
+		//assert(tex.get_id() != 0);
+		// Check that index is valid
+		//assert(index >= 0);
+		// Set active texture
+		glActiveTexture(GL_TEXTURE0 + index);
+		// Bind texture
+		glBindTexture(tex.get_type(), tex.get_id());
+		// Check for error
+		if (CHECK_GL_ERROR) {
+			std::cerr << "ERROR - binding texture to renderer" << std::endl;
+			std::cerr << "OpenGL could not bind the texture" << std::endl;
+			// Throw exception
+			throw std::runtime_error("Error using texture with OpenGL");
+		}
+	}
+
 	void gl::render(std::shared_ptr<render_data> rd)
 	{
 		auto programID = rd->effect->program;
 		glUseProgram(programID);
-
+		
 		gl::glData* om = static_cast<gl::glData *>(rd->mesh->GpuData);
-
+		
 		auto e1 = glGetError();
 
 		// bind the lights
 		for(auto &light : rd->effect->lights)
 			bind_light(programID, light);
+
+		// bind the texture if it exists // TODO: change index to something meaningful
+		if (rd->texture)
+			bind_texture(*rd->texture.get(), glGetUniformLocation(programID, "tex"));
 
 		// bind the matrices
 
@@ -716,6 +752,9 @@ namespace gl
 			// Throw exception
 			throw std::runtime_error("Error rendering geometry");
 		}
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, om->buffers[TEXTURE_COORDS_0]);
+
 		// If there is an index buffer then use to render
 		if (om->has_indices)
 		{
