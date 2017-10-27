@@ -67,7 +67,10 @@ void render_component::render()
 
 		if (camera != nullptr)
 		{
-			view_proj_mat = camera->get_projection() * camera->get_view();
+			if (camera->get_data()->type == camera_type::CHASE)
+				view_proj_mat = camera->get_projection() * camera->get_view();
+			else
+				view_proj_mat = glm::ortho(-0.5f * (float)width, 0.5f * (float)width, -0.5f * (float)height, 0.5f * (float)height, -1000.0f, 1000.0f);
 
 		}
 		else

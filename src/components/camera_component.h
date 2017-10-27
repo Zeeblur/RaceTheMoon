@@ -42,7 +42,7 @@ private:
 
 	std::shared_ptr<entity> _parent;
 
-	glm::vec3 _position = glm::vec3(0.0, 0.0, -10.0f);
+	glm::vec3 _position = glm::vec3(0.0, 0.0, 10.0f);
 	glm::vec3 _target = glm::vec3(0.f, 0.f, 0.0f);
 	glm::vec3 _up = glm::vec3(0.f, 1.f, 0.f);
 
@@ -83,6 +83,7 @@ public:
 
 	glm::mat4 get_projection() const { return _projection; }
 	glm::mat4 get_view() const { return _view; }
+	std::shared_ptr<camera_projection> get_data() const { return _data; }
 };
 
 
