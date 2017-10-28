@@ -1,4 +1,5 @@
 #pragma once
+#define GLM_ENABLE_EXPERIMENTAL
 #include <string>
 #include <unordered_map>
 #include <memory>
@@ -6,6 +7,7 @@
 #include <iostream>
 #include "engine_state.h"
 #include <glm/glm.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 struct transform_data
 {
@@ -13,8 +15,7 @@ struct transform_data
     float y = 0.0f;
     float z = 0.0f;
 
-	float theta = 0.0f;
-	glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::quat rotation = glm::quat();
 	glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
 };
 
