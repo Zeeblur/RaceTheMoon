@@ -71,5 +71,5 @@ script:
   - "cmake --version"
   - "mkdir -p build && cd build"
   - "cmake .."
-  - "cmake --build . --target Race_The_Moon --config Release -- -j4"
+  - "cmake --build . --target RaceTheMoon --config Release -- -j4"
 sudo: false
