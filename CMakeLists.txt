@@ -25,6 +25,7 @@ add_custom_target(
 
 #====================================================================
 
+include_directories("${CMAKE_CURRENT_BINARY_DIR}/lib/zlib") 
 
 #GLEW options
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
@@ -146,7 +147,9 @@ target_include_directories(RaceTheMoon PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/lib/a
 target_include_directories(assimp PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/lib/zlib")
 #================================================
 # libpng https://github.com/glennrp/libpng.git c1effe1bb
+
 add_subdirectory("lib/libpng")
+
 SET(PNG_INCLUDE_DIRS "lib/libpng" "${CMAKE_CURRENT_BINARY_DIR}/lib/libpng" CACHE PATH "")
 target_include_directories(RaceTheMoon PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/lib/libpng")
 target_include_directories(png PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/lib/zlib")
@@ -241,17 +244,20 @@ add_dependencies(RaceTheMoon
 )
 
 #====================================================================
-set(junk 
-	pngfix png-fix-itxt IrrXML genfiles uninstall glm_dummy 
-	UpdateAssimpLibsDebugSymbolsAndDLLs example zlibstatic minigzip
-)
+
 set(deps glfw zlib jpeg png IL ILU assimp ${GLEWLIB} )
 
-FOREACH(jnk ${junk})
-	#Hide junks in junk VS project folder
-	set_target_properties(${jnk} PROPERTIES FOLDER "JUNK")
-ENDFOREACH()
-
+if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+else
+	set(junk 
+		pngfix png-fix-itxt IrrXML genfiles uninstall glm_dummy 
+		UpdateAssimpLibsDebugSymbolsAndDLLs example zlibstatic minigzip
+	)
+	FOREACH(jnk ${junk})
+		#Hide junks in junk VS project folder
+		set_target_properties(${jnk} PROPERTIES FOLDER "JUNK")
+	ENDFOREACH()
+endif
 FOREACH(dep ${deps})
 	#Hide deps in dep VS project folder
 	set_target_properties(${dep} PROPERTIES FOLDER "DEPS")
