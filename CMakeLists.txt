@@ -262,10 +262,13 @@ endif()
 FOREACH(dep ${deps})
 	#Hide deps in dep VS project folder
 	set_target_properties(${dep} PROPERTIES FOLDER "DEPS")
-	#Disable warnings for deps
-	target_compile_options(${dep} PUBLIC "/W0")
-	#use all core compilation
-	target_compile_options(${dep} PUBLIC "/MP")
+	if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+	else()
+		#Disable warnings for deps
+		target_compile_options(${dep} PUBLIC "/W0")
+		#use all core compilation
+		target_compile_options(${dep} PUBLIC "/MP")
+	endif()
 ENDFOREACH()
 
 if(${ENU_GFX_TEST})
