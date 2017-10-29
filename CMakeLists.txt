@@ -248,7 +248,7 @@ add_dependencies(RaceTheMoon
 set(deps glfw zlib jpeg png IL ILU assimp ${GLEWLIB} )
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-else
+else()
 	set(junk 
 		pngfix png-fix-itxt IrrXML genfiles uninstall glm_dummy 
 		UpdateAssimpLibsDebugSymbolsAndDLLs example zlibstatic minigzip
