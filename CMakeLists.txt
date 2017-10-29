@@ -257,7 +257,8 @@ else()
 		#Hide junks in junk VS project folder
 		set_target_properties(${jnk} PROPERTIES FOLDER "JUNK")
 	ENDFOREACH()
-endif
+endif()
+
 FOREACH(dep ${deps})
 	#Hide deps in dep VS project folder
 	set_target_properties(${dep} PROPERTIES FOLDER "DEPS")
