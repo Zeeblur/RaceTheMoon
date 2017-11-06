@@ -6,7 +6,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include "texture.h"
+
 
 #define CHECK_GL_ERROR CheckGL(__LINE__, __FILE__)
 
@@ -37,7 +37,7 @@ std::shared_ptr<render_component> renderer::build_component(std::shared_ptr<enti
 
 	// add texture stuff
 	if (texture_path != "")
-		_rd->texture = std::make_shared<texture>(texture(texture_path, true, true));
+		_rd->texture = std::make_shared<gl::texture>(gl::texture(texture_path));
 
 	return std::make_shared<render_component>(e, _rd);
 }

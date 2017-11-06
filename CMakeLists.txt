@@ -25,8 +25,6 @@ add_custom_target(
 
 #====================================================================
 
-include_directories("${CMAKE_CURRENT_BINARY_DIR}/lib/zlib") 
-
 #GLEW options
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 	set(GLEW_HEADERS)
@@ -59,10 +57,6 @@ option(ASSIMP_BUILD_TESTS "" OFF)
 set(LIBRARY_SUFFIX "" CACHE STRING "the suffix for the assimp windows library")
 set(ASSIMP_INSTALL_PDB OFF CACHE BOOL "" FORCE)
 set(ASSIMP_BUILD_ZLIB ON CACHE BOOL "" FORCE)
-#LIBPNG
-set(PNG_TESTS OFF CACHE BOOL "" FORCE)
-set(PNG_STATIC OFF CACHE BOOL "" FORCE)
-set(SKIP_INSTALL_ALL ON CACHE BOOL "" FORCE)
 
 #TODO: go back and enable this, submit bug report
 set(ASSIMP_NO_EXPORT ON CACHE BOOL "" FORCE)
@@ -113,24 +107,7 @@ set(ASSIMP_BUILD_X_IMPORTER OFF CACHE BOOL "" FORCE)
 set(ASSIMP_BUILD_GLTF_IMPORTER OFF CACHE BOOL "" FORCE)
 set(ASSIMP_BUILD_3MF_IMPORTER OFF CACHE BOOL "" FORCE)
 set(BuildTests OFF CACHE BOOL "" FORCE)
-set(IL_TESTS OFF CACHE BOOL "" FORCE)
-set(IL_BUILD_ILUT OFF CACHE BOOL "" FORCE)
-#todo tell IL to calm down and not parse everything
 
-#====================================================================
-#### Add External Dependencies ####
-# ZLIB https://github.com/madler/zlib cacf7f1
-add_subdirectory("lib/zlib")
-target_include_directories(RaceTheMoon PUBLIC "lib/zlib")
-target_include_directories(RaceTheMoon PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/lib/zlib")
-#link_directories("${CMAKE_BINARY_DIR}/lib/zlib")
-SET(ZLIB_FOUND 1)
-#This is for assimp
-SET(ZLIB_LIBRARIES zlib)
-#This is for libpng
-SET(ZLIB_LIBRARY zlib)
-SET(ZLIB_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib/zlib/")
-set(PNG_BUILD_ZLIB ON CACHE BOOL "" FORCE)
 #================================================
 # GLFW https://github.com/glfw/glfw.git 56ecd62f
 add_subdirectory("lib/glfw")
@@ -145,31 +122,7 @@ add_subdirectory("lib/assimp")
 target_include_directories(RaceTheMoon PUBLIC "lib/assimp/include")
 target_include_directories(RaceTheMoon PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/lib/assimp/include")
 target_include_directories(assimp PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/lib/zlib")
-#================================================
-# libpng https://github.com/glennrp/libpng.git c1effe1bb
 
-add_subdirectory("lib/libpng")
-
-SET(PNG_INCLUDE_DIRS "lib/libpng" "${CMAKE_CURRENT_BINARY_DIR}/lib/libpng" CACHE PATH "")
-target_include_directories(RaceTheMoon PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/lib/libpng")
-target_include_directories(png PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/lib/zlib")
-target_include_directories(pngfix PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/lib/zlib")
-target_include_directories(png-fix-itxt PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/lib/zlib")
-SET(PNG_LIBRARIES png CACHE STRING "")
-SET(IL_PNG_LIB ON CACHE BOOL "" FORCE)
-#================================================
-# libjpeg https://github.com/dooglz/libjpeg.git
-add_subdirectory("lib/libjpeg")
-SET(JPEG_INCLUDE_DIRS "lib/libjpeg" "${CMAKE_CURRENT_BINARY_DIR}/lib/libjpeg" CACHE PATH "" FORCE)
-target_include_directories(RaceTheMoon PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/lib/libjpeg")
-SET(JPEG_LIBRARIES jpeg CACHE STRING "" FORCE)
-SET(IL_JPEG_LIB ON CACHE BOOL "" FORCE)
-#================================================
-# devil https://github.com/dooglz/DevIL.git
-add_subdirectory("lib/devil/DevIL")
-target_include_directories(RaceTheMoon PUBLIC "lib/devil/DevIL/include")
-target_include_directories(IL PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/lib/libpng")
-target_include_directories(IL PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/lib/libjpeg")
 #================================================
 # OpenGL
 FIND_PACKAGE( OpenGL REQUIRED)
@@ -209,20 +162,6 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 #====================================================================
 
-#Glew and Devil are dumb and don't listen to our build directories, so manually set it.
-set(IL_RUNTIME_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} CACHE PATH "Output location for Devil .dlls/.so" FORCE)
-set(IL_LIBRARY_DIR ${CMAKE_LIBRARY_OUTPUT_DIRECTORY} CACHE PATH "Output location for Devil .libs" FORCE)
-
-set_target_properties(IL PROPERTIES
-  RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-  ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
-  LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-)
-set_target_properties(ILU PROPERTIES
-  RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-  ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
-  LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-)
 
 set_target_properties(${GLEWLIB} PROPERTIES
   RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
@@ -236,8 +175,6 @@ target_link_libraries(RaceTheMoon
 	PUBLIC ${GLEWLIB}
 	PUBLIC glfw
 	PUBLIC assimp 
-	PUBLIC ILU 
-	PUBLIC zlib
 )
 add_dependencies(RaceTheMoon
 	copy_resources
@@ -245,13 +182,13 @@ add_dependencies(RaceTheMoon
 
 #====================================================================
 
-set(deps glfw zlib jpeg png IL ILU assimp ${GLEWLIB} )
+set(deps glfw assimp ${GLEWLIB} )
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 else()
 	set(junk 
-		pngfix png-fix-itxt IrrXML genfiles uninstall glm_dummy 
-		UpdateAssimpLibsDebugSymbolsAndDLLs example zlibstatic minigzip
+		glm_dummy 
+		UpdateAssimpLibsDebugSymbolsAndDLLs 
 	)
 	FOREACH(jnk ${junk})
 		#Hide junks in junk VS project folder

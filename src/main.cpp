@@ -1,6 +1,7 @@
 //
 // Created by zoe on 28/09/17.
 //
+#define STB_IMAGE_IMPLEMENTATION
 #define GLM_ENABLE_EXPERIMENTAL
 #include <iostream>
 #include "engine.h"
@@ -16,7 +17,6 @@
 #include "systems/clickable_system.h"
 #include "systems/camera_system.h"
 //#include <FreeImage-src\FreeImage.h>
-
 // Include GLEW
 #include <GL/glew.h>
 

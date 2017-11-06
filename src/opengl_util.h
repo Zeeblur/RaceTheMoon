@@ -15,7 +15,9 @@
 #include <assimp/scene.h>
 #include <memory>
 #include <vector>
-#include "texture.h"
+
+
+#include "stb_image.h"
 
 namespace gl
 {
@@ -33,6 +35,19 @@ namespace gl
 		glm::vec3 _position = glm::vec3(0.0, 0.0, 0.0f);
 	};
 
+	struct texture
+	{
+		GLuint _type;
+		GLuint _id;
+
+		// Set attributes
+		GLuint _height;
+		GLuint _width;
+
+
+		texture(std::string filename);
+
+	};
 
     enum BUFFER_INDEXES
     {

@@ -35,6 +35,43 @@ namespace gl
         return false;
     }
 
+	texture::texture(std::string filename)
+	{
+		int texWidth, texHeight, texChannels;
+
+
+		stbi_uc* pixels = stbi_load(filename.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+
+
+		if (!pixels)
+			throw std::runtime_error("failed to load texture image!");
+
+		// Generate texture with OpenGL
+		glGenTextures(1, &_id);
+		glBindTexture(GL_TEXTURE_2D, _id);
+		if (CHECK_GL_ERROR)
+		{
+			throw std::runtime_error("cry");
+		}
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		CHECK_GL_ERROR; // Not considered fatal here
+
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texWidth, texHeight, 0, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+		if (CHECK_GL_ERROR)
+		{
+			throw std::runtime_error("cry");
+		}
+
+		// Set attributes
+		_height = texHeight;
+		_width = texWidth;
+		_type = GL_TEXTURE_2D;
+		stbi_image_free(pixels);
+
+	};
+
     GLuint LoadShaders(const char* vertex_file_path, const char* fragment_file_path)
     {
         // Create the shaders
@@ -702,7 +739,8 @@ namespace gl
 		// Set active texture
 		glActiveTexture(GL_TEXTURE0 + index);
 		// Bind texture
-		glBindTexture(tex.get_type(), tex.get_id());
+		glBindTexture(tex._type, tex._id);
+
 		// Check for error
 		if (CHECK_GL_ERROR) {
 			std::cerr << "ERROR - binding texture to renderer" << std::endl;
