@@ -40,7 +40,7 @@ namespace gl
 		int texWidth, texHeight, texChannels;
 
 
-		stbi_uc* pixels = stbi_load(filename.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+		 unsigned char* pixels = stbi_load(filename.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
 
 
 		if (!pixels)
@@ -49,27 +49,58 @@ namespace gl
 		// Generate texture with OpenGL
 		glGenTextures(1, &_id);
 		glBindTexture(GL_TEXTURE_2D, _id);
+		// Check for any errors with OpenGL
 		if (CHECK_GL_ERROR)
 		{
-			throw std::runtime_error("cry");
+			// Problem creating texture object
+			std::cerr << "ERROR - loading texture " << filename << std::endl;
+			std::cerr << "Could not allocate texture with OpenGL" << std::endl;
+			// Unload FreeImage data
+			stbi_image_free(pixels);
+			// Set id to 0
+			_id = 0;
+			// Throw exception
+			throw std::runtime_error("Error creating texture");
 		}
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		CHECK_GL_ERROR; // Not considered fatal here
-
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texWidth, texHeight, 0, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+		
+			// Turn on linear mipmaps
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			CHECK_GL_ERROR; // Not considered fatal here
+	
+		// Now set texture data
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texWidth, texHeight, 0, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+		// Check if error
 		if (CHECK_GL_ERROR)
 		{
-			throw std::runtime_error("cry");
+			// Error loading texture data into OpenGL
+			std::cerr << "ERROR - loading texture " << filename << std::endl;
+			std::cerr << "Could not load texture data in OpenGL" << std::endl;
+			// Unload FreeImage data
+			stbi_image_free(pixels);
+			// Unallocate image with OpenGL
+			glDeleteTextures(1, &_id);
+			_id = 0;
+			// Throw exception
+			throw std::runtime_error("Error creating texture");
 		}
+
+
+			glGenerateMipmap(GL_TEXTURE_2D);
 
 		// Set attributes
 		_height = texHeight;
 		_width = texWidth;
 		_type = GL_TEXTURE_2D;
-		stbi_image_free(pixels);
 
+		// Unload image data
+		stbi_image_free(pixels);
+		CHECK_GL_ERROR; // Non-fatal - just info
+
+						// Log
+		std::clog << "LOG - texture " << filename << " loaded" << std::endl;
+
+		glBindTexture(GL_TEXTURE_2D, 0);
 	};
 
     GLuint LoadShaders(const char* vertex_file_path, const char* fragment_file_path)
@@ -223,9 +254,9 @@ namespace gl
             return false;
         }
 
-
-        // Add buffe
+        // Add buffer
 		data.buffers[index] = id;
+		glBindVertexArray(0);
         return true;
     }
 
@@ -257,7 +288,7 @@ namespace gl
 
     bool add_buffer(glData &data, const std::vector<glm::vec2> &buffer, GLuint index, GLenum buffer_type = GL_STATIC_DRAW)
     {
-        return add_buffer(data, &buffer[0], 2, static_cast<GLuint>(buffer.size() * sizeof(glm::vec2)), index, buffer_type);
+       return add_buffer(data, &buffer[0], 2, static_cast<GLuint>(buffer.size() * sizeof(glm::vec2)), index, buffer_type);
     }
 
     bool add_buffer(glData &data, const std::vector<glm::vec3> &buffer, GLuint index, GLenum buffer_type = GL_STATIC_DRAW)
@@ -556,14 +587,12 @@ namespace gl
 
         };
         // These are probably wrong
-        std::vector<glm::vec2> tex_coords
+        std::vector<glm::vec2> box
         {
-            glm::vec2(0.5, 1),
-            glm::vec2(0, 0),
-            glm::vec2(1, 0),
-            glm::vec2(1, 0),
-            glm::vec2(0, 0),
-            glm::vec2(0.5, 1)
+			glm::vec2(1.0f, 1.0f),
+			glm::vec2(0.0f, 1.0f),
+			glm::vec2(0.0f, 0.0f),
+			glm::vec2(1.0f, 0.0f)
         };
 
         // Colours
@@ -614,6 +643,26 @@ namespace gl
         //	mesh->min = glm::min(mesh->min, v);
         //	mesh->max = glm::max(mesh->max, v);
         //}
+		std::vector<glm::vec2> tex_coords;
+		glm::vec3 dims = glm::vec3(1.0f, 1.0f, 1.0f);
+		for (unsigned int i = 0; i < 4; ++i)
+			tex_coords.push_back(box[i] * glm::vec2(dims));
+		// Right
+		for (unsigned int i = 0; i < 4; ++i)
+			tex_coords.push_back(box[i] * glm::vec2(dims.z, dims.y));
+		// Back
+		for (unsigned int i = 0; i < 4; ++i)
+			tex_coords.push_back(box[i] * glm::vec2(dims));
+		// Left
+		for (unsigned int i = 0; i < 4; ++i)
+			tex_coords.push_back(box[i] * glm::vec2(dims.z, dims.y));
+		// Top
+		for (unsigned int i = 0; i < 4; ++i)
+			tex_coords.push_back(box[i] * glm::vec2(dims.x, dims.z));
+		// Bottom
+		for (unsigned int i = 0; i < 4; ++i)
+			tex_coords.push_back(box[i] * glm::vec2(dims.x, dims.z));
+
 
         mesh->positions = positions;
         mesh->tex_coords = tex_coords;
@@ -666,8 +715,11 @@ namespace gl
             add_buffer(*om, mesh->normals, BUFFER_INDEXES::NORMAL_BUFFER);
             // generate_tb(normals);
         }
-        if (mesh->tex_coords.size() != 0) 
-            add_buffer(*om, mesh->tex_coords, BUFFER_INDEXES::TEXTURE_COORDS_0);
+
+		if (mesh->tex_coords.size() != 0)
+		{
+			add_buffer(*om, mesh->tex_coords, BUFFER_INDEXES::TEXTURE_COORDS_0);
+		}
         
 
         if (mesh->indices.size() != 0)
@@ -699,7 +751,7 @@ namespace gl
 			// Throw exception
 			throw std::runtime_error("Error using directional light with renderer");
 		}
-
+		  
 		// Check for light colour
 		idx = glGetUniformLocation(programID, "dir_light.light_colour");
 		if (idx != -1)
@@ -730,9 +782,10 @@ namespace gl
 	void gl::bind_texture(const texture &tex, int index)
 	{
 		// Check texture is valid
-		//assert(tex.get_id() != 0);
+		assert(tex._id != 0);
+
 		// Check that index is valid
-		//assert(index >= 0);
+		assert(index >= 0);
 		if (index == -1)
 			return;
 
@@ -740,6 +793,8 @@ namespace gl
 		glActiveTexture(GL_TEXTURE0 + index);
 		// Bind texture
 		glBindTexture(tex._type, tex._id);
+
+
 
 		// Check for error
 		if (CHECK_GL_ERROR) {
@@ -765,7 +820,10 @@ namespace gl
 
 		// bind the texture if it exists // TODO: change index to something meaningful
 		if (rd->texture)
-			bind_texture(*rd->texture, glGetUniformLocation(programID, "tex"));
+		{
+			glBindTexture(GL_TEXTURE_2D, rd->texture->_id);
+		//bind_texture(*rd->texture, rd->texture->_id);
+		}
 
 		// bind the matrices
 
@@ -780,6 +838,8 @@ namespace gl
 		loc = glGetUniformLocation(programID, "N");
 		if (loc != -1)
 			glUniformMatrix3fv(loc, 1, GL_FALSE, value_ptr(rd->N));
+
+		
 
 		auto e3 = glGetError();
 		// Bind the vertex array object for the

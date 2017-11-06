@@ -46,7 +46,7 @@ namespace gl
 
 
 		texture(std::string filename);
-
+		 
 	};
 
     enum BUFFER_INDEXES
@@ -57,12 +57,8 @@ namespace gl
         COLOUR_BUFFER = 1,
         // The surface normals
         NORMAL_BUFFER = 2,
-        // The binormals for the surfaces
-        BINORMAL_BUFFER = 3,
-        // The tangents for the surfaces
-        TANGENT_BUFFER = 4,
         // Texture coordinates 0
-        TEXTURE_COORDS_0 = 10,
+        TEXTURE_COORDS_0 = 3,
         // Texture coordinates 1
         TEXTURE_COORDS_1 = 11,
         // Texture coordinates 2
