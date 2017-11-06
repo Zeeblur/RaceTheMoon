@@ -7,6 +7,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+
 #define CHECK_GL_ERROR CheckGL(__LINE__, __FILE__)
 
 using namespace glm;
@@ -24,7 +25,7 @@ renderer::renderer()
 	//programIDs[phong]->lights = 
 }
 
-std::shared_ptr<render_component> renderer::build_component(std::shared_ptr<entity> &e, std::string colour, std::string shape, std::string shader, effectType effType)
+std::shared_ptr<render_component> renderer::build_component(std::shared_ptr<entity> &e, std::string colour, std::string texture_path, std::string shape, std::string shader, effectType effType)
 {
     auto _rd = std::make_shared<gl::render_data>();
     _rd->colour = colour;
@@ -33,6 +34,10 @@ std::shared_ptr<render_component> renderer::build_component(std::shared_ptr<enti
     _rd->mesh = gl::load_mesh(shape);
 	
 	_rd->effect = programIDs[effType];
+
+	// add texture stuff
+	if (texture_path != "")
+		_rd->texture = std::make_shared<gl::texture>(gl::texture(texture_path));
 
 	return std::make_shared<render_component>(e, _rd);
 }
@@ -80,6 +85,11 @@ void renderer::render()
 	glDepthFunc(GL_LESS);
 	
 	auto err = glGetError();
+
+	// Enable textures
+	glEnable(GL_TEXTURE_1D);
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_TEXTURE_CUBE_MAP);
 
 	glClearColor(0.0, 1.0, 1.0, 0.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

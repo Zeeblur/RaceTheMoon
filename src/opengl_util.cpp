@@ -35,6 +35,43 @@ namespace gl
         return false;
     }
 
+	texture::texture(std::string filename)
+	{
+		int texWidth, texHeight, texChannels;
+
+
+		stbi_uc* pixels = stbi_load(filename.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+
+
+		if (!pixels)
+			throw std::runtime_error("failed to load texture image!");
+
+		// Generate texture with OpenGL
+		glGenTextures(1, &_id);
+		glBindTexture(GL_TEXTURE_2D, _id);
+		if (CHECK_GL_ERROR)
+		{
+			throw std::runtime_error("cry");
+		}
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		CHECK_GL_ERROR; // Not considered fatal here
+
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texWidth, texHeight, 0, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+		if (CHECK_GL_ERROR)
+		{
+			throw std::runtime_error("cry");
+		}
+
+		// Set attributes
+		_height = texHeight;
+		_width = texWidth;
+		_type = GL_TEXTURE_2D;
+		stbi_image_free(pixels);
+
+	};
+
     GLuint LoadShaders(const char* vertex_file_path, const char* fragment_file_path)
     {
         // Create the shaders
@@ -187,8 +224,8 @@ namespace gl
         }
 
 
-        // Add buffer to map
-        data.buffers[index] = id;
+        // Add buffe
+		data.buffers[index] = id;
         return true;
     }
 
@@ -308,6 +345,20 @@ namespace gl
             //		break;
             //	}
             //}
+
+			for (size_t count = 0; count < 8; count++)
+			{
+				if (mesh->HasTextureCoords(count))
+				{
+					for (size_t i = 0; i < mesh->mNumVertices; i++)
+					{
+						auto tex_coord = mesh->mTextureCoords[count][i];
+						ret->tex_coords.push_back(glm::vec2(tex_coord.x, tex_coord.y));
+					}
+					break;
+				}
+			}
+			      
             // If we have face information, then add to index buffer
             if (mesh->HasFaces())
                 for (unsigned int f = 0; f < mesh->mNumFaces; ++f) {
@@ -325,7 +376,7 @@ namespace gl
             ret->min = glm::min(ret->min, v);
             ret->max = glm::max(ret->max, v);
         }
-
+		 
         // Log success
         std::clog << "LOG - geometry " << path << " loaded "
             << (ret->normals.size() ? "With normals & " : "With no normals & ")
@@ -450,58 +501,58 @@ namespace gl
         std::vector<glm::vec3> positions
         {
             // Front
-            glm::vec3(-0.5f, 0.5f, -2.0f),
-            glm::vec3(-1.0f, 0.5f, -2.0f),
-            glm::vec3(-1.0f, 0.0f, -2.0f),
+            glm::vec3(0.5f, 1.0f, 0.5f),
+            glm::vec3(-0.5f, 1.0f, 0.5f),
+            glm::vec3(-0.5f, 0.0f, 0.5f),
 
-            glm::vec3(-1.0f, 0.0f, -2.0f),
-            glm::vec3(-0.5f, 0.0f, -2.0f),
-            glm::vec3(-0.5f, 0.5f, -2.0f),
+            glm::vec3(-0.5f, 0.0f, 0.5f),
+            glm::vec3(0.5f, 0.0f, 0.5f),
+            glm::vec3(0.5f, 1.0f, 0.5f),
             
             // Back
-            glm::vec3(-1.0f, 0.5f, -2.5f),
-            glm::vec3(-0.5f, 0.5f, -2.5f),
-            glm::vec3(-0.5f, 0.0f, -2.5f),
+            glm::vec3(-0.5f, 1.0f, -0.5f),
+            glm::vec3(0.5f, 1.0f, -0.5f),
+            glm::vec3(0.5f, 0.0f, -0.5f),
 
-            glm::vec3(-0.5f, 0.0f, -2.5f),
-            glm::vec3(-1.0f, 0.0f, -2.5f),
-            glm::vec3(-1.0f, 0.5f, -2.5f),
+            glm::vec3(0.5f, 0.0f, -0.5f),
+            glm::vec3(-0.5f, 0.0f, -0.5f),
+            glm::vec3(-0.5f, 1.0f, -0.5f),
 
             // Right
-            glm::vec3(-0.5f, 0.5f, -2.5f),
-            glm::vec3(-0.5f, 0.5f, -2.0f),
-            glm::vec3(-0.5f, 0.0f, -2.0f),
+            glm::vec3(0.5f, 1.0f, -0.5f),
+            glm::vec3(0.5f, 1.0f, 0.5f),
+            glm::vec3(0.5f, 0.0f, 0.5f),
 
-            glm::vec3(-0.5f, 0.0f, -2.0f),
-            glm::vec3(-0.5f, 0.0f, -2.5f),
-            glm::vec3(-0.5f, 0.5f, -2.5f),
+            glm::vec3(0.5f, 0.0f, 0.5f),
+            glm::vec3(0.5f, 0.0f, -0.5f),
+            glm::vec3(0.5f, 1.0f, -0.5f),
 
             // Left 
-            glm::vec3(-1.0f, 0.5f, -2.0f),
-            glm::vec3(-1.0f, 0.5f, -2.5f),
-            glm::vec3(-1.0f, 0.0f, -2.5f),
+            glm::vec3(-0.5f, 1.0f, 0.5f),
+            glm::vec3(-0.5f, 1.0f, -0.5f),
+            glm::vec3(-0.5f, 0.0f, -0.5f),
 
-            glm::vec3(-1.0f, 0.0f, -2.5f),
-            glm::vec3(-1.0f, 0.0f, -2.0f),
-            glm::vec3(-1.0f, 0.5f, -2.0f),
+            glm::vec3(-0.5f, 0.0f, -0.5f),
+            glm::vec3(-0.5f, 0.0f, 0.5f),
+            glm::vec3(-0.5f, 1.0f, 0.5f),
 
             // Top
-            glm::vec3(-0.5f, 0.5f, -2.5f),
-            glm::vec3(-1.0f, 0.5f, -2.5f),
-            glm::vec3(-1.0f, 0.5f, -2.0f),
+            glm::vec3(0.5f, 1.0f, -0.5f),
+            glm::vec3(-0.5f, 1.0f, -0.5f),
+            glm::vec3(-0.5f, 1.0f, 0.5f),
 
-            glm::vec3(-1.0f, 0.5f, -2.0f),
-            glm::vec3(-0.5f, 0.5f, -2.0f),
-            glm::vec3(-0.5f, 0.5f, -2.5f),
+            glm::vec3(-0.5f, 1.0f, 0.5f),
+            glm::vec3(0.5f, 1.0f, 0.5f),
+            glm::vec3(0.5f, 1.0f, -0.5f),
 
             // Bottom
-            glm::vec3(-1.0f, 0.0f, -2.0f),
-            glm::vec3(-1.0f, 0.0f, -2.5f),
-            glm::vec3(-0.5f, 0.0f, -2.5f),
+            glm::vec3(-0.5f, 0.0f, 0.5f),
+            glm::vec3(-0.5f, 0.0f, -0.5f),
+            glm::vec3(0.5f, 0.0f, -0.5f),
  
-            glm::vec3(-0.5f, 0.0f, -2.5f),
-            glm::vec3(-0.5f, 0.0f, -2.0f),
-            glm::vec3(-1.0f, 0.0f, -2.0f)
+            glm::vec3(0.5f, 0.0f, -0.5f),
+            glm::vec3(0.5f, 0.0f, 0.5f),
+            glm::vec3(-0.5f, 0.0f, 0.5f)
 
         };
         // These are probably wrong
@@ -676,23 +727,50 @@ namespace gl
 		}
 	}
 
+	void gl::bind_texture(const texture &tex, int index)
+	{
+		// Check texture is valid
+		//assert(tex.get_id() != 0);
+		// Check that index is valid
+		//assert(index >= 0);
+		if (index == -1)
+			return;
+
+		// Set active texture
+		glActiveTexture(GL_TEXTURE0 + index);
+		// Bind texture
+		glBindTexture(tex._type, tex._id);
+
+		// Check for error
+		if (CHECK_GL_ERROR) {
+			std::cerr << "ERROR - binding texture to renderer" << std::endl;
+			std::cerr << "OpenGL could not bind the texture" << std::endl;
+			// Throw exception
+			throw std::runtime_error("Error using texture with OpenGL");
+		}
+	}
+
 	void gl::render(std::shared_ptr<render_data> rd)
 	{
 		auto programID = rd->effect->program;
 		glUseProgram(programID);
-
+		
 		gl::glData* om = static_cast<gl::glData *>(rd->mesh->GpuData);
-
+		
 		auto e1 = glGetError();
 
 		// bind the lights
 		for(auto &light : rd->effect->lights)
 			bind_light(programID, light);
 
+		// bind the texture if it exists // TODO: change index to something meaningful
+		if (rd->texture)
+			bind_texture(*rd->texture, glGetUniformLocation(programID, "tex"));
+
 		// bind the matrices
 
 		auto loc = glGetUniformLocation(programID, "MVP");
-		if (loc != -1)
+		if (loc != -1) 
 			glUniformMatrix4fv(loc, 1, GL_FALSE, value_ptr(rd->MVP));
 
 		loc = glGetUniformLocation(programID, "M");
@@ -716,6 +794,18 @@ namespace gl
 			// Throw exception
 			throw std::runtime_error("Error rendering geometry");
 		}
+
+		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, om->tex_coord_buffer);
+
+		if (gl::CHECK_GL_ERROR)
+		{
+			// Display error
+			std::cerr << "ERROR - rendering geometry" << std::endl;
+			std::cerr << "Could not bind vertex array object" << std::endl;
+			// Throw exception
+			throw std::runtime_error("Error rendering geometry");
+		}
+
 		// If there is an index buffer then use to render
 		if (om->has_indices)
 		{

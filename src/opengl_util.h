@@ -16,6 +16,9 @@
 #include <memory>
 #include <vector>
 
+
+#include "stb_image.h"
+
 namespace gl
 {
 
@@ -32,6 +35,19 @@ namespace gl
 		glm::vec3 _position = glm::vec3(0.0, 0.0, 0.0f);
 	};
 
+	struct texture
+	{
+		GLuint _type;
+		GLuint _id;
+
+		// Set attributes
+		GLuint _height;
+		GLuint _width;
+
+
+		texture(std::string filename);
+
+	};
 
     enum BUFFER_INDEXES
     {
@@ -100,6 +116,9 @@ namespace gl
 
 		// shape is now mesh
 		std::shared_ptr<gl::mesh_geom> mesh;
+
+		// Reference to texture object
+		std::shared_ptr<texture> texture = nullptr;
 	};
 
     // store vao/vbos for obj
@@ -113,6 +132,7 @@ namespace gl
         std::map<GLuint, GLuint> buffers;
         // The OpenGL ID of the index buffer
         GLuint index_buffer;
+		GLuint tex_coord_buffer;
         bool has_indices;
         // The number of vertices in the geometry
         // GLuint vertices;
@@ -135,6 +155,8 @@ namespace gl
     mesh_geom* get_model_mesh(const std::string &file);
 
 	void bind_light(GLuint programID, light_data light);
+
+	void bind_texture(const texture &tex, int index);
 
 	void render(std::shared_ptr<render_data> rd);
 }
