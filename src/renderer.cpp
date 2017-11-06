@@ -104,6 +104,7 @@ void renderer::render()
 	{
 		// bind effect
 		gl::render(r);
+		glBindVertexArray(0);
 	}
 
 	glfwPollEvents();

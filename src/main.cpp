@@ -66,7 +66,7 @@ int main()
     // Adding cube
     auto c = entity_manager::get()->create_entity("Cube", state_type::GAME, cubeTrans);
     c->add_component("physics", physics_system::get()->build_component(c));
-    c->add_component("render", renderer::get()->build_component(c, "Green", "", "cube", "Gouraud", simple));
+    c->add_component("render", renderer::get()->build_component(c, "Green", "res/textures/check.jpg", "cube", "Gouraud", phong));
 
 	//c->add_component("collider", physics_system::get()->build_collider_component(c, cubeTrans.scale));
 

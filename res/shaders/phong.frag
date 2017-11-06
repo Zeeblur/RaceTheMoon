@@ -33,9 +33,7 @@ void main()
 
 	float diffuse = max(0.0, dot(normalize(trans_normal), -dir_light.light_dir));
 	vec4 ambient = vec4(dir_light.light_colour * (dir_light.ambient_intensity + diffuse), 1.0);
-ambient = ambient + frag_colour;
-	out_colour = texture(tex, tex_coord);// * ambient;
-
-	//out_colour = vec4(1.0, 0.0, 1.0, 1.0);
+	ambient = ambient + frag_colour;
+	out_colour = texture(tex, tex_coord);//* ambient;
 	out_colour.a = 1.0f;
 }
