@@ -15,6 +15,8 @@ struct physics_data
     float x = 0.0f;
     float y = 0.0f;
     float z = 0.0f;
+	glm::quat rotation = glm::quat();
+	glm::quat rotateby = glm::quat();
     glm::vec3 currentVelocity = glm::vec3(0.0f, 0.0f, 0.0f);
     bool moveRequest = false;
 	physics_data(transform_data trans);

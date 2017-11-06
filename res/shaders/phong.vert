@@ -5,6 +5,7 @@ uniform mat4 MVP;
 uniform mat4 M;
 uniform mat3 N;
 
+
 in vec3 position;
 in vec3 normal;
 in vec4 in_colour;

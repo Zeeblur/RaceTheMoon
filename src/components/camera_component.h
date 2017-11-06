@@ -42,7 +42,7 @@ private:
 
 	std::shared_ptr<entity> _parent;
 
-	glm::vec3 _position = glm::vec3(0.0, 0.0, -10.0f);
+	glm::vec3 _position = glm::vec3(0.0, 0.0, 10.0f);
 	glm::vec3 _target = glm::vec3(0.f, 0.f, 0.0f);
 	glm::vec3 _up = glm::vec3(0.f, 1.f, 0.f);
 
@@ -54,10 +54,11 @@ private:
 
 
 	// The offset of the camera from its desired position
-	glm::vec3 _pos_offset = glm::vec3(0.0f, 20.0f, 50.f);
+	glm::vec3 _pos_offset = glm::vec3(0.0f, 30.0f, 45.f);
+	//glm::vec3(0.0f, 30.0f, 25.f);
 
 	// The offset of the camera relative to the target
-	glm::vec3 _target_offset;
+	glm::vec3 _target_offset = glm::vec3(0.0f, -30.0f, -100.f);;
 
 	// Springiness factor of the camera
 	float _springiness = 2.0f;
@@ -82,6 +83,7 @@ public:
 
 	glm::mat4 get_projection() const { return _projection; }
 	glm::mat4 get_view() const { return _view; }
+	std::shared_ptr<camera_projection> get_data() const { return _data; }
 };
 
 

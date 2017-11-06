@@ -23,9 +23,8 @@ public:
     Loads a texture from the given filename with mipmaps and anisotropic
     filtering determined by the user.
     */
-    texture(const std::string &filename, bool mipmaps, bool anisotropic) throw (...);
-
-    // Default copy constructor and assignment operator
+	texture(const std::string &filename, bool mipmaps, bool anisotropic);
+   // Default copy constructor and assignment operator
     texture(const texture &other) = default;
     texture& operator=(const texture &rhs) = default;
     // Destroys the texture

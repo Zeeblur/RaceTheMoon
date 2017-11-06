@@ -27,7 +27,7 @@ bool check_file_exists(const std::string &filename) {
 }
 
 // Creates a new texture object from the given file with mipmaps and anisotropic filtering defined
-texture::texture(const std::string &filename, bool mipmaps, bool anisotropic) throw(...) 
+texture::texture(const std::string &filename, bool mipmaps, bool anisotropic) 
 {
 	
 

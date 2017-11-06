@@ -52,26 +52,26 @@ void camera_component::update(float delta_time)
 
 	glm::vec3 target_pos = glm::vec3(_parent->get_trans().x, _parent->get_trans().y, _parent->get_trans().z);
 
-	glm::vec3 target_rot = _parent->get_trans().rotation;
+	glm::quat target_rot = _parent->get_trans().rotation;
 
-	glm::vec3 _relative_rotation = glm::vec3(0, 0, 0);
+	glm::quat _relative_rotation = glm::quat();
 
 	// Calculate the combined rotation as a quaternion
-	glm::quat rotation(target_rot +_relative_rotation);
+	glm::quat rotation = target_rot * _relative_rotation;
 
 	// Now calculate the desired position
-	glm::vec3 desired_position = target_pos + _pos_offset;// +(rotation * _pos_offset);
+	glm::vec3 desired_position = target_pos + (rotation * _pos_offset);
 	// Our actual position lies somewhere between our current position and the
 	// desired position
 	// can add this here but not working properly
 	//_position = glm::mix(_position, desired_position, _springiness);
 
 	// Calculate new target offset based on rotation
-	//_target_offset = rotation * _target_offset;
+	_target_offset = rotation * _target_offset;
 	// Target is then the target position plus this offset
-	_target = target_pos;// +_target_offset;
+	_target = target_pos +_target_offset;
 
-	// Calculate up vector based on rotation
+	// Calculate up vector based on rotation //rotation *
 	_up = rotation * glm::vec3(0.0f, 1.0f, 0.0f);
 
 	// Calculate view matrix

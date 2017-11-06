@@ -101,9 +101,9 @@ namespace gl
 
 		// shape is now mesh
 		std::shared_ptr<gl::mesh_geom> mesh;
-		texture tex;
+
 		// Reference to texture object
-		std::shared_ptr<texture> texture;
+		std::shared_ptr<texture> texture = nullptr;
 	};
 
     // store vao/vbos for obj
@@ -117,6 +117,7 @@ namespace gl
         std::map<GLuint, GLuint> buffers;
         // The OpenGL ID of the index buffer
         GLuint index_buffer;
+		GLuint tex_coord_buffer;
         bool has_indices;
         // The number of vertices in the geometry
         // GLuint vertices;
@@ -140,7 +141,7 @@ namespace gl
 
 	void bind_light(GLuint programID, light_data light);
 
-	void bind_texture(texture tex, int index);
+	void bind_texture(const texture &tex, int index);
 
 	void render(std::shared_ptr<render_data> rd);
 }

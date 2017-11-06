@@ -187,8 +187,8 @@ namespace gl
         }
 
 
-        // Add buffer to map
-        data.buffers[index] = id;
+        // Add buffe
+		data.buffers[index] = id;
         return true;
     }
 
@@ -318,9 +318,10 @@ namespace gl
 						auto tex_coord = mesh->mTextureCoords[count][i];
 						ret->tex_coords.push_back(glm::vec2(tex_coord.x, tex_coord.y));
 					}
+					break;
 				}
 			}
-
+			      
             // If we have face information, then add to index buffer
             if (mesh->HasFaces())
                 for (unsigned int f = 0; f < mesh->mNumFaces; ++f) {
@@ -338,7 +339,7 @@ namespace gl
             ret->min = glm::min(ret->min, v);
             ret->max = glm::max(ret->max, v);
         }
-
+		 
         // Log success
         std::clog << "LOG - geometry " << path << " loaded "
             << (ret->normals.size() ? "With normals & " : "With no normals & ")
@@ -689,12 +690,15 @@ namespace gl
 		}
 	}
 
-	void gl::bind_texture(texture tex, int index)
+	void gl::bind_texture(const texture &tex, int index)
 	{
 		// Check texture is valid
 		//assert(tex.get_id() != 0);
 		// Check that index is valid
 		//assert(index >= 0);
+		if (index == -1)
+			return;
+
 		// Set active texture
 		glActiveTexture(GL_TEXTURE0 + index);
 		// Bind texture
@@ -723,12 +727,12 @@ namespace gl
 
 		// bind the texture if it exists // TODO: change index to something meaningful
 		if (rd->texture)
-			bind_texture(*rd->texture.get(), glGetUniformLocation(programID, "tex"));
+			bind_texture(*rd->texture, glGetUniformLocation(programID, "tex"));
 
 		// bind the matrices
 
 		auto loc = glGetUniformLocation(programID, "MVP");
-		if (loc != -1)
+		if (loc != -1) 
 			glUniformMatrix4fv(loc, 1, GL_FALSE, value_ptr(rd->MVP));
 
 		loc = glGetUniformLocation(programID, "M");
@@ -753,7 +757,16 @@ namespace gl
 			throw std::runtime_error("Error rendering geometry");
 		}
 
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, om->buffers[TEXTURE_COORDS_0]);
+		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, om->tex_coord_buffer);
+
+		if (gl::CHECK_GL_ERROR)
+		{
+			// Display error
+			std::cerr << "ERROR - rendering geometry" << std::endl;
+			std::cerr << "Could not bind vertex array object" << std::endl;
+			// Throw exception
+			throw std::runtime_error("Error rendering geometry");
+		}
 
 		// If there is an index buffer then use to render
 		if (om->has_indices)

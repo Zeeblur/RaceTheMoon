@@ -64,29 +64,16 @@ int main()
 	//cubeTrans.y = 1.0f;
 	cubeTrans.z = -20.0f;
     // Adding cube
- //   auto c = entity_manager::get()->create_entity("Cube", state_type::GAME, cubeTrans);
- //   c->add_component("physics", physics_system::get()->build_component(c));
- //   c->add_component("render", renderer::get()->build_component(c, "Green", "cube", "Gouraud", simple));
+    auto c = entity_manager::get()->create_entity("Cube", state_type::GAME, cubeTrans);
+    c->add_component("physics", physics_system::get()->build_component(c));
+    c->add_component("render", renderer::get()->build_component(c, "Green", "", "cube", "Gouraud", simple));
+
 	//c->add_component("collider", physics_system::get()->build_collider_component(c, cubeTrans.scale));
 
 	transform_data batTrans;
 	batTrans.y = 5.0f;
-	batTrans.scale = glm::vec3(1.0f, 1.0f, 1.0f);
-	//batTrans.rotation = glm::vec3(1.0f, 0.0f, 0.0f);
-	//batTrans.theta = 90;
-
-	transform_data batTrans2;
-	batTrans2.y = 5.0f;
-	//batTrans2.x = -20.0f;
-	//batTrans2.z = -20.0f;
-	batTrans2.scale = glm::vec3(1.0f, 1.0f, 1.0f);
-
-	// Bat entity 2
-	auto b = entity_manager::get()->create_entity("xd", state_type::GAME, batTrans2);
-	b->add_component("physics", physics_system::get()->build_component(b));
-	b->add_component("render", renderer::get()->build_component(b, "Blue", "", "res/models/bat.obj", "Gouraud", phong));
-	//b->add_component("camera", camera_system::get()->build_component(b, camera_type::CHASE));
-	b->add_component("collider", physics_system::get()->build_collider_component(b, batTrans2.scale * 5.0f));
+	batTrans.scale = glm::vec3(0.5f, 0.5f, 0.5f);
+	batTrans.rotation = glm::angleAxis(90.0f, glm::vec3(1.0f, 0.0f, 0.0f)) * glm::angleAxis(radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
     // Bat entity
     auto e = entity_manager::get()->create_entity("Bat", state_type::GAME, batTrans);
@@ -94,9 +81,7 @@ int main()
     e->add_component("input", input_handler::get()->build_component(e));
     e->add_component("render", renderer::get()->build_component(e, "Blue","res/textures/bat.jpg", "res/models/bat.obj", "Gouraud", phong));
     e->add_component("camera", camera_system::get()->build_component(e, camera_type::CHASE));
-	e->add_component("collider", physics_system::get()->build_collider_component(e, batTrans.scale * 5.0f));
-
-
+	//e->add_component("collider", physics_system::get()->build_collider_component(e, batTrans.scale * 5.0f));
 
     int x_size = 0;
     int y_size = 0;
@@ -104,7 +89,7 @@ int main()
     glfwGetWindowSize(glfw::window, &x_size, &y_size);
 
     int x_center = x_size / 2;
-    int y_center = y_size / 2;
+    int y_center = y_size / 2; 
 
     int x_button_size = 100;
     int y_button_size = 50;
@@ -112,7 +97,7 @@ int main()
 	// button trans
 	transform_data buttonTrans;
 	buttonTrans.scale = glm::vec3(x_button_size, y_button_size, 1.0f);
-
+	  
     // Y offset between buttons
     int button_offset = 100;
     // Menu buttons
