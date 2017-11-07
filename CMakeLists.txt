@@ -137,44 +137,44 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 	add_subdirectory("lib/glew")
 	target_include_directories(RaceTheMoon PUBLIC "lib/glew/include")
 	## get library for os
-	GET_DIRECTORY_PROPERTY(glew DIRECTORY "lib/glew" DEFINITION GLEW_NAME)
+	GET_DIRECTORY_PROPERTY(GLEWLIB DIRECTORY "lib/glew" DEFINITION GLEW_NAME)
 
-    set(glew
+    set(GLEWLIB
             ${OPENGL_LIBRARIES}
             -lGL -lGLU -lXrandr -lXext -lX11 -lrt
             ${CMAKE_DL_LIBS}
 	    glm
-		 ${glew}
+		 ${GLEWLIB}
          )
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    set(glew
+    set(GLEWLIB
             ${OPENGL_LIBRARIES}
             ${CMAKE_DL_LIBS}
 	    glm
-			${glew}
+			${GLEWLIB}
 		)
 else()
 	# GLEW https://github.com/Perlmint/glew-cmake.git ea68a21
 	add_subdirectory("lib/glew_windows")
 	target_include_directories(RaceTheMoon PUBLIC "lib/glew_windows/include")
-	set(GLEWLIB libglew_shared) 
+	set(GLEWLIB libglew_shared)
+    set_target_properties(${GLEWLIB} PROPERTIES
+            RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+            ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
+            LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+            )
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 #====================================================================
 
 
-set_target_properties(${GLEWLIB} PROPERTIES
-  RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-  ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
-  LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-)
 
 #====================================================================
 
 target_link_libraries(RaceTheMoon 
 	PUBLIC ${GLEWLIB}
 	PUBLIC glfw
-	PUBLIC assimp 
+	PUBLIC assimp
 )
 add_dependencies(RaceTheMoon
 	copy_resources
@@ -198,9 +198,10 @@ endif()
 
 FOREACH(dep ${deps})
 	#Hide deps in dep VS project folder
-	set_target_properties(${dep} PROPERTIES FOLDER "DEPS")
+
 	if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 	else()
+        set_target_properties(${dep} PROPERTIES FOLDER "DEPS")
 		#Disable warnings for deps
 		target_compile_options(${dep} PUBLIC "/W0")
 		#use all core compilation

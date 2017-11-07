@@ -37,7 +37,7 @@ std::shared_ptr<render_component> renderer::build_component(std::shared_ptr<enti
 
 	// add texture stuff
 	if (texture_path != "")
-		_rd->texture = std::make_shared<gl::texture>(gl::texture(texture_path));
+		_rd->textureObj = std::make_shared<gl::texture>(gl::texture(texture_path));
 
 	return std::make_shared<render_component>(e, _rd);
 }

@@ -735,7 +735,7 @@ namespace gl
         return std::shared_ptr<mesh_geom>(mesh);
     }
 
-	void gl::bind_light(GLuint programID, light_data light)
+	void bind_light(GLuint programID, light_data light)
 	{
 		// Check for ambient intensity
 		auto idx = glGetUniformLocation(programID, "dir_light.ambient_intensity");
@@ -779,7 +779,7 @@ namespace gl
 		}
 	}
 
-	void gl::bind_texture(const texture &tex, int index)
+	void bind_texture(const texture &tex, int index)
 	{
 		// Check texture is valid
 		assert(tex._id != 0);
@@ -805,7 +805,7 @@ namespace gl
 		}
 	}
 
-	void gl::render(std::shared_ptr<render_data> rd)
+	void render(std::shared_ptr<render_data> rd)
 	{
 		auto programID = rd->effect->program;
 		glUseProgram(programID);
@@ -819,9 +819,9 @@ namespace gl
 			bind_light(programID, light);
 
 		// bind the texture if it exists // TODO: change index to something meaningful
-		if (rd->texture)
+		if (rd->textureObj)
 		{
-			glBindTexture(GL_TEXTURE_2D, rd->texture->_id);
+			glBindTexture(GL_TEXTURE_2D, rd->textureObj->_id);
 		//bind_texture(*rd->texture, rd->texture->_id);
 		}
 

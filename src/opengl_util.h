@@ -114,7 +114,7 @@ namespace gl
 		std::shared_ptr<gl::mesh_geom> mesh;
 
 		// Reference to texture object
-		std::shared_ptr<texture> texture = nullptr;
+		std::shared_ptr<texture> textureObj;
 	};
 
     // store vao/vbos for obj
