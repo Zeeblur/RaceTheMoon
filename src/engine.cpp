@@ -1,6 +1,7 @@
 #include "engine.h"
 
 #include <iostream>
+#include <chrono>
 
 using namespace glfw;
 
@@ -66,15 +67,25 @@ void engine::mainLoop()
     // Loop until not running.
     // Check if the ESC key was pressed or the window was closed
 
+	float dt = 1 / 60.0;
+
+	auto currentTime = std::chrono::system_clock::now();
+
     while (_running && glfwWindowShouldClose(window) == 0)
     {
         //std::cout << "Engine Running" << std::endl;
+		auto newTime = std::chrono::system_clock::now();
 
-        // Update the subsystems.  At the moment use dummy time of 1.0s.  You
-        // will want to use a proper timer.
-        for (auto &sys : _subsystems)
-            if (sys.second->get_active())
-                sys.second->update(1.0);
+		float frameTime = std::chrono::duration_cast<std::chrono::milliseconds>(newTime - currentTime).count();
+		currentTime = newTime;
+
+		// variable delta time
+		float deltaTime = frameTime / 100.0f; // std::min (dt) ?
+		// Update the subsystems. 
+		for (auto &sys : _subsystems)
+			if (sys.second->get_active())
+				sys.second->update(deltaTime);
+
         // Render the subsystems.
         for (auto &sys : _subsystems)
             if (sys.second->get_visible())

@@ -6,6 +6,7 @@
 #include "systems/input_handler.h"
 #include "systems/clickable_system.h"
 #include "systems/camera_system.h"
+#include "systems/score_system.h"
 
 enum state_type
 {

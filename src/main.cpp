@@ -38,6 +38,7 @@ int main()
     eng->add_subsystem("input_handler", input_handler::get());
 	eng->add_subsystem("clickable_system", clickable_system::get());
 	eng->add_subsystem("camera_system", camera_system::get());
+	eng->add_subsystem("score_system", score_system::get());
 
     engine_state_machine::get()->add_state("menu_state", std::make_shared<menu_state>(), state_type::MENU);
     engine_state_machine::get()->add_state("game_state", std::make_shared<game_state>(), state_type::GAME);
