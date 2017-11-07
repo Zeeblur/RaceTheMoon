@@ -55,6 +55,10 @@ state_type engine_state_machine::get_current_state_type()
 
 bool engine_state_machine::initialise()
 {
+	for (auto &s : _states)
+	{
+		s.second->initialise();
+	}
     return true;
 }
 

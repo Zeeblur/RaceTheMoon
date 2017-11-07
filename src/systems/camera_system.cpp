@@ -41,7 +41,6 @@ std::shared_ptr<camera_component> camera_system::build_component(std::shared_ptr
 
 bool camera_system::initialise()
 {
-	std::cout << "Camera system initialising" << std::endl;
 	return true;
 }
 

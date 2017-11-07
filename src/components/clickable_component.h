@@ -2,7 +2,6 @@
 #include "../entity.h"
 #include "component.h"
 #include <glm/glm.hpp>
-#include "../engine_state.h"
 
 struct clickable_data
 {

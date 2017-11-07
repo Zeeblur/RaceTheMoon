@@ -185,6 +185,7 @@ add_dependencies(RaceTheMoon
 set(deps glfw assimp ${GLEWLIB} )
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 else()
 	set(junk 
 		glm_dummy 
@@ -200,6 +201,7 @@ FOREACH(dep ${deps})
 	#Hide deps in dep VS project folder
 
 	if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+	elseif(${CMAKE_SYSTEM_NAME} MATCHES "DARWIN")
 	else()
         set_target_properties(${dep} PROPERTIES FOLDER "DEPS")
 		#Disable warnings for deps
