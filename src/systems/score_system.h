@@ -19,6 +19,8 @@ private:
 
 	score_system();
 
+	float totalTime = 0;
+	int seconds = 0;
 public:
 
     static inline std::shared_ptr<score_system> get()

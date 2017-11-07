@@ -23,7 +23,11 @@ bool score_system::load_content()
 
 void score_system::update(float delta_time)
 {
-	std::cout << "reeee " << delta_time << std::endl;
+	totalTime += (delta_time);
+
+	seconds = fmod(totalTime, 1000);
+	
+	std::cout << "reeee " << seconds << std::endl;
 }
 
 void score_system::render()
