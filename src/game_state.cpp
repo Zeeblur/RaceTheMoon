@@ -41,6 +41,17 @@ void game_state::initialise()
 
 }
 
+void game_state::on_reset()
+{
+	auto bat = entity_manager::get()->get_entity("Bat");
+	bat->get_component("physics")->initialise();
+	/*bat->get_trans().x = 0;
+	bat->get_trans().z = 0;*/
+
+	// set score system active
+	engine::get()->get_subsystem("score_system")->initialise();
+}
+
 void game_state::on_enter()
 {
     // Turn on entities, physics, renderer

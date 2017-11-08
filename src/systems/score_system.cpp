@@ -12,6 +12,9 @@ score_system::score_system()
 
 bool score_system::initialise()
 {
+	totalTime = 0;
+	seconds = 0;
+
 	return true;
 }
 

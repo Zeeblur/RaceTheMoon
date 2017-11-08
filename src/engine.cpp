@@ -80,7 +80,7 @@ void engine::mainLoop()
 		currentTime = newTime;
 
 		// variable delta time
-		float deltaTime = frameTime / 100.0f; // std::min (dt) ?
+		float deltaTime = frameTime / 1000.0f; // std::min (dt) ?
 		// Update the subsystems. 
 		for (auto &sys : _subsystems)
 			if (sys.second->get_active())

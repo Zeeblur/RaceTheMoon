@@ -40,6 +40,11 @@ void menu_state::initialise()
 
 }
 
+void menu_state::on_reset()
+{
+
+}
+
 void menu_state::on_enter()
 {
     // Switch off entities, physics, renderer
