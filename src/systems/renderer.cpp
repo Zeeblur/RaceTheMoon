@@ -35,6 +35,10 @@ std::shared_ptr<render_component> renderer::build_component(std::shared_ptr<enti
 	
 	_rd->effect = programIDs[effType];
 
+	e->get_trans().max = _rd->mesh->max;
+	e->get_trans().min = _rd->mesh->min;
+
+
 	// add texture stuff
 	if (texture_path != "")
 		_rd->textureObj = std::make_shared<gl::texture>(gl::texture(texture_path));
