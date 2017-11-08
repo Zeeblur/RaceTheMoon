@@ -21,17 +21,10 @@ std::shared_ptr<physics_component> physics_system::build_component(std::shared_p
 
 std::shared_ptr<collider_component> physics_system::build_collider_component(std::shared_ptr<entity> e)
 {
-	_collider_data.push_back(collider_data());
-	return std::make_shared<collider_component>(e, std::ref(_collider_data.back()));
-}
+	auto cd = std::make_shared<collider_data>(collider_data(e->get_trans()));
 
-std::shared_ptr<collider_component> physics_system::build_collider_component(std::shared_ptr<entity> e, glm::vec3 scale)
-{
-	_collider_data.push_back(collider_data());
-	_collider_data.back().collider.radius[0] = scale.x;
-	_collider_data.back().collider.radius[1] = scale.y;
-	_collider_data.back().collider.radius[2] = scale.z;
-	return std::make_shared<collider_component>(e, std::ref(_collider_data.back()));
+	_collider_data.push_back(cd);
+	return std::make_shared<collider_component>(e, cd);
 }
 
 bool physics_system::initialise()
@@ -111,7 +104,7 @@ void physics_system::update(float delta_time)
 		// Check for collisions
 		for (size_t i = 0; i < _collider_data.size() - 1; ++i)
 		{
-			is_colliding(_collider_data[i].collider, _collider_data[i + 1].collider);
+			is_colliding(*_collider_data[i]->collider, *_collider_data[i + 1]->collider);
 		}
 	}
 

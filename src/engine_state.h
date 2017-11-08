@@ -29,6 +29,8 @@ public:
 
 	virtual void initialise() = 0;
 
+	virtual void on_reset() = 0;
+
     virtual void on_enter() = 0;
 
     virtual void on_update(float delta_time) = 0;

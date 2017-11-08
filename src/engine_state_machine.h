@@ -14,7 +14,7 @@ public:
 
     void add_state(const std::string &name, std::shared_ptr<engine_state> state, state_type type);
 
-    void change_state(const std::string &name);
+    void change_state(const std::string &name, bool reset = false);
 
     std::string get_current_state();
 

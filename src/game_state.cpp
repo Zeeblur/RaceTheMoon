@@ -25,6 +25,7 @@ void game_state::initialise()
     transform_data cubeTrans;
     cubeTrans.scale = glm::vec3(10.0f, 10.0f, 10.0f);
     cubeTrans.x = -20.0f;
+    cubeTrans.y = 5.0f;
     cubeTrans.z = -20.0f;
     auto c = entity_manager::get()->create_entity("Cube", this->type, cubeTrans);
     c->add_component("physics", physics_system::get()->build_component(c));
@@ -73,7 +74,7 @@ void game_state::initialise()
     s->add_component("input", input_handler::get()->build_ai_component(s));
     s->add_component("render", renderer::get()->build_component(s, "White", "res/textures/sun.png", "sphere", "Gouraud", phong));
 
-	//c->add_component("collider", physics_system::get()->build_collider_component(c, cubeTrans.scale));
+	c->add_component("collider", physics_system::get()->build_collider_component(c));
 
 	transform_data batTrans;
 	batTrans.y = 5.0f;
@@ -86,7 +87,7 @@ void game_state::initialise()
 	e->add_component("input", input_handler::get()->build_component(e));
 	e->add_component("render", renderer::get()->build_component(e, "Blue", "res/textures/bat.jpg", "res/models/bat.obj", "Gouraud", phong));
 	e->add_component("camera", camera_system::get()->build_component(e, camera_type::CHASE));
-	//e->add_component("collider", physics_system::get()->build_collider_component(e, batTrans.scale * 5.0f));
+	e->add_component("collider", physics_system::get()->build_collider_component(e));
 
 }
 
@@ -130,6 +131,15 @@ void game_state::initialise()
 //    c4->add_component("physics", physics_system::get()->build_component(c4));
 //    c4->add_component("render", renderer::get()->build_component(c4, "Green", "res/textures/moon.png", "cube", "Gouraud", phong));
 //}
+
+void game_state::on_reset()
+{
+	auto bat = entity_manager::get()->get_entity("Bat");
+	bat->get_component("physics")->initialise();
+
+	// set score system active
+	engine::get()->get_subsystem("score_system")->initialise();
+}
 
 void game_state::on_enter()
 {

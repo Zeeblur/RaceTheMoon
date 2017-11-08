@@ -20,7 +20,9 @@ void engine_state_machine::add_state(const std::string &name, std::shared_ptr<en
     _states[name] = state;
 }
 
-void engine_state_machine::change_state(const std::string &name)
+
+
+void engine_state_machine::change_state(const std::string &name, bool reset)
 {
     if (name != _current_state_name)
     {
@@ -30,6 +32,10 @@ void engine_state_machine::change_state(const std::string &name)
             if (_current_state != nullptr)
                 _current_state->on_exit();
             _current_state = found->second;
+
+			if (reset)
+				_current_state->on_reset();
+
             _current_state->on_enter();
             _current_state_name = name;
             _current_state_type = _current_state->type;
@@ -76,7 +82,7 @@ void engine_state_machine::update(float delta_time)
         if (cs->get_clicked_component_name() == "buttonPlay")
         {
 			std::cout << "Test" << std::endl;
-            engine_state_machine::get()->change_state("game_state");
+            engine_state_machine::get()->change_state("game_state", true);
             cs->clear_clicked_component_name();
         }
         else if (cs->get_clicked_component_name() == "buttonExit")
@@ -128,9 +134,9 @@ void engine_state_machine::update(float delta_time)
     {
         switch (engine_state_machine::get()->get_current_state_type())
         {
-            // Go from menu state to game state
+            // Go from menu state to game state RESETTING GAME
         case state_type::MENU:
-            engine_state_machine::get()->change_state("game_state");
+            engine_state_machine::get()->change_state("game_state", true);
             break;
         default:
             // do nothing

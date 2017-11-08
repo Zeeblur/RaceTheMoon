@@ -12,6 +12,9 @@ score_system::score_system()
 
 bool score_system::initialise()
 {
+	totalTime = 0;
+	seconds = 0;
+
 	return true;
 }
 
@@ -27,7 +30,7 @@ void score_system::update(float delta_time)
 
 	seconds = fmod(totalTime, 1000);
 	
-	std::cout << "reeee " << seconds << std::endl;
+	//std::cout << "reeee " << seconds << std::endl;
 }
 
 void score_system::render()

@@ -9,6 +9,8 @@ public:
     
     void bad_map(int iter, int iter2);
 
+	void on_reset();
+
     void on_enter();
 
     void on_update(float delta_time);
