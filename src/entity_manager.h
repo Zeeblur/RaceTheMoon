@@ -34,6 +34,10 @@ public:
 			for (auto &e : entLists)
 				if (e.first == name)
 					return e.second;
+
+		// else error
+		std::cout << "ENTITY "<< name <<" NOT FOUND" << std::endl;
+		return nullptr;
 	}
 
     std::shared_ptr<entity> create_entity(const std::string &name, int state, transform_data trans = transform_data())

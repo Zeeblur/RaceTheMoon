@@ -19,7 +19,8 @@ struct AABB
 struct collider_data
 {
 	bool active = false;
-	AABB collider;
+	std::shared_ptr<AABB> collider;
+	collider_data(transform_data trans);
 };
 
 struct collider_component : public component
@@ -27,12 +28,12 @@ struct collider_component : public component
 private:
 	// We'll just keep a reference here.  The physics system
 	// will maintain the actual data.
-	collider_data &_data;
+	std::shared_ptr<collider_data> _data;
 
 	// We'll also keep a reference to the parent entity
 	std::shared_ptr<entity> _parent;
 public:
-	collider_component(std::shared_ptr<entity> &e, collider_data &data);
+	collider_component(std::shared_ptr<entity> &e, std::shared_ptr<collider_data> &data);
 
 	bool initialise() override final;
 
