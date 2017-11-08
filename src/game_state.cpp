@@ -24,6 +24,15 @@ void game_state::initialise()
 	c->add_component("physics", physics_system::get()->build_component(c));
 	c->add_component("render", renderer::get()->build_component(c, "Green", "res/textures/check.jpg", "cube", "Gouraud", phong));
 
+    // Adding moon sphere
+    transform_data moonTrans;
+    moonTrans.scale = glm::vec3(10.0f, 10.0f, 10.0f);
+    moonTrans.z = -1000.0f;
+    auto m = entity_manager::get()->create_entity("Moon", this->type, moonTrans);
+    m->add_component("physics", physics_system::get()->build_component(m));
+    m->add_component("input", input_handler::get()->build_ai_component(m));
+    m->add_component("render", renderer::get()->build_component(m, "White", "res/textures/check.jpg", "sphere", "Gouraud", phong));
+
 	//c->add_component("collider", physics_system::get()->build_collider_component(c, cubeTrans.scale));
 
 	transform_data batTrans;

@@ -18,6 +18,12 @@ std::shared_ptr<input_component> input_handler::build_component(std::shared_ptr<
     return std::make_shared<input_component>(e);
 }
 
+std::shared_ptr<ai_component> input_handler::build_ai_component(std::shared_ptr<entity> e)
+{
+    // create ai component and pass in handler instance
+    return std::make_shared<ai_component>(e);
+}
+
 bool input_handler::initialise()
 {
     std::cout << "Input handler initialising" << std::endl;
@@ -32,6 +38,9 @@ bool input_handler::initialise()
     buttonRight_ = new MoveCommand(right);
     auto forward = glm::vec3(0.0f, 0.0f, -1.0f);
     buttonUp_ = new MoveCommand(forward);
+    auto up = glm::vec3(0.0f, 1.0f, 0.0f);
+    aiUp_ = new MoveCommand(up);
+
 
     return true;
 }
@@ -78,5 +87,14 @@ std::vector<Command*> input_handler::handle_input()
     if (glfwGetKey(glfw::window, GLFW_KEY_D))
         commands.push_back(buttonRight_);
 	
+    return commands;
+}
+
+std::vector<Command*> input_handler::handle_ai()
+{
+    std::vector<Command*> commands;
+
+    commands.push_back(aiUp_);
+
     return commands;
 }
