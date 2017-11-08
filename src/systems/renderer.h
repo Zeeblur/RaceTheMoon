@@ -1,11 +1,11 @@
 #pragma once
 
 #include <iostream>
-#include "entity.h"
-#include "opengl_util.h"
-#include "components/render_component.h"
-#include "subsystem.h"
-#include "components/light_component.h"
+#include "../entity.h"
+#include "../opengl_util.h"
+#include "../components/render_component.h"
+#include "../subsystem.h"
+#include "../components/light_component.h"
 
 class renderer : public subsystem
 {

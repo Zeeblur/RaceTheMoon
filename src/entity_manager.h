@@ -19,7 +19,7 @@ private:
 
 public:
 
-    state_type currentState;
+    int currentState;
 
     inline static std::shared_ptr<entity_manager>& get()
     {
@@ -36,7 +36,7 @@ public:
 					return e.second;
 	}
 
-    std::shared_ptr<entity> create_entity(const std::string &name, state_type state, transform_data trans = transform_data())
+    std::shared_ptr<entity> create_entity(const std::string &name, int state, transform_data trans = transform_data())
     {
         auto e = std::make_shared<entity>(name, trans);
 		e->state = state;

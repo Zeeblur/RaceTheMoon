@@ -4,8 +4,18 @@
 
 #include "physics_component.h"
 
-physics_data::physics_data(transform_data trans) : x(trans.x), y(trans.y), z(trans.z), rotation(trans.rotation)
+physics_data::physics_data(transform_data trans) : x(trans.x), y(trans.y), z(trans.z), rotation(trans.rotation), _orig_trans(trans)
 {}
+
+void physics_data::reset_data()
+{
+	x = _orig_trans.x;
+	y = _orig_trans.y;
+	z = _orig_trans.z;
+	rotation = _orig_trans.rotation;
+	rotateby = glm::quat();
+	currentVelocity = glm::vec3(0.0f, 0.0f, 0.0f);
+}
 
 physics_component::physics_component(std::shared_ptr<entity> &e, std::shared_ptr<physics_data> &data)
     : _parent(e), _data(data)
@@ -16,6 +26,7 @@ physics_component::physics_component(std::shared_ptr<entity> &e, std::shared_ptr
 
 bool physics_component::initialise()
 {
+	_data->reset_data();
     return true;
 }
 

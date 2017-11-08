@@ -22,7 +22,7 @@ private:
     void cap_speed(glm::vec3& currentSpeed);
 
     // move scale is scaled by framerate
-    float moveScale = 1.0f;
+    float moveScale = 60.0f;
 
     glm::vec3 acceleration = glm::vec3(0.2f * moveScale);
     glm::vec3 deceleration = glm::vec3(0.4f * moveScale);

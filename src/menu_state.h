@@ -5,6 +5,10 @@
 class menu_state : public engine_state
 {
 public:
+	void initialise();
+	
+	void on_reset();
+
     void on_enter();
 
     void on_update(float delta_time);

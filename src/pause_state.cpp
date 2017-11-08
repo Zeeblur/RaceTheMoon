@@ -2,6 +2,17 @@
 #include "entity_manager.h"
 #include "systems/clickable_system.h"
 #include <iostream>
+
+void pause_state::initialise()
+{
+
+}
+
+void pause_state::on_reset()
+{
+
+}
+
 void pause_state::on_enter()
 {
     engine::get()->get_subsystem("clickable_system")->set_active(true);

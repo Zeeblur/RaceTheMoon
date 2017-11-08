@@ -6,15 +6,12 @@
 
 camera_component::camera_component(std::shared_ptr<entity> &e, std::shared_ptr<camera_projection> data)
 	: _parent(e), _data(data)
-{}
+{
+	set_projection_view(_data); // set proj view mat
+}
 
 bool camera_component::initialise()
 { 
-	// initialise the camera.
-
-	// set perspective.
-	set_projection_view(_data);
-
 	return true;
 }
 
