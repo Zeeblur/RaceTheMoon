@@ -477,13 +477,13 @@ namespace gl
         std::vector<glm::vec3> positions
         {
 			// 1
-			glm::vec3(100.0f, 0.0f, -100.0f),
-			glm::vec3(-100.0f,  0.0f, -100.0f),
-			glm::vec3(-100.0f,  0.0f, 100.0f),
+			glm::vec3(1000.0f, 0.0f, -10000.0f),
+			glm::vec3(-1000.0f,  0.0f, -10000.0f),
+			glm::vec3(-1000.0f,  0.0f, 100.0f),
 			// 2
-			glm::vec3(-100.0f, 0.0f, 100.0f),
-			glm::vec3(100.0f, 0.0f, 100.0f),
-			glm::vec3(100.0f,0.0f, -100.0f)
+			glm::vec3(-1000.0f, 0.0f, 100.0f),
+			glm::vec3(1000.0f, 0.0f, 100.0f),
+			glm::vec3(1000.0f,0.0f, -10000.0f)
 
         };
         // These are probably wrong
@@ -767,7 +767,7 @@ namespace gl
 
         mesh->positions = positions;
         mesh->tex_coords = tex_coords;
-        mesh->colours = colours;
+        //mesh->colours = colours;
 
         return mesh;
     }
