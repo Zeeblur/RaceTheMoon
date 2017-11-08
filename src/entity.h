@@ -8,8 +8,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-enum state_type;
-
 struct transform_data
 {
     float x = 0.0f;
@@ -33,7 +31,7 @@ private:
 
 public:
 	// Used to keep track of which state this entity belongs to
-	state_type state;// = state_type::NONE;
+	int state;
 	inline entity(const std::string& name, transform_data trans)
 		: _name(name), _trans(trans)
 	{
