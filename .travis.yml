@@ -6,6 +6,7 @@ before_install:
         echo "pulling down cmake" ${CMAKE_URL}  
         mkdir cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
         export PATH=${TRAVIS_BUILD_DIR}/cmake/bin:${PATH}
+      fi
   - "cmake --version"
 dist: trusty
 language: generic
