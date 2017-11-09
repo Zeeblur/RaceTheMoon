@@ -26,11 +26,14 @@ bool ai_component::load_content()
 void ai_component::update(float delta_time)
 {
 
+    _ai_data->cur_pos = glm::vec3(_parent->get_trans().x, _parent->get_trans().y, _parent->get_trans().z);
     // move commands change physics comp.
     // get all commands then execute them.
    // std::vector<Command*> commands = input_handler::get()->handle_ai();
-    std::vector<Command*> commands = ai_system::get()->handle_ai();
 
+    std::vector<Command*> commands = ai_system::get()->handle_ai(_ai_data);
+
+    std::cout << "parent name: " << _parent->get_name() << "command vector size: " << commands.size() << std::endl;
     for (Command* com : commands)
         com->execute(_parent);
 

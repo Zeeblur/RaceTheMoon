@@ -34,7 +34,7 @@ public:
     std::shared_ptr<ai_component> build_component(std::shared_ptr<entity> e, unsigned int ai_type, vec3 distance);
 
     std::vector<Command*> handle_input();
-    std::vector<Command*> handle_ai();
+    std::vector<Command*> handle_ai(std::shared_ptr<ai_data> &d);
 
     bool initialise();
     bool load_content();

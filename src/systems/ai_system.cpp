@@ -18,6 +18,8 @@ std::shared_ptr<ai_component> ai_system::build_component(std::shared_ptr<entity>
 
     _ad->ai_type = ai_type;
     _ad->distance = distance;
+    _ad->init_pos = glm::vec3(e->get_trans().x, e->get_trans().y, e->get_trans().z);
+    _ad->cur_pos = glm::vec3(e->get_trans().x, e->get_trans().y, e->get_trans().z);
 
     _ai_data.push_back(_ad);
 
@@ -33,6 +35,8 @@ bool ai_system::initialise()
 
     auto up = glm::vec3(0.0f, 1.0f, 0.0f);
     aiUp_ = new MoveCommand(up);
+
+    auto down = glm::vec3(0.0f, -1.0f, 0.0f);
 
 
     return true;
@@ -71,13 +75,23 @@ std::vector<Command*> ai_system::handle_input()
     return commands;
 }
 
-std::vector<Command*> ai_system::handle_ai()
+std::vector<Command*> ai_system::handle_ai(std::shared_ptr<ai_data> &d)
 {
+
     std::vector<Command*> commands;
+    auto target = glm::distance(d->distance, d->init_pos);
+    auto current = glm::distance(d->init_pos, d->cur_pos);
 
-    for (auto &d : _ai_data)
-    if (d->ai_type ==  0)
+
+   // auto current = d->cur_pos.y;
+
+    std::cout << "cur pos : " << current << std::endl;
+
+    // get initial positon from parent
+    if (d->ai_type == 0 && current < target)
+    {
         commands.push_back(aiUp_);
-
+    }
     return commands;
+
 }

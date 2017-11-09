@@ -64,17 +64,17 @@ void game_state::initialise()
     moonTrans.z = -1000.0f;
     auto m = entity_manager::get()->create_entity("Moon", this->type, moonTrans);
     m->add_component("physics", physics_system::get()->build_component(m));
-    m->add_component("input", ai_system::get()->build_component(m, 0, glm::vec3(0.0f, 10.0f, 0.0f)));
+    m->add_component("ai", ai_system::get()->build_component(m, 0, glm::vec3(0.0f, 10.0f, -1000.0f)));
     m->add_component("render", renderer::get()->build_component(m, "White", "res/textures/moon.png", "sphere", "Gouraud", phong));
 
     // Adding sun sphere
     transform_data sunTrans;
     sunTrans.scale = glm::vec3(30.0f, 30.0f, 30.0f);
-    sunTrans.z = -1000.0f;
     sunTrans.y = -200.0f;
+    sunTrans.z = -1000.0f;
     auto s = entity_manager::get()->create_entity("Sun", this->type, sunTrans);
     s->add_component("physics", physics_system::get()->build_component(s));
-    s->add_component("input", ai_system::get()->build_component(s, 0, glm::vec3(0.0f, 10.0f, 0.0f)));
+    s->add_component("ai", ai_system::get()->build_component(s, 0, glm::vec3(0.0f, 40.0f, -1000.0f)));
     s->add_component("render", renderer::get()->build_component(s, "White", "res/textures/sun.png", "sphere", "Gouraud", phong));
 
 	c->add_component("collider", physics_system::get()->build_collider_component(c));
