@@ -124,12 +124,21 @@ void physics_system::update(float delta_time)
         }
     }
 	// Don't bother checking for collisions unless there are at least 2 colliders
+    // could extend this to only checking bat against everything else?
 	if (_collider_data.size() >= 2)
 	{
 		// Check for collisions
 		for (size_t i = 0; i < _collider_data.size() - 1; ++i)
 		{
-			is_colliding(_collider_data[i]->collider.get(), _collider_data[i + 1]->collider.get());
+			bool col = is_colliding(_collider_data[i]->collider.get(), _collider_data[i + 1]->collider.get());
+
+            // need some bat checking here...
+            if (col)
+            {
+                engine::get()->get_subsystem("score_system")->hurt();
+                break;
+
+            }
 		}
 	}
 

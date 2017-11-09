@@ -33,6 +33,9 @@ bool input_handler::initialise()
     auto forward = glm::vec3(0.0f, 0.0f, -1.0f);
     buttonUp_ = new MoveCommand(forward);
 
+    auto move = glm::vec3(0.0f, 0.0f, -0.2f);
+    fakeMove_ = new MoveCommand(move);
+
     return true;
 }
 
@@ -77,6 +80,10 @@ std::vector<Command*> input_handler::handle_input()
 
     if (glfwGetKey(glfw::window, GLFW_KEY_D))
         commands.push_back(buttonRight_);
-	
+
+
+    //fake always move forward
+    //commands.push_back(fakeMove_);
+
     return commands;
 }

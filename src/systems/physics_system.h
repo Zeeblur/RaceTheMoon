@@ -9,6 +9,7 @@
 #include "../components/physics_component.h"
 #include "../components/collider_component.h"
 #include "../entity_manager.h"
+#include "score_system.h"
 
 class physics_system : public subsystem
 {

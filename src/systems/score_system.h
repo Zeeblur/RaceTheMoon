@@ -8,6 +8,7 @@
 #include <string>
 #include "../entity.h"
 #include "../components/component.h"
+#include "../components/score_component.h"
 #include "../subsystem.h"
 
 
@@ -15,7 +16,7 @@
 class score_system : public subsystem
 {
 private:
-    //std::vector<std::shared_ptr<camera_projection>> _data;
+    std::vector<std::shared_ptr<score_data>> _data;
 
 	score_system();
 
@@ -29,7 +30,7 @@ public:
         return instance;
     }
 
-    //std::shared_ptr<camera_component> build_component(std::shared_ptr<entity> e, camera_type type);
+    std::shared_ptr<score_component> build_component(std::shared_ptr<entity> e);
 
     bool initialise() override final;
 
@@ -42,4 +43,8 @@ public:
     void unload_content() override final;
 
     void shutdown() override final;
+
+    void hurt();
+
+    void addScore();
 };

@@ -19,6 +19,7 @@ private:
     Command* buttonDown_;
     Command* buttonLeft_;
     Command* buttonRight_;
+    Command* fakeMove_;
 
 public:
 

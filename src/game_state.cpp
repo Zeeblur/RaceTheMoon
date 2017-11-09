@@ -38,6 +38,7 @@ void game_state::initialise()
 	e->add_component("render", renderer::get()->build_component(e, "Blue", "res/textures/bat.jpg", "res/models/bat.obj", "Gouraud", phong));
 	e->add_component("camera", camera_system::get()->build_component(e, camera_type::CHASE));
 	e->add_component("collider", physics_system::get()->build_collider_component(e));
+    e->add_component("score", score_system::get()->build_component(e));
 
 }
 
