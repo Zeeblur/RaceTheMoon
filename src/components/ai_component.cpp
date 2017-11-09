@@ -8,7 +8,7 @@
 #include <vector>
 
 
-ai_component::ai_component(std::shared_ptr<entity> &e) : _parent(e)//, _handler(ih)
+ai_component::ai_component(std::shared_ptr<entity> &e, std::shared_ptr<ai_data> &ai_data) : _parent(e), _ai_data(ai_data)
 {
     _visible = false;
 }
@@ -28,7 +28,8 @@ void ai_component::update(float delta_time)
 
     // move commands change physics comp.
     // get all commands then execute them.
-    std::vector<Command*> commands = input_handler::get()->handle_ai();
+   // std::vector<Command*> commands = input_handler::get()->handle_ai();
+    std::vector<Command*> commands = ai_system::get()->handle_ai();
 
     for (Command* com : commands)
         com->execute(_parent);

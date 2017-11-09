@@ -8,7 +8,19 @@
 #include "component.h"
 #include "../entity.h"
 
-class input_handler;
+class ai_system;
+
+enum ai_type
+{
+    UPSIEWUPSIE,
+    DOWNER
+};
+
+struct ai_data
+{
+    unsigned int ai_type;
+    glm::vec3 distance = glm::vec3(0.0f, 0.0f, 0.0f);
+};
 
 struct ai_component : public component
 {
@@ -16,11 +28,18 @@ private:
     // We'll also keep a reference to the parent entity
     std::shared_ptr<entity> _parent;
 
-    // reference to input handler system
-    std::shared_ptr<input_handler> _handler;
+    // reference to ai_system
+    std::shared_ptr<ai_system> _ai_system;
+
+    // We'll just keep a reference here.  The ai_system
+    // will maintain the actual data.
+    std::shared_ptr<ai_data> _ai_data;
+
+    // ai movement commands
+//    Command* aiUp_;
 
 public:
-    ai_component(std::shared_ptr<entity> &e);
+    ai_component(std::shared_ptr<entity> &e, std::shared_ptr<ai_data> &ai_data);
 
     bool initialise() override final;
 

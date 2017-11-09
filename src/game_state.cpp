@@ -34,6 +34,7 @@ void game_state::initialise()
     transform_data cube2Trans;
     cube2Trans.scale = glm::vec3(10.0f, 30.0f, 10.0f);
     cube2Trans.x = 20.0f;
+    cube2Trans.y = 5.0f;
     cube2Trans.z = -20.0f;
     auto c2 = entity_manager::get()->create_entity("Cube2", this->type, cube2Trans);
     c2->add_component("physics", physics_system::get()->build_component(c2));
@@ -42,6 +43,7 @@ void game_state::initialise()
     transform_data cube3Trans;
     cube3Trans.scale = glm::vec3(10.0f, 20.0f, 60.0f);
     cube3Trans.x = 20.0f;
+    cube3Trans.y = 5.0f;
     cube3Trans.z = -120.0f;
     auto c3 = entity_manager::get()->create_entity("Cube3", this->type, cube3Trans);
     c3->add_component("physics", physics_system::get()->build_component(c3));
@@ -50,6 +52,7 @@ void game_state::initialise()
     transform_data cube4Trans;
     cube4Trans.scale = glm::vec3(10.0f, 20.0f, 60.0f);
     cube4Trans.x = -20.0f;
+    cube4Trans.y = 5.0f;
     cube4Trans.z = -120.0f;
     auto c4 = entity_manager::get()->create_entity("Cube4", this->type, cube4Trans);
     c4->add_component("physics", physics_system::get()->build_component(c4));
@@ -61,7 +64,7 @@ void game_state::initialise()
     moonTrans.z = -1000.0f;
     auto m = entity_manager::get()->create_entity("Moon", this->type, moonTrans);
     m->add_component("physics", physics_system::get()->build_component(m));
-    m->add_component("input", input_handler::get()->build_ai_component(m));
+    m->add_component("input", ai_system::get()->build_component(m, 0, glm::vec3(0.0f, 10.0f, 0.0f)));
     m->add_component("render", renderer::get()->build_component(m, "White", "res/textures/moon.png", "sphere", "Gouraud", phong));
 
     // Adding sun sphere
@@ -71,7 +74,7 @@ void game_state::initialise()
     sunTrans.y = -200.0f;
     auto s = entity_manager::get()->create_entity("Sun", this->type, sunTrans);
     s->add_component("physics", physics_system::get()->build_component(s));
-    s->add_component("input", input_handler::get()->build_ai_component(s));
+    s->add_component("input", ai_system::get()->build_component(s, 0, glm::vec3(0.0f, 10.0f, 0.0f)));
     s->add_component("render", renderer::get()->build_component(s, "White", "res/textures/sun.png", "sphere", "Gouraud", phong));
 
 	c->add_component("collider", physics_system::get()->build_collider_component(c));
@@ -139,7 +142,7 @@ void game_state::on_reset()
 
 	// set score system active
 	engine::get()->get_subsystem("score_system")->initialise();
-}
+}   
 
 void game_state::on_enter()
 {
