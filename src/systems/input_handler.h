@@ -5,6 +5,7 @@
 #include "../subsystem.h"
 #include "../state_machine.h"
 #include "../components/input_component.h"
+#include "../components/ai_component.h"
 #include "../components/Command.h"
 
 class input_handler : public subsystem
@@ -19,6 +20,7 @@ private:
     Command* buttonDown_;
     Command* buttonLeft_;
     Command* buttonRight_;
+    Command* aiUp_;
 
 public:
 
@@ -29,8 +31,10 @@ public:
     }
 
     std::shared_ptr<input_component> build_component(std::shared_ptr<entity> e);
+   // std::shared_ptr<ai_component> build_ai_component(std::shared_ptr<entity> e);
 
     std::vector<Command*> handle_input();
+    std::vector<Command*> handle_ai();
 
     bool initialise();
     bool load_content();
