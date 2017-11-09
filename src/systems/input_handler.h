@@ -5,6 +5,7 @@
 #include "../subsystem.h"
 #include "../state_machine.h"
 #include "../components/input_component.h"
+#include "../components/ai_component.h"
 #include "../components/Command.h"
 
 class input_handler : public subsystem
@@ -19,7 +20,9 @@ private:
     Command* buttonDown_;
     Command* buttonLeft_;
     Command* buttonRight_;
+
     Command* fakeMove_;
+
 
 public:
 

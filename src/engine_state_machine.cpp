@@ -75,36 +75,49 @@ bool engine_state_machine::load_content()
 
 void engine_state_machine::update(float delta_time)
 {
-    if (engine_state_machine::get()->get_current_state_type() == state_type::MENU)
-    {
-        //std::cout << "=============MENU STATE============" << std::endl;
-        std::shared_ptr<clickable_system> cs = std::static_pointer_cast<clickable_system>(engine::get()->get_subsystem("clickable_system"));
-        if (cs->get_clicked_component_name() == "buttonPlay")
-        {
-			std::cout << "Test" << std::endl;
-            engine_state_machine::get()->change_state("game_state", true);
-            cs->clear_clicked_component_name();
-        }
-        else if (cs->get_clicked_component_name() == "buttonExit")
-        {
-            // Handle exit game logic here
-            cs->clear_clicked_component_name();
-        }
-    }
-    else if (engine_state_machine::get()->get_current_state_type() == state_type::PAUSE)
-    {
-        std::shared_ptr<clickable_system> cs = std::static_pointer_cast<clickable_system>(engine::get()->get_subsystem("clickable_system"));
-        if (cs->get_clicked_component_name() == "buttonContinue")
-        {
-            engine_state_machine::get()->change_state("game_state");
-            cs->clear_clicked_component_name();
-        }
-        else if (cs->get_clicked_component_name() == "buttonMenu")
-        {
-            engine_state_machine::get()->change_state("menu_state");
-            cs->clear_clicked_component_name();
-        }
-    }
+	static float total_time;
+	total_time += delta_time;
+	//std::cout << total_time << std::endl;
+	// Add an interval for checking click events, avoid accidental clicking of buttons when switching states
+	if (total_time >= 0.25f)
+	{
+		if (engine_state_machine::get()->get_current_state_type() == state_type::MENU)
+		{
+			//std::cout << "=============MENU STATE============" << std::endl;
+			std::shared_ptr<clickable_system> cs = std::static_pointer_cast<clickable_system>(engine::get()->get_subsystem("clickable_system"));
+			if (cs->get_clicked_component_name() == "buttonPlay")
+			{
+				std::cout << "Test" << std::endl;
+				engine_state_machine::get()->change_state("game_state", true);
+				cs->clear_clicked_component_name();
+				total_time = 0;
+			}
+			else if (cs->get_clicked_component_name() == "buttonExit")
+			{
+				// Handle exit game logic here
+				engine::get()->set_running(false);
+				cs->clear_clicked_component_name();
+				total_time = 0;
+			}
+
+		}
+		else if (engine_state_machine::get()->get_current_state_type() == state_type::PAUSE)
+		{
+			std::shared_ptr<clickable_system> cs = std::static_pointer_cast<clickable_system>(engine::get()->get_subsystem("clickable_system"));
+			if (cs->get_clicked_component_name() == "buttonContinue")
+			{
+				engine_state_machine::get()->change_state("game_state");
+				cs->clear_clicked_component_name();
+				total_time = 0;
+			}
+			else if (cs->get_clicked_component_name() == "buttonMenu")
+			{
+				engine_state_machine::get()->change_state("menu_state");
+				cs->clear_clicked_component_name();
+				total_time = 0;
+			}
+		}
+	}
     static int escape_old_state = GLFW_RELEASE;
     int escape_state = glfwGetKey(glfw::window, GLFW_KEY_ESCAPE);
 
@@ -120,6 +133,9 @@ void engine_state_machine::update(float delta_time)
         case state_type::PAUSE:
             engine_state_machine::get()->change_state("game_state");
             break;
+		case state_type::GAME_OVER:
+			engine_state_machine::get()->change_state("menu_state");
+			break;
         default:
             // do nothing
             break;
@@ -138,6 +154,9 @@ void engine_state_machine::update(float delta_time)
         case state_type::MENU:
             engine_state_machine::get()->change_state("game_state", true);
             break;
+		case state_type::GAME_OVER:
+			engine_state_machine::get()->change_state("menu_state");
+			break;
         default:
             // do nothing
             break;
@@ -156,13 +175,15 @@ void engine_state_machine::update(float delta_time)
         case state_type::PAUSE:
             engine_state_machine::get()->change_state("menu_state");
             break;
+		case state_type::GAME_OVER:
+			engine_state_machine::get()->change_state("menu_state");
+			break;
         default:
             // do nothing
             break;
         }
     }
     backspace_old_state = backspace_state;
-
 
     if (_current_state != nullptr)
         _current_state->on_update(delta_time);

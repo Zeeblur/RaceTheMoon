@@ -7,6 +7,7 @@
 #include "systems/clickable_system.h"
 #include "systems/camera_system.h"
 #include "systems/score_system.h"
+#include "systems/ai_system.h"
 
 enum state_type
 {
@@ -16,6 +17,7 @@ enum state_type
     PAUSE,
     OPTIONS,
     EXIT,
+	GAME_OVER,
     NONE
 };
 
