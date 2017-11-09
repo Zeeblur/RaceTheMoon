@@ -33,7 +33,7 @@ void ai_component::update(float delta_time)
 
     std::vector<Command*> commands = ai_system::get()->handle_ai(_ai_data);
 
-    std::cout << "parent name: " << _parent->get_name() << "command vector size: " << commands.size() << std::endl;
+    //std::cout << "parent name: " << _parent->get_name() << "command vector size: " << commands.size() << std::endl;
     for (Command* com : commands)
         com->execute(_parent);
 

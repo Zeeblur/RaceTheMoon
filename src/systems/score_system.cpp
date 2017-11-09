@@ -2,6 +2,7 @@
 // Created by zoe on 07/11/17.
 //
 #include "score_system.h"
+#include "../engine_state_machine.h"
 
 score_system::score_system()
 {
@@ -41,8 +42,10 @@ void score_system::hurt()
 		if (d->health == 0)
 		{
 			//stop game
-			_active = false;
-			std::cout << "You died!!! score= " << seconds * d->score << std::endl;
+			engine_state_machine::get()->change_state("menu_state");
+			std::cout << "You died!!! score= " << seconds + d->score << std::endl;
+			d->score = 0;
+			d->health = 110;
 		}
 	}
 

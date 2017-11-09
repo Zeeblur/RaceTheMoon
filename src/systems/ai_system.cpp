@@ -85,7 +85,7 @@ std::vector<Command*> ai_system::handle_ai(std::shared_ptr<ai_data> &d)
 
    // auto current = d->cur_pos.y;
 
-    std::cout << "cur pos : " << current << std::endl;
+    //std::cout << "cur pos : " << current << std::endl;
 
     // get initial positon from parent
     if (d->ai_type == 0 && current < target)

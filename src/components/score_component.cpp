@@ -4,6 +4,8 @@
 
 #include "score_component.h"
 
+
+
 score_component::score_component(std::shared_ptr<entity> &e, std::shared_ptr<score_data> &data) : _parent(e), _data(data)
 {}
 
