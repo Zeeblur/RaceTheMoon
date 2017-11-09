@@ -31,7 +31,7 @@ public:
     }
 
     std::shared_ptr<input_component> build_component(std::shared_ptr<entity> e);
-    std::shared_ptr<ai_component> build_ai_component(std::shared_ptr<entity> e);
+   // std::shared_ptr<ai_component> build_ai_component(std::shared_ptr<entity> e);
 
     std::vector<Command*> handle_input();
     std::vector<Command*> handle_ai();

@@ -18,11 +18,12 @@ std::shared_ptr<input_component> input_handler::build_component(std::shared_ptr<
     return std::make_shared<input_component>(e);
 }
 
-std::shared_ptr<ai_component> input_handler::build_ai_component(std::shared_ptr<entity> e)
-{
-    // create ai component and pass in handler instance
-    return std::make_shared<ai_component>(e);
-}
+// Commented out to allow re-adding if ai_system never works
+//std::shared_ptr<ai_component> input_handler::build_ai_component(std::shared_ptr<entity> e)
+//{
+//    // create ai component and pass in handler instance
+//    return std::make_shared<ai_component>(e);
+//}
 
 bool input_handler::initialise()
 {
