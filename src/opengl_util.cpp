@@ -409,36 +409,35 @@ namespace gl
 
         std::vector<glm::vec3> positions
         {
-            // 1
-            glm::vec3(-1.0f, 1.0f, 0.0f),
-            glm::vec3(-1.0f, -1.0f, 0.0f),
-            glm::vec3(1.0f, -1.0f, 0.0f),
-            // 2
-            glm::vec3(1.0f, -1.0f, 0.0f),
-            glm::vec3(1.0f, 1.0f, 0.0f),
-            glm::vec3(-1.0f, 1.0f, 0.0f)
+			// 1
+			glm::vec3(-1.0f, 1.0f, 0.0f),
+			glm::vec3(-1.0f, -1.0f, 0.0f),
+			glm::vec3(1.0f, -1.0f, 0.0f),
+			// 2
+			glm::vec3(1.0f, -1.0f, 0.0f),
+			glm::vec3(1.0f, 1.0f, 0.0f),
+			glm::vec3(-1.0f, 1.0f, 0.0f)
         };
-        // These are probably wrong
         std::vector<glm::vec2> tex_coords
         {
-            glm::vec2(0.5, 1),
-            glm::vec2(0, 0),
-            glm::vec2(1, 0),
-            glm::vec2(1, 0),
-            glm::vec2(0, 0),
-            glm::vec2(0.5, 1)
+			// 1
+			glm::vec2(0, 0),
+			glm::vec2(0, 1),
+			glm::vec2(1, 1),
+			// 2
+			glm::vec2(1, 1),
+			glm::vec2(1, 0),
+			glm::vec2(0, 0)
+
         };
 
-        // Colours
-        std::vector<glm::vec4> colours
-        {
-            glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
-            glm::vec4(0.5f, 0.5f, 0.5f, 1.0f),
-            glm::vec4(0.0f, 0.0f, 0.0f, 1.0f),
-            glm::vec4(0.0f, 0.0f, 0.0f, 1.0f),
-            glm::vec4(0.5f, 0.5f, 0.5f, 1.0f),
-            glm::vec4(1.0f, 1.0f, 1.0f, 1.0f)
-        };
+  //      // Colours
+		//std::vector<glm::vec4> colours;
+
+		//for (size_t i = 0; i < 6; i++)
+		//{
+		//	colours.push_back(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+		//}
 
         //// Calculate the minimal and maximal
         //mesh->min = mesh->positions[0];
@@ -450,7 +449,7 @@ namespace gl
 
         mesh->positions = positions;
         mesh->tex_coords = tex_coords;
-        mesh->colours = colours;
+        //mesh->colours = colours;
 
         return mesh;
     }
@@ -891,7 +890,7 @@ namespace gl
 		gl::glData* om = static_cast<gl::glData *>(rd->mesh->GpuData);
 		
 		auto e1 = glGetError();
-
+		
 		// bind the lights
 		for(auto &light : rd->effect->lights)
 			bind_light(programID, light);

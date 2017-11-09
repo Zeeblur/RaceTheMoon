@@ -10,6 +10,7 @@
 enum effectType
 {
 	simple,
+	simple_texture,
 	phong
 };
 
