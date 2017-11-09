@@ -27,7 +27,7 @@ void game_state::initialise()
 	c->add_component("collider", physics_system::get()->build_collider_component(c));
 
 	transform_data batTrans;
-	batTrans.y = 5.0f;
+	batTrans.y = 1.0f;
 	batTrans.scale = glm::vec3(0.5f, 0.5f, 0.5f);
 	batTrans.rotation = glm::angleAxis(90.0f, glm::vec3(1.0f, 0.0f, 0.0f)) * glm::angleAxis(radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 

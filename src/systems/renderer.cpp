@@ -37,7 +37,7 @@ std::shared_ptr<render_component> renderer::build_component(std::shared_ptr<enti
 
 	e->get_trans().max = _rd->mesh->max;
 	e->get_trans().min = _rd->mesh->min;
-
+	e->get_trans().colType = _rd->mesh->colliderType;
 
 	// add texture stuff
 	if (texture_path != "")

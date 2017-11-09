@@ -81,6 +81,7 @@ namespace gl
         std::vector<glm::vec3> normals;
         std::vector<glm::vec2> tex_coords;
         std::vector<unsigned int> indices;
+		int colliderType = 0;
         void *GpuData;
     };
 

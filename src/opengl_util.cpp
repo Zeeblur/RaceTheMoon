@@ -440,12 +440,12 @@ namespace gl
         };
 
         //// Calculate the minimal and maximal
-        //mesh->min = mesh->positions[0];
-        //mesh->max = mesh->positions[0];
-        //for (auto &v : mesh->positions) {
-        //	mesh->min = glm::min(mesh->min, v);
-        //	mesh->max = glm::max(mesh->max, v);
-        //}
+//        mesh->min = mesh->positions[0];
+//        mesh->max = mesh->positions[0];
+//        for (auto &v : mesh->positions) {
+//        	mesh->min = glm::min(mesh->min, v);
+//        	mesh->max = glm::max(mesh->max, v);
+//        }
 
         mesh->positions = positions;
         mesh->tex_coords = tex_coords;
@@ -587,6 +587,8 @@ namespace gl
     mesh_geom* generate_cube()
     {
         mesh_geom *mesh = new mesh_geom();
+
+        mesh->colliderType = 1;
 
 		// Standard minimal and maximal
 		glm::vec3 minimal(0.0f, 0.0f, 0.0f);

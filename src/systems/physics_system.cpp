@@ -39,20 +39,45 @@ bool physics_system::load_content()
     return true;
 }
 
-
-// AABB against AABB collision
-bool is_colliding(const AABB &a, const AABB &b)
+glm::vec3 check_radii(collider_base* col)
 {
-	if (abs(a.centerPoint.x - b.centerPoint.x) > a.radius[0] + b.radius[0])
-		return false;
-	if (abs(a.centerPoint.y - b.centerPoint.y) > a.radius[1] + b.radius[1])
-		return false;
-	if (abs(a.centerPoint.z - b.centerPoint.z) > a.radius[2] + b.radius[2])
-		return false;
+    glm::vec3 radii;
 
-	std::cout << "Collision detected!" << std::endl;
+    if (auto aabb = static_cast<AABB*>(col))
+    {
+        for(int i = 0; i < 3; i++)
+        {
+            radii[i] = aabb->radius[i];
+        }
+    }
+    else
+    {
+        auto sb = static_cast<sphere*>(col);
+        for(int i = 0; i < 3; i++)
+        {
+            radii[i] = sb->radius;
+        }
+    }
 
-	return true;
+    return radii;
+}
+
+bool is_colliding(collider_base* ac, collider_base* bc)
+{
+
+    glm::vec3 a_rad = check_radii(ac);
+    glm::vec3 b_rad = check_radii(bc);
+
+    if (abs(ac->centerPoint.x - bc->centerPoint.x) > a_rad[0] + b_rad[0])
+        return false;
+    if (abs(ac->centerPoint.y - bc->centerPoint.y) > a_rad[1] + b_rad[1])
+        return false;
+    if (abs(ac->centerPoint.z - bc->centerPoint.z) > a_rad[2] + b_rad[2])
+        return false;
+
+    std::cout << "Collision detected!" << std::endl;
+
+    return true;
 }
 
 void physics_system::update(float delta_time)
@@ -104,7 +129,7 @@ void physics_system::update(float delta_time)
 		// Check for collisions
 		for (size_t i = 0; i < _collider_data.size() - 1; ++i)
 		{
-			is_colliding(*_collider_data[i]->collider, *_collider_data[i + 1]->collider);
+			is_colliding(_collider_data[i]->collider.get(), _collider_data[i + 1]->collider.get());
 		}
 	}
 

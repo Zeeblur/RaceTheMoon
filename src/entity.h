@@ -19,6 +19,8 @@ struct transform_data
 
 	glm::vec3 max = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 min = glm::vec3(0.0f, 0.0f, 0.0f);
+
+    int colType = 0;
 };
 
 class entity
