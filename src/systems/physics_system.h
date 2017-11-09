@@ -15,7 +15,7 @@ class physics_system : public subsystem
 private:
     std::vector<std::shared_ptr<physics_data>> _data;
 
-	std::vector<collider_data> _collider_data;
+	std::vector<std::shared_ptr<collider_data>> _collider_data;
 
     physics_system();
 
@@ -38,7 +38,6 @@ public:
     std::shared_ptr<physics_component> build_component(std::shared_ptr<entity> e);
 
 	std::shared_ptr<collider_component> build_collider_component(std::shared_ptr<entity> e);
-	std::shared_ptr<collider_component> build_collider_component(std::shared_ptr<entity> e, glm::vec3 scale);
 
     bool initialise() override final;
 

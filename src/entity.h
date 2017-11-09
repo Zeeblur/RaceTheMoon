@@ -16,6 +16,11 @@ struct transform_data
 
 	glm::quat rotation = glm::quat();
 	glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
+
+	glm::vec3 max = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 min = glm::vec3(0.0f, 0.0f, 0.0f);
+
+    int colType = 0;
 };
 
 class entity
