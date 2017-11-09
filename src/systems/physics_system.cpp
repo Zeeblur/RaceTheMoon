@@ -21,10 +21,11 @@ std::shared_ptr<physics_component> physics_system::build_component(std::shared_p
 
 std::shared_ptr<collider_component> physics_system::build_collider_component(std::shared_ptr<entity> e)
 {
-	auto cd = std::make_shared<collider_data>(collider_data(e->get_trans()));
+    auto ree = collider_data(e->get_trans());
+	std::shared_ptr<collider_data> cd = std::make_shared<collider_data>(collider_data(e->get_trans()));
 
 	_collider_data.push_back(cd);
-	return std::make_shared<collider_component>(e, cd);
+	return std::make_shared<collider_component>(e, std::ref(_collider_data.back()));
 }
 
 bool physics_system::initialise()
@@ -136,12 +137,27 @@ void physics_system::update(float delta_time)
         }
     }
 	// Don't bother checking for collisions unless there are at least 2 colliders
+    // could extend this to only checking bat against everything else?
 	if (_collider_data.size() >= 2)
 	{
 		// Check for collisions
-		for (size_t i = 0; i < _collider_data.size() - 1; ++i)
+		for (size_t i = 0; i < _collider_data.size(); ++i)
 		{
-			is_colliding(_collider_data[i]->collider.get(), _collider_data[i + 1]->collider.get());
+            for(size_t j =0; j < _collider_data.size(); ++j)
+            {
+                if (i == j)
+                    continue;
+
+                bool col = is_colliding(_collider_data[i]->collider.get(), _collider_data[j]->collider.get());
+
+                // need some bat checking here...
+                if (col)
+                {
+                    engine::get()->get_subsystem("score_system")->hurt();
+                    break;
+
+                }
+            }
 		}
 	}
 

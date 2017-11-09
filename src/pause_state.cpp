@@ -31,7 +31,7 @@ void pause_state::initialise()
 
 	// Continue button
 	auto button_continue = entity_manager::get()->create_entity("buttonContinue", state_type::PAUSE, continue_button_transform);
-	button_continue->add_component("render", renderer::get()->build_component(button_continue, "", "res/textures/continue_button2.png", "rectangle", "Gouraud", simple_texture));
+	button_continue->add_component("render", renderer::get()->build_component(button_continue, "", "res/textures/continue_button.png", "rectangle", "Gouraud", simple_texture));
 	button_continue->add_component("clickable", clickable_system::get()->build_component(button_continue, glm::vec2(x_center - x_button_size, x_center + x_button_size), glm::vec2(y_center - y_button_size, y_center + y_button_size)));
 	button_continue->add_component("camera", camera_system::get()->build_component(button_continue, camera_type::ORTHO));
 

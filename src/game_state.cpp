@@ -30,6 +30,7 @@ void game_state::initialise()
     auto c = entity_manager::get()->create_entity("Cube", this->type, cubeTrans);
     c->add_component("physics", physics_system::get()->build_component(c));
     c->add_component("render", renderer::get()->build_component(c, "Green", "res/textures/check.jpg", "cube", "Gouraud", phong));
+    c->add_component("collider", physics_system::get()->build_collider_component(c));
     // Adding cube 2
     transform_data cube2Trans;
     cube2Trans.scale = glm::vec3(10.0f, 30.0f, 10.0f);
@@ -39,6 +40,7 @@ void game_state::initialise()
     auto c2 = entity_manager::get()->create_entity("Cube2", this->type, cube2Trans);
     c2->add_component("physics", physics_system::get()->build_component(c2));
     c2->add_component("render", renderer::get()->build_component(c2, "Green", "", "cube", "Gouraud", phong));
+    c2->add_component("collider", physics_system::get()->build_collider_component(c2));
     // Adding cube 3
     transform_data cube3Trans;
     cube3Trans.scale = glm::vec3(10.0f, 20.0f, 60.0f);
@@ -48,6 +50,7 @@ void game_state::initialise()
     auto c3 = entity_manager::get()->create_entity("Cube3", this->type, cube3Trans);
     c3->add_component("physics", physics_system::get()->build_component(c3));
     c3->add_component("render", renderer::get()->build_component(c3, "Green", "res/textures/stone.jpg", "cube", "Gouraud", phong));
+    c3->add_component("collider", physics_system::get()->build_collider_component(c3));
     // Adding cube 4
     transform_data cube4Trans;
     cube4Trans.scale = glm::vec3(10.0f, 20.0f, 60.0f);
@@ -57,6 +60,7 @@ void game_state::initialise()
     auto c4 = entity_manager::get()->create_entity("Cube4", this->type, cube4Trans);
     c4->add_component("physics", physics_system::get()->build_component(c4));
     c4->add_component("render", renderer::get()->build_component(c4, "Green", "res/textures/moon.png", "cube", "Gouraud", phong));
+    c4->add_component("collider", physics_system::get()->build_collider_component(c4));
 
     // Adding moon sphere
     transform_data moonTrans;
@@ -77,7 +81,7 @@ void game_state::initialise()
     s->add_component("ai", ai_system::get()->build_component(s, 0, glm::vec3(0.0f, 40.0f, -1000.0f)));
     s->add_component("render", renderer::get()->build_component(s, "White", "res/textures/sun.png", "sphere", "Gouraud", phong));
 
-	c->add_component("collider", physics_system::get()->build_collider_component(c));
+
 
 	transform_data batTrans;
 	batTrans.y = 1.0f;
@@ -91,6 +95,7 @@ void game_state::initialise()
 	e->add_component("render", renderer::get()->build_component(e, "Blue", "res/textures/bat.jpg", "res/models/bat.obj", "Gouraud", phong));
 	e->add_component("camera", camera_system::get()->build_component(e, camera_type::CHASE));
 	e->add_component("collider", physics_system::get()->build_collider_component(e));
+    e->add_component("score", score_system::get()->build_component(e));
 
 }
 

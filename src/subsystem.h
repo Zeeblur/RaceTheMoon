@@ -69,4 +69,6 @@ public:
 
     // This is the publically visible shutdown method.
     virtual void shutdown() = 0;
+
+    virtual void hurt(){};
 };
