@@ -6,22 +6,11 @@ before_install:
         echo "pulling down cmake" ${CMAKE_URL}  
         mkdir cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
         export PATH=${TRAVIS_BUILD_DIR}/cmake/bin:${PATH}
-      else
-        brew upgrade cmake || brew install cmake
-      fi
   - "cmake --version"
-  - |
-      if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
-          export CXX=g++
-          export CC=gcc
-      fi
 dist: trusty
 language: generic
 matrix: 
   include: 
-    - 
-      os: osx
-      osx_image: xcode8.3
     - 
       addons: 
         apt: 

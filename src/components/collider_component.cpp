@@ -17,6 +17,7 @@ collider_data::collider_data(transform_data trans)
             maxScale = glm::max(maxScale, trans.scale.z);
             c->radius *= maxScale;
             col.reset(c);
+
         }
 			break;
 		case 1:
@@ -30,6 +31,7 @@ collider_data::collider_data(transform_data trans)
             cl->radius[2] = difference.z * trans.scale.z;
 
             col.reset(cl);
+
 
         }
 			break;

@@ -29,7 +29,7 @@ struct collider_data
 	bool active = false;
 	std::shared_ptr<collider_base> collider;
 	collider_data(transform_data trans);
-    ~collider_data(){ free(collider); };
+    ~collider_data() = default;
 };
 
 struct collider_component : public component
