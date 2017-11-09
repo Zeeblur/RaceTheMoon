@@ -66,17 +66,46 @@ std::vector<Command*> input_handler::handle_input()
 {
     std::vector<Command*> commands;
 
-    if (glfwGetKey(glfw::window, GLFW_KEY_W))
-        commands.push_back(buttonUp_);
+	int present = glfwJoystickPresent(GLFW_JOYSTICK_1);
 
-    if (glfwGetKey(glfw::window, GLFW_KEY_S))
-        commands.push_back(buttonDown_);
+	const float* axes;
+	if (present)
+	{
+		int count;
+		axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &count);
+		std::cout << "left x: " << axes[0] << std::endl;
+		std::cout << "left y: " << axes[1] << std::endl;
+		std::cout << "right x: " << axes[2] << std::endl;
+		std::cout << "right y: " << axes[3] << std::endl;
 
-    if (glfwGetKey(glfw::window, GLFW_KEY_A))
-        commands.push_back(buttonLeft_);
+		if (axes[1] > 0.2)
+			commands.push_back(buttonUp_);
 
-    if (glfwGetKey(glfw::window, GLFW_KEY_D))
-        commands.push_back(buttonRight_);
-	
+		if (axes[1] < -0.2)
+			commands.push_back(buttonDown_);
+
+		if (axes[0] < -0.2)
+			commands.push_back(buttonLeft_);
+
+		if (axes[0] > 0.2)
+			commands.push_back(buttonRight_);
+	}
+	else
+	{
+		if (glfwGetKey(glfw::window, GLFW_KEY_W))
+			commands.push_back(buttonUp_);
+
+		if (glfwGetKey(glfw::window, GLFW_KEY_S))
+			commands.push_back(buttonDown_);
+
+		if (glfwGetKey(glfw::window, GLFW_KEY_A))
+			commands.push_back(buttonLeft_);
+
+		if (glfwGetKey(glfw::window, GLFW_KEY_D))
+			commands.push_back(buttonRight_);
+
+	}
+
+
     return commands;
 }
