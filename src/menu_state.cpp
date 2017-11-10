@@ -5,6 +5,8 @@
 
 void menu_state::initialise()
 {
+	// TODO: Fix button click event problem when changing window size.
+
 	int x_size = 0;
 	int y_size = 0;
 
@@ -17,26 +19,26 @@ void menu_state::initialise()
 	int y_button_size = 50;
 
 	// button trans
-	transform_data buttonTrans;
-	buttonTrans.scale = glm::vec3(x_button_size, y_button_size, 1.0f);
+	transform_data play_button_transform;
+	play_button_transform.scale = glm::vec3(x_button_size, y_button_size, 1.0f);
+	play_button_transform.y = 0.0f;
+	transform_data exit_button_transform;
+	exit_button_transform.scale = glm::vec3(x_button_size, y_button_size, 1.0f);
+	exit_button_transform.y = -125.0f;
 
 	// Y offset between buttons
-	int button_offset = 100;
-	// Menu buttons
-	auto button_play = entity_manager::get()->create_entity("buttonPlay", state_type::MENU, buttonTrans);
+	int button_offset = 125;
+	// Play button
+	auto button_play = entity_manager::get()->create_entity("buttonPlay", state_type::MENU, play_button_transform);
 	button_play->add_component("clickable", clickable_system::get()->build_component(button_play, glm::vec2(x_center - x_button_size, x_center + x_button_size), glm::vec2(y_center - y_button_size, y_center + y_button_size)));
-	button_play->add_component("render", renderer::get()->build_component(button_play, "Blue", "", "rectangle", "Gouraud", simple));
+	button_play->add_component("render", renderer::get()->build_component(button_play, "", "res/textures/play_button.png", "rectangle", "Gouraud", simple_texture));
 	button_play->add_component("camera", camera_system::get()->build_component(button_play, camera_type::ORTHO));
 
-	auto button_exit = entity_manager::get()->create_entity("buttonExit", state_type::MENU);
+	// Exit button
+	auto button_exit = entity_manager::get()->create_entity("buttonExit", state_type::MENU, exit_button_transform);
+	button_exit->add_component("render", renderer::get()->build_component(button_exit, "", "res/textures/exit_button.png", "rectangle", "Gouraud", simple_texture));
 	button_exit->add_component("clickable", clickable_system::get()->build_component(button_exit, glm::vec2(x_center - x_button_size, x_center + x_button_size), glm::vec2(button_offset + y_center - y_button_size, button_offset + y_center + y_button_size)));
-
-	// Pause buttons
-	auto button_continue = entity_manager::get()->create_entity("buttonContinue", state_type::PAUSE);
-	button_continue->add_component("clickable", clickable_system::get()->build_component(button_continue, glm::vec2(x_center - x_button_size, x_center + x_button_size), glm::vec2(y_center - y_button_size, y_center + y_button_size)));
-
-	auto button_menu = entity_manager::get()->create_entity("buttonMenu", state_type::PAUSE);
-	button_menu->add_component("clickable", clickable_system::get()->build_component(button_menu, glm::vec2(x_center - x_button_size, x_center + x_button_size), glm::vec2(button_offset + y_center - y_button_size, button_offset + y_center + y_button_size)));
+	button_exit->add_component("camera", camera_system::get()->build_component(button_exit, camera_type::ORTHO));
 
 }
 

@@ -1,3 +1,4 @@
+#include <malloc.h>
 #include "component.h"
 #include "../entity.h"
 #include "glm/glm.hpp"
@@ -5,22 +6,30 @@
 #ifndef RACETHEMOON_COLLIDER_COMPONENT_H
 #define RACETHEMOON_COLLIDER_COMPONENT_H
 
-struct AABB
+struct collider_base
 {
-	glm::dvec3 centerPoint; // Center point of AABB
-	double radius[3]; // Radius - Halfwidth extents (dx, dy, dz)
+	glm::dvec3 centerPoint; // Center point of collider
+	virtual ~collider_base(){};
 };
 
-//struct SphereCollider
-//{
-//	double radius;
-//};
+struct AABB : public collider_base
+{
+	double radius[3]; // Radius - Halfwidth extents (dx, dy, dz)
+    ~AABB(){};
+};
+
+struct sphere : public collider_base
+{
+	double radius;
+    ~sphere(){};
+};
 
 struct collider_data
 {
 	bool active = false;
-	std::shared_ptr<AABB> collider;
+	std::shared_ptr<collider_base> collider;
 	collider_data(transform_data trans);
+    ~collider_data() = default;
 };
 
 struct collider_component : public component

@@ -13,7 +13,7 @@ class entity_manager : public subsystem
 {
 private:
 
-    std::unordered_map<std::string, std::shared_ptr<entity>> _entities[5];
+    std::unordered_map<std::string, std::shared_ptr<entity>> _entities[7];
 
     entity_manager() = default;
 

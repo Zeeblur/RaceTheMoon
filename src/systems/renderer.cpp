@@ -17,9 +17,11 @@ renderer::renderer()
     _active = false; 
 	programIDs[simple] = std::make_shared<gl::Effect>();
 	programIDs[phong] = std::make_shared<gl::Effect>();
+	programIDs[simple_texture] = std::make_shared<gl::Effect>();
 
 	programIDs[simple]->program = gl::LoadShaders("res/shaders/simple.vert", "res/shaders/simple.frag");
 	programIDs[phong]->program = gl::LoadShaders("res/shaders/phong.vert", "res/shaders/phong.frag");
+	programIDs[simple_texture]->program = gl::LoadShaders("res/shaders/simple_texture.vert", "res/shaders/simple_texture.frag");
 
 	// TODO add lights to effect
 	//programIDs[phong]->lights = 
@@ -37,7 +39,7 @@ std::shared_ptr<render_component> renderer::build_component(std::shared_ptr<enti
 
 	e->get_trans().max = _rd->mesh->max;
 	e->get_trans().min = _rd->mesh->min;
-
+	e->get_trans().colType = _rd->mesh->colliderType;
 
 	// add texture stuff
 	if (texture_path != "")

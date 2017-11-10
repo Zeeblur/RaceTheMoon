@@ -21,10 +21,11 @@ std::shared_ptr<physics_component> physics_system::build_component(std::shared_p
 
 std::shared_ptr<collider_component> physics_system::build_collider_component(std::shared_ptr<entity> e)
 {
-	auto cd = std::make_shared<collider_data>(collider_data(e->get_trans()));
+    auto ree = collider_data(e->get_trans());
+	std::shared_ptr<collider_data> cd = std::make_shared<collider_data>(collider_data(e->get_trans()));
 
 	_collider_data.push_back(cd);
-	return std::make_shared<collider_component>(e, cd);
+	return std::make_shared<collider_component>(e, std::ref(_collider_data.back()));
 }
 
 bool physics_system::initialise()
@@ -39,20 +40,45 @@ bool physics_system::load_content()
     return true;
 }
 
-
-// AABB against AABB collision
-bool is_colliding(const AABB &a, const AABB &b)
+glm::vec3 check_radii(collider_base* col)
 {
-	if (abs(a.centerPoint.x - b.centerPoint.x) > a.radius[0] + b.radius[0])
-		return false;
-	if (abs(a.centerPoint.y - b.centerPoint.y) > a.radius[1] + b.radius[1])
-		return false;
-	if (abs(a.centerPoint.z - b.centerPoint.z) > a.radius[2] + b.radius[2])
-		return false;
+    glm::vec3 radii;
 
-	std::cout << "Collision detected!" << std::endl;
+    if (auto aabb = static_cast<AABB*>(col))
+    {
+        for(int i = 0; i < 3; i++)
+        {
+            radii[i] = aabb->radius[i];
+        }
+    }
+    else
+    {
+        auto sb = static_cast<sphere*>(col);
+        for(int i = 0; i < 3; i++)
+        {
+            radii[i] = sb->radius;
+        }
+    }
 
-	return true;
+    return radii;
+}
+
+bool is_colliding(collider_base* ac, collider_base* bc)
+{
+
+    glm::vec3 a_rad = check_radii(ac);
+    glm::vec3 b_rad = check_radii(bc);
+
+    if (abs(ac->centerPoint.x - bc->centerPoint.x) > a_rad[0] + b_rad[0])
+        return false;
+    if (abs(ac->centerPoint.y - bc->centerPoint.y) > a_rad[1] + b_rad[1])
+        return false;
+    if (abs(ac->centerPoint.z - bc->centerPoint.z) > a_rad[2] + b_rad[2])
+        return false;
+
+    std::cout << "Collision detected!" << std::endl;
+
+    return true;
 }
 
 void physics_system::update(float delta_time)
@@ -111,12 +137,27 @@ void physics_system::update(float delta_time)
         }
     }
 	// Don't bother checking for collisions unless there are at least 2 colliders
+    // could extend this to only checking bat against everything else?
 	if (_collider_data.size() >= 2)
 	{
 		// Check for collisions
-		for (size_t i = 0; i < _collider_data.size() - 1; ++i)
+		for (size_t i = 0; i < _collider_data.size(); ++i)
 		{
-			is_colliding(*_collider_data[i]->collider, *_collider_data[i + 1]->collider);
+            for(size_t j =0; j < _collider_data.size(); ++j)
+            {
+                if (i == j)
+                    continue;
+
+                bool col = is_colliding(_collider_data[i]->collider.get(), _collider_data[j]->collider.get());
+
+                // need some bat checking here...
+                if (col)
+                {
+                    engine::get()->get_subsystem("score_system")->hurt();
+                    break;
+
+                }
+            }
 		}
 	}
 

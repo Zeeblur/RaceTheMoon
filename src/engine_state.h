@@ -17,6 +17,7 @@ enum state_type
     PAUSE,
     OPTIONS,
     EXIT,
+	GAME_OVER,
     NONE
 };
 

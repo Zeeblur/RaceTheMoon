@@ -60,7 +60,10 @@ void physics_component::add_impulse(glm::vec3& direction)
 {
     _data->moveRequest = true;
 
-	auto reverse = glm::vec3(direction.z, direction.y, direction.x);
-	_data->rotateby = glm::angleAxis(glm::radians(-20.0f), reverse);
+	// check for continuous movement ? possibly new command
+	//if (direction.z == 0) {
+		auto reverse = glm::vec3(direction.z, direction.y, direction.x);
+		_data->rotateby = glm::angleAxis(glm::radians(-20.0f), reverse);
+	//}
     _data->currentVelocity += (direction * acceleration);
 }

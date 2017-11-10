@@ -10,6 +10,7 @@
 #include "game_state.h"
 #include "menu_state.h"
 #include "pause_state.h"
+#include "game_over_state.h"
 
 //#include <FreeImage-src\FreeImage.h>
 // Include GLEW
@@ -44,7 +45,9 @@ int main()
     engine_state_machine::get()->add_state("menu_state", std::make_shared<menu_state>(), state_type::MENU);
     engine_state_machine::get()->add_state("game_state", std::make_shared<game_state>(), state_type::GAME);
     engine_state_machine::get()->add_state("pause_state", std::make_shared<pause_state>(), state_type::PAUSE);
-    engine_state_machine::get()->change_state("game_state");
+	engine_state_machine::get()->add_state("game_over_state", std::make_shared<game_over_state>(), state_type::GAME_OVER);
+
+    engine_state_machine::get()->change_state("menu_state");
     eng->run();
 
     return 0;

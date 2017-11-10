@@ -88,10 +88,10 @@ void game_state::initialise()
     s->add_component("ai", ai_system::get()->build_component(s, 6, glm::vec3(0.0f, 0.0f, 0.0f)));
     s->add_component("render", renderer::get()->build_component(s, "White", "res/textures/sun.png", "sphere", "Gouraud", phong));
 
-	c->add_component("collider", physics_system::get()->build_collider_component(c));
+
 
 	transform_data batTrans;
-	batTrans.y = 5.0f;
+	batTrans.y = 1.0f;
 	batTrans.scale = glm::vec3(0.5f, 0.5f, 0.5f);
 	batTrans.rotation = glm::angleAxis(90.0f, glm::vec3(1.0f, 0.0f, 0.0f)) * glm::angleAxis(radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
@@ -102,6 +102,7 @@ void game_state::initialise()
 	e->add_component("render", renderer::get()->build_component(e, "Blue", "res/textures/bat.jpg", "res/models/bat.obj", "Gouraud", phong));
 	e->add_component("camera", camera_system::get()->build_component(e, camera_type::CHASE));
 	e->add_component("collider", physics_system::get()->build_collider_component(e));
+    e->add_component("score", score_system::get()->build_component(e));
 
 }
 
