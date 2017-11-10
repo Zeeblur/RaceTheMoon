@@ -33,11 +33,18 @@ bool ai_system::initialise()
 
     //map buttons
 
-    auto up = glm::vec3(0.0f, 1.0f, 0.0f);
+    auto up = glm::vec3(0.0f, 0.5f, 0.0f);
     aiUp_ = new MoveCommand(up);
-
-    auto down = glm::vec3(0.0f, -1.0f, 0.0f);
-
+    auto down = glm::vec3(0.0f, -0.5f, 0.0f);
+    aiDown_ = new MoveCommand(down);
+    auto forward = glm::vec3(0.0f, 0.0f, -0.5f);
+    aiForward_ = new MoveCommand(forward);
+    auto back = glm::vec3(0.0f, 0.0f, 0.5f);
+    aiBack_ = new MoveCommand(back);
+    auto right = glm::vec3(0.5f, 0.0f, 0.0f);
+    aiRight_ = new MoveCommand(right);
+    auto left = glm::vec3(-0.5f, 0.0f, 0.0f);
+    aiLeft_ = new MoveCommand(left);
 
     return true;
 }
@@ -68,30 +75,224 @@ void ai_system::shutdown()
     std::cout << "Input handler shutting down" << std::endl;
 }
 
-std::vector<Command*> ai_system::handle_input()
-{
-    std::vector<Command*> commands;
-	
-    return commands;
-}
-
 std::vector<Command*> ai_system::handle_ai(std::shared_ptr<ai_data> &d)
 {
-
     std::vector<Command*> commands;
-    auto target = glm::distance(d->distance, d->init_pos);
-    auto current = glm::distance(d->init_pos, d->cur_pos);
+    auto target = d->distance + d->init_pos;
+    auto current = d->cur_pos;
+    auto endGap = glm::distance(target, current);
+    auto startGap = glm::distance(d->init_pos, d->cur_pos);
+    auto close = glm::length(glm::vec3(1.0f, 1.0f, 1.0f));
 
+    /*std::cout << "\n Targ pos = (" << target.x << ", " << target.y << ", " << target.z << ")" <<
+        "\t Cur pos = (" << current.x << ", " << current.y << ", " << current.z << ")" <<
+        "\t End Gap = " << endGap <<
+        "\t Close (should be 1) = " << close << std::endl;*/
 
-   // auto current = d->cur_pos.y;
+    // ** UP THEN DOWN **
+    if (d->ai_type == 0)
+    {
+        if (d->cur_pos.y < target.y && d->flagA == 0)
+        {
+            commands.push_back(aiUp_);
+        }
+        else if (d->cur_pos.y >= target.y && d->flagA == 0)
+        {
+            d->flagA = 1;
+        }
+        else if (d->cur_pos.y > d->init_pos.y && d->flagA == 1)
+        {
+            commands.push_back(aiDown_);
+        }
+        else if (d->cur_pos.y <= d->init_pos.y && d->flagA == 1)
+        {
+            d->flagA = 0;
+        }
+    }
 
-    std::cout << "cur pos : " << current << std::endl;
+    // ** DOWN THEN UP **
+    else if (d->ai_type == 1)
+    {
+        if (d->cur_pos.y > target.y && d->flagA == 0)
+        {
+            commands.push_back(aiDown_);
+        }
+        else if (d->cur_pos.y <= target.y && d->flagA == 0)
+        {
+            d->flagA = 1;
+        }
+        else if (d->cur_pos.y < d->init_pos.y && d->flagA == 1)
+        {
+            commands.push_back(aiUp_);
+        }
+        else if (d->cur_pos.y >= d->init_pos.y && d->flagA == 1)
+        {
+            d->flagA = 0;
+        }
+    }
 
-    // get initial positon from parent
-    if (d->ai_type == 0 && current < target)
+    // ** FORWARD THEN BACK **
+    else if (d->ai_type == 2)
+    {
+        if (d->cur_pos.z > target.z && d->flagA == 0)
+        {
+            commands.push_back(aiForward_);
+        }
+        else if (d->cur_pos.z <= target.z && d->flagA == 0)
+        {
+            d->flagA = 1;
+        }
+        else if (d->cur_pos.z < d->init_pos.z && d->flagA == 1)
+        {
+            commands.push_back(aiBack_);
+        }
+        else if (d->cur_pos.z >= d->init_pos.z && d->flagA == 1)
+        {
+            d->flagA = 0;
+        }
+    }
+
+    // ** BACK THEN FORWARD **
+    else if (d->ai_type == 3)
+    {
+        if (d->cur_pos.z < target.z && d->flagA == 0)
+        {
+            commands.push_back(aiBack_);
+        }
+        else if (d->cur_pos.z >= target.z && d->flagA == 0)
+        {
+            d->flagA = 1;
+        }
+        else if (d->cur_pos.z > d->init_pos.z && d->flagA == 1)
+        {
+            commands.push_back(aiForward_);
+        }
+        else if (d->cur_pos.z <= d->init_pos.z && d->flagA == 1)
+        {
+            d->flagA = 0;
+        }
+    }
+
+    // ** RIGHT THEN LEFT **
+    else if (d->ai_type == 4)
+    {
+        if (d->cur_pos.x < target.x && d->flagA == 0)
+        {
+            commands.push_back(aiRight_);
+        }
+        else if (d->cur_pos.x >= target.x && d->flagA == 0)
+        {
+            d->flagA = 1;
+        }
+        else if (d->cur_pos.x > d->init_pos.x && d->flagA == 1)
+        {
+            commands.push_back(aiLeft_);
+        }
+        else if (d->cur_pos.x <= d->init_pos.x && d->flagA == 1)
+        {
+            d->flagA = 0;
+        }
+    }
+
+    // ** LEFT THEN RIGHT **
+    else  if (d->ai_type == 5)
+    {
+        if (d->cur_pos.x > target.x && d->flagA == 0)
+        {
+            commands.push_back(aiLeft_);
+        }
+        else if (d->cur_pos.x <= target.x && d->flagA == 0)
+        {
+            d->flagA = 1;
+        }
+        else if (d->cur_pos.x < d->init_pos.x && d->flagA == 1)
+        {
+            commands.push_back(aiRight_);
+        }
+        else if (d->cur_pos.x >= d->init_pos.x && d->flagA == 1)
+        {
+            d->flagA = 0;
+        }
+    }
+
+// OLD >>>>>>>>
+    //// ** UP AND DOWN **
+    //if (d->ai_type == 0)
+    //{
+    //    if (endGap > close)
+    //    {
+    //        commands.push_back(aiUp_);
+    //    }
+    //    else if (endGap < close)
+    //    {
+    //        d->ai_type = 1;
+    //    }
+    //}
+    //else if (d->ai_type == 1)
+    //{
+    //    if (startGap > close)
+    //    {
+    //        commands.push_back(aiDown_);
+    //    }
+    //    else if (startGap < close)
+    //    {
+    //        d->ai_type = 0;
+    //    }
+    //}
+
+    //// ** FORWARD AND BACK **
+    //if (d->ai_type == 2)
+    //{
+    //    if (endGap > close)
+    //    {
+    //        commands.push_back(aiForward_);
+    //    }
+    //    else if (endGap < close)
+    //    {
+    //        d->ai_type = 3;
+    //    }
+    //}
+    //else if (d->ai_type == 3)
+    //{
+    //    if (startGap > close)
+    //    {
+    //        commands.push_back(aiBack_);
+    //    }
+    //    else if (startGap < close)
+    //    {
+    //        d->ai_type = 2;
+    //    }
+    //}
+
+    //// ** RIGHT THEN LEFT **
+    //if (d->ai_type == 4)
+    //{
+    //    if (endGap > close)
+    //    {
+    //        commands.push_back(aiRight_);
+    //    }
+    //    else if (endGap < close)
+    //    {
+    //        d->ai_type = 5;
+    //    }
+    //}
+    //else if (d->ai_type == 5)
+    //{
+    //    if (startGap > close)
+    //    {
+    //        commands.push_back(aiLeft_);
+    //    }
+    //    else if (startGap < close)
+    //    {
+    //        d->ai_type = 4;
+    //    }
+    //}
+
+    // ** SUN AND MOON **
+    else if (d->ai_type == 6)
     {
         commands.push_back(aiUp_);
     }
-    return commands;
 
+    return commands;
 }

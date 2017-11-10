@@ -12,8 +12,13 @@ class ai_system;
 
 enum ai_type
 {
-    UPSIEWUPSIE,
-    DOWNER
+    UPTHENDOWN,
+    DOWNTHENUP,
+    FORWARDTHENBACK,
+    BACKTHENFORWARD,
+    RIGHTTHENLEFT,
+    LEFTTHENRIGHT,
+    SUN_MOON
 };
 
 struct ai_data
@@ -22,6 +27,7 @@ struct ai_data
     glm::vec3 distance = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::vec3 init_pos = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::vec3 cur_pos = glm::vec3(0.0f, 0.0f, 0.0f);
+    bool flagA = 0;
     // current pos
 };
 
