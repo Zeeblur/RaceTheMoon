@@ -40,6 +40,9 @@ void menu_state::initialise()
 	button_exit->add_component("clickable", clickable_system::get()->build_component(button_exit, glm::vec2(x_center - x_button_size, x_center + x_button_size), glm::vec2(button_offset + y_center - y_button_size, button_offset + y_center + y_button_size)));
 	button_exit->add_component("camera", camera_system::get()->build_component(button_exit, camera_type::ORTHO));
 	
+	auto test = entity_manager::get()->create_entity("test1", state_type::MENU, exit_button_transform);
+	test->add_component("render", renderer::get()->build_component(test, "", "res/textures/exit_button.png", "rectangle", "text", text));
+
 	initText2D("res/textures/myriad.png");
 }
 
@@ -66,9 +69,6 @@ void menu_state::on_enter()
 
 void menu_state::on_update(float delta_time)
 {
-	char text[256];
-	sprintf(text, "%.2f sec", delta_time);
-	printText2D(text, 10, 100, 60);
     //std::cout << "********** MENU DISPLAYED ****************" << std::endl;
 }
 

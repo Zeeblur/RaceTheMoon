@@ -6,12 +6,12 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 using namespace glm;
-
+#include <iostream>
 //#include "texture.hpp"
 #include "opengl_util.h"
 #include "text2D.h"
 
-unsigned int Text2DTextureID;
+//unsigned int Text2DTextureID;
 std::shared_ptr<gl::texture> textureObj;
 unsigned int Text2DVertexBufferID;
 unsigned int Text2DUVBufferID;
@@ -21,8 +21,8 @@ unsigned int Text2DUniformID;
 void initText2D(const char * texturePath) {
 
 	// Initialize texture
-	textureObj = std::make_shared<gl::texture>(gl::texture(texturePath)); //gl::texture::texture(texturePath);
-
+	//Text2DTextureID = gl::loadDDS(texturePath); //textureObj = std::make_shared<gl::texture>(gl::texture(texturePath)); //gl::texture::texture(texturePath);
+	textureObj = std::make_shared<gl::texture>(gl::texture(texturePath));
 	// Initialize VBO
 	glGenBuffers(1, &Text2DVertexBufferID);
 	glGenBuffers(1, &Text2DUVBufferID);
@@ -80,6 +80,8 @@ void printText2D(const char * text, int x, int y, int size) {
 
 	// Bind shader
 	glUseProgram(Text2DShaderID);
+
+	//std::cout << "my id is: " << Text2DTextureID << std::endl;
 
 	// Bind texture
 	glActiveTexture(GL_TEXTURE0);

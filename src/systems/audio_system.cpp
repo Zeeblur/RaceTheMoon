@@ -12,8 +12,8 @@ audio_system::audio_system()
 bool audio_system::initialise()
 {
 	std::cout << "Audio system initialising" << std::endl;
-	HWND hwnd = GetConsoleWindow();
-	ctx = tsMakeContext(hwnd, 44000, 15, 0, 1000);
+	//HWND hwnd = GetConsoleWindow();
+	//ctx = tsMakeContext(hwnd, 44000, 15, 0, 1000);
 	return true;
 }
 
@@ -32,7 +32,7 @@ void audio_system::update(float delta_time)
 	//tsLock(ctx);
 
 
-	tsMix(ctx);
+	//tsMix(ctx);
 
 	//std::cout << "Audio system updating" << std::endl;
 }
@@ -42,9 +42,9 @@ void audio_system::play_one_shot(std::string path, int duration)
 	//HWND hwnd = GetConsoleWindow();
 	//ctx = tsMakeContext(hwnd, 44000, 15, duration, 1);
 
-	tsLoadedSound loaded = tsLoadWAV(path.c_str());
-	tsPlaySoundDef def = tsMakeDef(&loaded);
-	tsPlayingSound* sound = tsPlaySound(ctx, def);
+	//tsLoadedSound loaded = tsLoadWAV(path.c_str());
+	//tsPlaySoundDef def = tsMakeDef(&loaded);
+	//tsPlayingSound* sound = tsPlaySound(ctx, def);
 
 	//ready_to_mix = true;
 	//tsMix(ctx);
@@ -66,7 +66,7 @@ void audio_system::play_one_shot(std::string path, int duration)
 	//tsStopSound(&sound);
 	//tsStopAllSounds(ctx);
 
-	tsFreeSound(&loaded);
+	//tsFreeSound(&loaded);
 }
 
 void audio_system::render()
