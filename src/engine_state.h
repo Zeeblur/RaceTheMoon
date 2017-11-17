@@ -16,7 +16,7 @@ enum state_type
     MENU,
     GAME,
     PAUSE,
-    OPTIONS,
+    SETTINGS,
     EXIT,
 	GAME_OVER,
     NONE

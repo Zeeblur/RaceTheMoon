@@ -923,11 +923,11 @@ namespace gl
 		auto e3 = glGetError();
 		// Bind the vertex array object for the
 		glBindVertexArray(om->vao);
-		// Not best implementation, but works
+		// Not best implementation, but works 
 		if (rd->effect->name == "text")
 		{
 			std::shared_ptr<text_component> tc = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity(rd->parent_name)->get_component("text"));
-			printText2D(tc.get()->_data->text.c_str(), rd->position.x, rd->position.y, 60);
+			printText2D(tc.get()->_data->text.c_str(), rd->position.x, rd->position.y, 24);
 		}
 		auto e4 = glGetError();
 		// Check for any OpenGL errors
