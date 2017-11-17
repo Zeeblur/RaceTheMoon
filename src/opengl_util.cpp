@@ -14,6 +14,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "text2D.h"
+#include "systems/text_system.h"
 #define CHECK_GL_ERROR CheckGL(__LINE__, __FILE__)
 
 
@@ -888,7 +889,6 @@ namespace gl
 	{
 		auto programID = rd->effect->program;
 
-
 		glUseProgram(programID);
 
 		gl::glData* om = static_cast<gl::glData *>(rd->mesh->GpuData);
@@ -905,7 +905,7 @@ namespace gl
 			glBindTexture(GL_TEXTURE_2D, rd->textureObj->_id);
 			//bind_texture(*rd->texture, rd->texture->_id);
 		}
-
+		
 		// bind the matrices
 
 		auto loc = glGetUniformLocation(programID, "MVP");
@@ -920,13 +920,14 @@ namespace gl
 		if (loc != -1)
 			glUniformMatrix3fv(loc, 1, GL_FALSE, value_ptr(rd->N));
 
-
 		auto e3 = glGetError();
 		// Bind the vertex array object for the
 		glBindVertexArray(om->vao);
+		// Not best implementation, but works
 		if (rd->effect->name == "text")
 		{
-			printText2D("hello there", 10, 10, 100);
+			std::shared_ptr<text_component> tc = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity(rd->parent_name)->get_component("text"));
+			printText2D(tc.get()->_data->text.c_str(), rd->position.x, rd->position.y, 60);
 		}
 		auto e4 = glGetError();
 		// Check for any OpenGL errors

@@ -9,7 +9,7 @@
 #include "systems/score_system.h"
 #include "systems/ai_system.h"
 #include "systems/audio_system.h"
-
+#include "systems/text_system.h"
 enum state_type
 {
     START,

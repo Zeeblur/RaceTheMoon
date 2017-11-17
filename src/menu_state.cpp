@@ -2,7 +2,6 @@
 #include "menu_state.h"
 #include "entity_manager.h"
 #include <iostream>
-#include "text2D.h"
 void menu_state::initialise()
 {
 	// TODO: Fix button click event problem when changing window size.
@@ -39,11 +38,6 @@ void menu_state::initialise()
 	button_exit->add_component("render", renderer::get()->build_component(button_exit, "", "res/textures/exit_button.png", "rectangle", "Gouraud", simple_texture));
 	button_exit->add_component("clickable", clickable_system::get()->build_component(button_exit, glm::vec2(x_center - x_button_size, x_center + x_button_size), glm::vec2(button_offset + y_center - y_button_size, button_offset + y_center + y_button_size)));
 	button_exit->add_component("camera", camera_system::get()->build_component(button_exit, camera_type::ORTHO));
-	
-	auto test = entity_manager::get()->create_entity("test1", state_type::MENU, exit_button_transform);
-	test->add_component("render", renderer::get()->build_component(test, "", "res/textures/exit_button.png", "rectangle", "text", text));
-
-	initText2D("res/textures/myriad.png");
 }
 
 void menu_state::on_reset()
