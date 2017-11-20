@@ -125,8 +125,8 @@ void physics_system::update(float delta_time)
                 if (d->currentVelocity.x < 0 && d->currentVelocity.x > -deceleration.x) d->currentVelocity.x = 0;
 
                 // vertical movement
-                if (d->currentVelocity.y < 0) d->currentVelocity.y = 0;//+= deceleration.y;
-                if (d->currentVelocity.y > 0) d->currentVelocity.y = 0;// -= deceleration.y;
+                if (d->currentVelocity.y < 0) d->currentVelocity.y += deceleration.y;
+                if (d->currentVelocity.y > 0) d->currentVelocity.y -= deceleration.y;
                                        
                 // if speed within epsilon of zero. Reset to zero
                 if (d->currentVelocity.y > 0 && d->currentVelocity.y < deceleration.y) d->currentVelocity.y = 0;
