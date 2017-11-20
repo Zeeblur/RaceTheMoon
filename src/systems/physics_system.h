@@ -18,6 +18,8 @@ private:
 
 	std::vector<std::shared_ptr<collider_data>> _collider_data;
 
+    std::shared_ptr<collider_data> _bat_collider;
+
     physics_system();
 
     void cap_speed(glm::vec3& currentSpeed);
