@@ -22,6 +22,12 @@ private:
 
     // ai movement commands
     Command* aiUp_;
+    Command* aiDown_;
+    Command* aiForward_;
+    Command* aiBack_;
+    Command* aiRight_;
+    Command* aiLeft_;
+
 
 public:
 
@@ -30,10 +36,9 @@ public:
         static std::shared_ptr<ai_system> instance(new ai_system());
         return instance;
     }
-
+    
     std::shared_ptr<ai_component> build_component(std::shared_ptr<entity> e, unsigned int ai_type, vec3 distance);
 
-    std::vector<Command*> handle_input();
     std::vector<Command*> handle_ai(std::shared_ptr<ai_data> &d);
 
     bool initialise();
