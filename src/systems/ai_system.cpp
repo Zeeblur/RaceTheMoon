@@ -46,6 +46,9 @@ bool ai_system::initialise()
     auto left = glm::vec3(-0.5f, 0.0f, 0.0f);
     aiLeft_ = new MoveCommand(left);
 
+    auto moonUp = glm::vec3(0.0f, 0.01f, 0.0f);
+    moonUp_ = new MoveCommand(moonUp);
+
     return true;
 }
 
@@ -83,6 +86,10 @@ std::vector<Command*> ai_system::handle_ai(std::shared_ptr<ai_data> &d)
     auto endGap = glm::distance(target, current);
     auto startGap = glm::distance(d->init_pos, d->cur_pos);
     auto close = glm::length(glm::vec3(1.0f, 1.0f, 1.0f));
+
+    auto bat = entity_manager::get()->get_entity("Bat");
+    auto playerX = bat->get_trans().x;
+    auto playerZ = bat->get_trans().y;
 
     /*std::cout << "\n Targ pos = (" << target.x << ", " << target.y << ", " << target.z << ")" <<
         "\t Cur pos = (" << current.x << ", " << current.y << ", " << current.z << ")" <<
@@ -291,7 +298,7 @@ std::vector<Command*> ai_system::handle_ai(std::shared_ptr<ai_data> &d)
     // ** SUN AND MOON **
     else if (d->ai_type == 6)
     {
-        commands.push_back(aiUp_);
+        commands.push_back(moonUp_);
     }
 
     return commands;
