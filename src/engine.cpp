@@ -29,7 +29,6 @@ void engine::run()
     cleanup();
 }
 
-
 void engine::initWindowMan()
 {
     glfw::runWindow();
@@ -87,6 +86,11 @@ void engine::mainLoop()
 			if (sys.second->get_active())
 				sys.second->update(deltaTime);
 
+        while(thread_pool::get()->jd_.jobs_.size() != 0)
+        {
+            // wait on the threads to finish
+        }
+
         // Render the subsystems.
         for (auto &sys : _subsystems)
             if (sys.second->get_visible())
@@ -114,7 +118,7 @@ void engine::cleanup()
     _subsystems.clear();
 
     thread_pool::get()->shutdown();
-    
+
     // Engine will now exit.
     // Close OpenGL window and terminate GLFW
     glfwTerminate();

@@ -10,6 +10,7 @@
 #include <mutex>
 #include <queue>
 #include <condition_variable>
+#include <atomic>
 
 using namespace std;
 
@@ -20,15 +21,19 @@ struct task_data
     unsigned long id;
     task_func work;
     std::vector<void*> data;
-    //~task_data();
+    unsigned int parentcount;           // How many people I'm waiting on
+    std::vector<std::shared_ptr<task_data>> deps;    // Who's waiting on me
+    ~task_data();
 };
+
+
 
 struct job_data
 {
     queue<task_data> jobs_;
     mutex queue_mutex;
     condition_variable semaphore;
-    bool kill = false;
+    condition_variable job_finished;
 };
 
 class thread_pool

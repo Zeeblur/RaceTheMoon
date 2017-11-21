@@ -153,6 +153,19 @@ void moveTask(void* arg1, void* arg2)
 
 }
 
+void collision(void* col1, void* batCol)
+{
+    auto &_obstacle = *static_cast<shared_ptr<collider_data>*>(col1);
+    auto &_bat_collider = *static_cast<shared_ptr<collider_data>*>(batCol);
+
+    bool col = is_colliding(_obstacle->collider.get(), _bat_collider->collider.get());
+
+    if (col)
+    {
+        engine::get()->get_subsystem("score_system")->hurt();
+    }
+}
+
 void physics_system::update(float delta_time)
 {
     //std::cout << "Physics system updating" << std::endl;
@@ -165,21 +178,9 @@ void physics_system::update(float delta_time)
         }
     }
 
-    while(thread_pool::get()->jd_.jobs_.size() != 0)
+    for (auto &c : _collider_data)
     {
-        // wait on the threads to finish
-    }
-
-	// check bat against every other collider.
-    for (size_t i = 0; i < _collider_data.size(); ++i)
-    {
-        bool col = is_colliding(_collider_data[i]->collider.get(), _bat_collider->collider.get());
-
-        if (col)
-        {
-            engine::get()->get_subsystem("score_system")->hurt();
-            break;
-        }
+        thread_pool::get()->add_job(thread_pool::get()->makeTask(collision, &c, &_bat_collider));
     }
 
 }
