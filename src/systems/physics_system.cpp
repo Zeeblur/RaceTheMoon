@@ -2,7 +2,9 @@
 // Created by zoe on 11/10/17.
 //
 
+#include <ratio>
 #include "physics_system.h"
+#include "../thread_pool.h"
 
 using namespace glm;
 
@@ -94,60 +96,78 @@ bool is_colliding(collider_base* ac, collider_base* bc)
     return true;
 }
 
+void moveTask(void* arg1, void* arg2)
+{
+
+    std::shared_ptr<physics_system> ps = physics_system::get();
+    std::shared_ptr<physics_data> d = *static_cast<std::shared_ptr<physics_data>*>(arg1);
+    float delta_time = *static_cast<float*> (arg2);
+
+    // If active physics object add 1 to each component.
+
+        //cap speed.
+        ps->cap_speed(d->currentVelocity);
+
+        // change by speed and delta-time.
+        auto movement = d->currentVelocity * delta_time;
+
+        // movement test here....
+        d->x += movement.x;
+        d->y += movement.y;
+        d->z += movement.z;
+
+        if (!d->moveRequest)
+        {
+            //std::cout << moveSpeed.x << ", " << moveSpeed.y << std::endl;
+            // lateral movement
+            if (d->currentVelocity.x < 0) d->currentVelocity.x += ps->deceleration.x;
+            if (d->currentVelocity.x > 0) d->currentVelocity.x -= ps->deceleration.x;
+
+            // if speed within epsilon of zero. Reset to zero
+            if (d->currentVelocity.x > 0 && d->currentVelocity.x < ps->deceleration.x) d->currentVelocity.x = 0;
+            if (d->currentVelocity.x < 0 && d->currentVelocity.x > -ps->deceleration.x) d->currentVelocity.x = 0;
+
+            // vertical movement
+            if (d->currentVelocity.y < 0) d->currentVelocity.y += ps->deceleration.y;
+            if (d->currentVelocity.y > 0) d->currentVelocity.y -= ps->deceleration.y;
+
+            // if speed within epsilon of zero. Reset to zero
+            if (d->currentVelocity.y > 0 && d->currentVelocity.y < ps->deceleration.y) d->currentVelocity.y = 0;
+            if (d->currentVelocity.y < 0 && d->currentVelocity.y > -ps->deceleration.y) d->currentVelocity.y = 0;
+
+            // forwards movement
+            if (d->currentVelocity.z < 0) d->currentVelocity.z += ps->deceleration.z;
+            if (d->currentVelocity.z > 0) d->currentVelocity.z -= ps->deceleration.z;
+
+            // if speed within epsilon of zero. Reset to zero
+            if (d->currentVelocity.z > 0 && d->currentVelocity.z < ps->deceleration.z) d->currentVelocity.z = 0;
+            if (d->currentVelocity.z < 0 && d->currentVelocity.z > -ps->deceleration.z) d->currentVelocity.z = 0;
+        }
+        else
+        {
+            std::cout << d->currentVelocity.y << std::endl;
+        }
+
+        // reset move request
+        d->moveRequest = false;
+
+}
+
 void physics_system::update(float delta_time)
 {
     //std::cout << "Physics system updating" << std::endl;
     for (auto &d : _data)
     {
-        // If active physics object add 1 to each component.
+        //push back task to list.
         if (d->active)
         {
-            //cap speed.
-            cap_speed(d->currentVelocity);
-
-            // change by speed and delta-time.
-            auto movement = d->currentVelocity * delta_time;
-
-            // movement test here....
-            d->x += movement.x;
-            d->y += movement.y;
-            d->z += movement.z;
-
-            if (!d->moveRequest)
-            {
-                //std::cout << moveSpeed.x << ", " << moveSpeed.y << std::endl;
-                // lateral movement
-                if (d->currentVelocity.x < 0) d->currentVelocity.x += deceleration.x;
-                if (d->currentVelocity.x > 0) d->currentVelocity.x -= deceleration.x;
-
-                // if speed within epsilon of zero. Reset to zero
-                if (d->currentVelocity.x > 0 && d->currentVelocity.x < deceleration.x) d->currentVelocity.x = 0;
-                if (d->currentVelocity.x < 0 && d->currentVelocity.x > -deceleration.x) d->currentVelocity.x = 0;
-
-                // vertical movement
-                if (d->currentVelocity.y < 0) d->currentVelocity.y += deceleration.y;
-                if (d->currentVelocity.y > 0) d->currentVelocity.y -= deceleration.y;
-                                       
-                // if speed within epsilon of zero. Reset to zero
-                if (d->currentVelocity.y > 0 && d->currentVelocity.y < deceleration.y) d->currentVelocity.y = 0;
-                if (d->currentVelocity.y < 0 && d->currentVelocity.y > -deceleration.y) d->currentVelocity.y = 0;
-
-                // forwards movement
-                if (d->currentVelocity.z < 0) d->currentVelocity.z += deceleration.z;
-                if (d->currentVelocity.z > 0) d->currentVelocity.z -= deceleration.z;
-
-                // if speed within epsilon of zero. Reset to zero
-                if (d->currentVelocity.z > 0 && d->currentVelocity.z < deceleration.z) d->currentVelocity.z = 0;
-                if (d->currentVelocity.z < 0 && d->currentVelocity.z > -deceleration.z) d->currentVelocity.z = 0;
-            }
-            else
-            {
-                std::cout << d->currentVelocity.y << std::endl;
-            }
-
-            // reset move request
-            d->moveRequest = false;
+            thread_pool::get()->add_job(thread_pool::get()->makeTask(moveTask, &d, &delta_time));
         }
+    }
+
+    while(thread_pool::get()->jd_.jobs_.size() != 0)
+    {
+        // wait on the threads to finish
     }
 
 	// check bat against every other collider.

@@ -17,7 +17,7 @@ SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/lib")
 file(GLOB_RECURSE SOURCE_FILES src/*.cpp src/*.h)
 # Add all shaders
 file(GLOB_RECURSE SHADER_FILES res/shaders/*.vert res/shaders/*.frag res/shaders/*.geom res/shaders/*.comp)
-add_executable(RaceTheMoon ${SOURCE_FILES} ${SHADER_FILES})
+add_executable(RaceTheMoon ${SOURCE_FILES} ${SHADER_FILES} src/thread_pool.cpp src/thread_pool.h)
 
 add_custom_target(
 	copy_resources ALL COMMAND ${CMAKE_COMMAND} -E copy_directory  "${PROJECT_SOURCE_DIR}/res" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<CONFIG>/res"

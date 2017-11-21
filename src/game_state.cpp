@@ -31,7 +31,7 @@ void game_state::initialise()
     c->add_component("physics", physics_system::get()->build_component(c));
     c->add_component("ai", ai_system::get()->build_component(c, 0, glm::vec3(0.0f, 10.0f, 0.0f)));
     c->add_component("render", renderer::get()->build_component(c, "Green", "res/textures/check.jpg", "cube", "Gouraud", phong));
-    //  c->add_component("collider", physics_system::get()->build_collider_component(c));
+    c->add_component("collider", physics_system::get()->build_collider_component(c));
 
     // Adding cube 2
     transform_data cube2Trans;
@@ -43,7 +43,7 @@ void game_state::initialise()
     c2->add_component("physics", physics_system::get()->build_component(c2));
     c2->add_component("ai", ai_system::get()->build_component(c2, 2, glm::vec3(0.0f, 0.0f, -10.0f)));
     c2->add_component("render", renderer::get()->build_component(c2, "Green", "", "cube", "Gouraud", phong));
-    //c2->add_component("collider", physics_system::get()->build_collider_component(c2));
+    c2->add_component("collider", physics_system::get()->build_collider_component(c2));
 
     // Adding cube 3
     transform_data cube3Trans;
@@ -55,7 +55,7 @@ void game_state::initialise()
     c3->add_component("physics", physics_system::get()->build_component(c3));
     c3->add_component("ai", ai_system::get()->build_component(c3, 4, glm::vec3(10.0f, 0.0f, 0.0f)));
     c3->add_component("render", renderer::get()->build_component(c3, "Green", "res/textures/stone.jpg", "cube", "Gouraud", phong));
-    //c3->add_component("collider", physics_system::get()->build_collider_component(c3));
+    c3->add_component("collider", physics_system::get()->build_collider_component(c3));
 
     // Adding cube 4
     transform_data cube4Trans;
@@ -67,7 +67,7 @@ void game_state::initialise()
     c4->add_component("physics", physics_system::get()->build_component(c4));
     c4->add_component("ai", ai_system::get()->build_component(c4, 5, glm::vec3(-10.0f, 0.0f, 0.0f)));
     c4->add_component("render", renderer::get()->build_component(c4, "Green", "res/textures/moon.png", "cube", "Gouraud", phong));
-   // c4->add_component("collider", physics_system::get()->build_collider_component(c4));
+    c4->add_component("collider", physics_system::get()->build_collider_component(c4));
 
     // Adding moon sphere
     transform_data moonTrans;
