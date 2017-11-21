@@ -58,6 +58,9 @@ void menu_state::on_enter()
 
     glfwSetInputMode(glfw::window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
+	audio_system::get()->stop_music();
+	audio_system::get()->play_music(menu);
+
     std::cout << "Entered menu state, press ENTER to go to game state" << std::endl;
 }
 

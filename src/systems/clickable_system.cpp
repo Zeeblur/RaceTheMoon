@@ -51,7 +51,7 @@ void clickable_system::update(float delta_time)
             if (state == GLFW_PRESS && x_pos >= d.x_bounds.x && x_pos <= d.x_bounds.y && y_pos >= d.y_bounds.x && y_pos <= d.y_bounds.y 
 				&& engine_state_machine::get()->get_current_state_type() == entity_manager::get()->get_entity(d.parent_name)->state)
             {
-				audio_system::get()->play_one_shot("res/sounds/click.wav", 1);
+				audio_system::get()->play_sound(button_press);
                 std::cout << "Clicked button with name: " << d.parent_name << std::endl;
                 // Save currently clicked component
                 _latest_clicked_component = d.parent_name;

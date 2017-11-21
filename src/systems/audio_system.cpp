@@ -1,9 +1,5 @@
 #include "audio_system.h"
-#define TINYSOUND_IMPLEMENTATION
-#include "../tinysound.h"
 #include <stdio.h>
-
-
 audio_system::audio_system()
 {
 	_visible = false;
@@ -12,61 +8,89 @@ audio_system::audio_system()
 bool audio_system::initialise()
 {
 	std::cout << "Audio system initialising" << std::endl;
-	//HWND hwnd = GetConsoleWindow();
-	//ctx = tsMakeContext(hwnd, 44000, 15, 0, 1000);
 	return true;
 }
 
 bool audio_system::load_content()
 {
 	std::cout << "Audio system loading content" << std::endl;
+	load_sound(button_press, "res/sounds/click.wav");
 	return true;
 }
 
 void audio_system::update(float delta_time)
 {
-	static float total_time;
-	total_time += delta_time;
-
-	//if (ready_to_mix)
-	//tsLock(ctx);
-
-
-	//tsMix(ctx);
-
-	//std::cout << "Audio system updating" << std::endl;
+	// Will remove sounds that have stopped playing
+	sounds.remove_if([](const sf::Sound& s)
+	{
+		return s.getStatus() == sf::Sound::Stopped;
+	});
 }
 
-void audio_system::play_one_shot(std::string path, int duration)
+void audio_system::load_sound(sound_id id, std::string path)
 {
-	//HWND hwnd = GetConsoleWindow();
-	//ctx = tsMakeContext(hwnd, 44000, 15, duration, 1);
+	// Load a sound buffer from a wav file
+	std::shared_ptr<sf::SoundBuffer> buffer = std::make_shared<sf::SoundBuffer>();
+	if (!buffer.get()->loadFromFile(path))
+		return;
 
-	//tsLoadedSound loaded = tsLoadWAV(path.c_str());
-	//tsPlaySoundDef def = tsMakeDef(&loaded);
-	//tsPlayingSound* sound = tsPlaySound(ctx, def);
+	// Display sound informations
+	std::cout << path << std::endl;
+	std::cout << " " << buffer.get()->getDuration().asSeconds() << " seconds" << std::endl;
+	std::cout << " " << buffer.get()->getSampleRate() << " samples / sec" << std::endl;
+	std::cout << " " << buffer.get()->getChannelCount() << " channels" << std::endl;
 
-	//ready_to_mix = true;
-	//tsMix(ctx);
+	buffers.insert(std::pair<sound_id, std::shared_ptr<sf::SoundBuffer>>(id, buffer));
+}
+
+void audio_system::play_sound(sound_id id)
+{
+	std::shared_ptr<sf::SoundBuffer> sb_ptr = buffers.find(id)->second;
+	sf::SoundBuffer* sb = sb_ptr.get();
+	sounds.push_back(sf::Sound(*sb));
+	sf::Sound& sound = sounds.back();
+	sound.play();
+}
 
 
-	//tsThreadSleepDelay(ctx, 10);
+void audio_system::play_music(music_id id)
+{
+	std::string filename = "res/sounds/menu.wav";
+	switch (id)
+	{
+		case game:
+			filename = "res/sounds/game.wav";
+			break;
+		case menu:
+			filename = "res/sounds/menu.wav";
+			break;
+	}
+	
+	
+	if (!music.openFromFile(filename))
+		throw std::runtime_error("Music " + filename + " could not be loaded.");
+	volume = 100.0f;
+	music.setVolume(volume);
+	music.setLoop(true);
+	music.play();
+}
 
-	//tsLoadedSound loaded = tsLoadWAV(path.c_str());
-	//tsPlayingSound sound = tsMakePlayingSound(&loaded);
-	//tsSpawnMixThread(ctx);
-	//tsSleep(500);
-	//tsInsertSound(ctx, &sound);
-	//tsInsertSound(ctx, &sound);
-	//tsPlaySoundDef def = tsMakeDef(&loaded);
-	//tsPlaySound(ctx, def);
-	//tsMix(ctx);
-	//tsSleep(duration * 1000);
-	//tsShutdownContext(ctx);
-	//tsStopSound(&sound);
-	//tsStopAllSounds(ctx);
+void audio_system::stop_music()
+{
+	music.stop();
+}
 
-	//tsFreeSound(&loaded);
+void audio_system::set_volume(float volume)
+{
+	this->volume = volume;
+}
+
+void audio_system::set_paused(bool paused)
+{
+	if (paused)
+		music.pause();
+	else
+		music.play();
 }
 
 void audio_system::render()

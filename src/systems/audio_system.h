@@ -4,13 +4,27 @@
 #include <vector>
 #include <string>
 #include "../subsystem.h"
-//#define TINYSOUND_IMPLEMENTATION
-#include "../tinysound.h"
+#include <SFML/Audio.hpp>
+#include <map>
+#include <list>
+enum sound_id
+{
+	button_press
+};
+
+enum music_id
+{
+	menu,
+	game
+};
+
 class audio_system : public subsystem
 {
 private:
-	tsContext* ctx;
-	bool ready_to_mix = false;
+	std::map<sound_id, std::shared_ptr<sf::SoundBuffer>> buffers;
+	std::list<sf::Sound> sounds;
+	sf::Music music;
+	float volume = 100.0f;
 public:
 	
 	audio_system();
@@ -20,8 +34,17 @@ public:
 		static std::shared_ptr<audio_system> instance = std::shared_ptr<audio_system>(new audio_system());
 		return instance;
 	}
+	void load_sound(sound_id id, std::string path);
 
-	void play_one_shot(std::string path, int duration);
+	void play_sound(sound_id id);
+
+	void play_music(music_id id);
+
+	void stop_music();
+
+	void set_volume(float volume);
+
+	void set_paused(bool paused);
 
 	bool initialise() override final;
 

@@ -14,8 +14,13 @@ void settings_state::initialise()
 
 	glfwGetWindowSize(glfw::window, &x_size, &y_size);
 
+	transform_data back_transform;
+	back_transform.scale = glm::vec3(x_size / 2, y_size / 2, 1.0f);
+	back_transform.z = -1;
+	auto background = entity_manager::get()->create_entity("background", state_type::SETTINGS, back_transform);
 
-
+	background->add_component("render", renderer::get()->build_component(background, "", "res/textures/race_the_moon.png", "rectangle", "Gouraud", simple_texture));
+	background->add_component("camera", camera_system::get()->build_component(background, camera_type::ORTHO));
 
 	// Resolution transform
 	transform_data resolution_transform;
@@ -91,13 +96,6 @@ void settings_state::initialise()
 	button_left->add_component("clickable", clickable_system::get()->build_component(button_left, glm::vec2(x_center - x_button_size, x_center + x_button_size), glm::vec2(y_center - y_button_size, y_center + y_button_size)));
 	button_left->add_component("render", renderer::get()->build_component(button_left, "", "res/textures/arrow_left.png", "rectangle", "Gouraud", simple_texture));
 	button_left->add_component("camera", camera_system::get()->build_component(button_left, camera_type::ORTHO));
-
-	transform_data back_transform;
-	back_transform.scale = glm::vec3(x_size /2, y_size /2, 1.0f);
-	auto background = entity_manager::get()->create_entity("background", state_type::SETTINGS, back_transform);
-
-	background->add_component("render", renderer::get()->build_component(background, "", "res/textures/race_the_moon.png", "rectangle", "Gouraud", simple_texture));
-	background->add_component("camera", camera_system::get()->build_component(background, camera_type::ORTHO));
 
 }
 
