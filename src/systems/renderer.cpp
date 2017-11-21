@@ -3,6 +3,7 @@
 #include <sstream>
 #include <fstream>
 #include "../glfw.h"
+#include "../thread_pool.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -79,6 +80,11 @@ std::shared_ptr<light_component> renderer::build_light(std::shared_ptr<entity> &
 
 void renderer::render()
 {
+    while(thread_pool::get()->jd_.jobs_.size() != 0)
+    {
+        // wait on the threads to finish
+    }
+
 	glfwMakeContextCurrent(glfw::window);
 	auto e = glGetError();
 	int x_size = 0;

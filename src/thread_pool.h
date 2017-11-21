@@ -33,7 +33,6 @@ struct job_data
     queue<task_data> jobs_;
     mutex queue_mutex;
     condition_variable semaphore;
-    condition_variable job_finished;
 };
 
 class thread_pool

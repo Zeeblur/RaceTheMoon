@@ -26,10 +26,11 @@ void wait_for_tasks(job_data& tp)
         if (!engine::get()->get_running())
             break;
 
-        task_data job = move(tp.jobs_.front());
+        task_data job = tp.jobs_.front();
         tp.jobs_.pop();
 
         job.work(job.data[0], job.data[1]); // function<void()> type
+
     }
     std::cout << "die" << std::endl;
 }
@@ -44,6 +45,9 @@ void thread_pool::init()
 
 void thread_pool::shutdown()
 {
+    while (engine::get()->get_running())
+    {}
+
     jd_.semaphore.notify_all();
 
     for (auto &t : pool_)

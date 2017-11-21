@@ -7,6 +7,7 @@
 #include "camera_component.h"
 #include "../systems/camera_system.h"
 #include "../systems/renderer.h"
+#include "../thread_pool.h"
 
 #define CHECK_GL_ERROR CheckGL(__LINE__, __FILE__)
 
@@ -36,57 +37,64 @@ void render_component::update(float delta_time)
 	// This should never be called.
 }
 
+void create_render_job(void* data, void* parent)
+{
+	std::shared_ptr<gl::render_data> _data = *static_cast<std::shared_ptr<gl::render_data>*>(data);
+	std::shared_ptr<entity> _parent = *static_cast<std::shared_ptr<entity>*>(parent);
+
+	// "Generate" the transform matrix.
+	vec3 transvec = vec3(_parent->get_trans().x, _parent->get_trans().y, _parent->get_trans().z);
+
+	//std::cout << "rendering the: " + _parent->get_name() << " at (" << transvec.x << ", " << transvec.y << ", " << transvec.z << ")" << std::endl;
+
+	mat4 trans = glm::translate(mat4(1.0f), transvec);
+
+	mat4 rotation;
+
+	glm::quat rot = _parent->get_trans().rotation;
+	glm::vec3 scal = _parent->get_trans().scale;
+
+
+	rotation = mat4_cast(rot);
+
+	mat4 scale = glm::scale(mat4(1.0f), scal);
+
+	mat4 model = trans * (rotation * scale);
+
+	auto camera = static_cast<camera_component*>(_parent->get_component("camera").get());
+
+	int width, height;
+	glfwGetWindowSize(glfw::window, &width, &height);
+	mat4 view_proj_mat;
+
+	if (camera != nullptr)
+	{
+		if (camera->get_data()->type == camera_type::CHASE)
+			view_proj_mat = camera->get_projection() * camera->get_view();
+		else
+			view_proj_mat = glm::ortho(-0.5f * (float)width, 0.5f * (float)width, -0.5f * (float)height, 0.5f * (float)height, -1000.0f, 1000.0f);
+
+	}
+	else
+	{
+		view_proj_mat = camera_system::get()->player_cam_MV;
+	}
+
+	auto MVP = view_proj_mat * model;
+
+	_data->MVP = MVP;
+
+	renderer::get()->_dataList.push_back(_data);
+
+}
+
+
 void render_component::render()
 {
 	if (_data->visible)
 	{
-		// "Generate" the transform matrix.
-		vec3 transvec = vec3(_parent->get_trans().x, _parent->get_trans().y, _parent->get_trans().z);
-
-		//std::cout << "rendering the: " + _parent->get_name() << " at (" << transvec.x << ", " << transvec.y << ", " << transvec.z << ")" << std::endl;
-
-		mat4 trans = glm::translate(mat4(1.0f), transvec);
-
-		mat4 rotation;
-
-		glm::quat rot = _parent->get_trans().rotation;
-		glm::vec3 scal = _parent->get_trans().scale;
-
-
-		rotation = mat4_cast(rot);
-
-		mat4 scale = glm::scale(mat4(1.0f), scal);
-
-		mat4 model = trans * (rotation * scale);
-
-		auto camera = static_cast<camera_component*>(_parent->get_component("camera").get());
-
-		int width, height;
-		glfwGetWindowSize(glfw::window, &width, &height);
-		mat4 view_proj_mat;
-
-		if (camera != nullptr)
-		{
-			if (camera->get_data()->type == camera_type::CHASE)
-				view_proj_mat = camera->get_projection() * camera->get_view();
-			else
-				view_proj_mat = glm::ortho(-0.5f * (float)width, 0.5f * (float)width, -0.5f * (float)height, 0.5f * (float)height, -1000.0f, 1000.0f);
-
-		}
-		else
-		{
-			view_proj_mat = camera_system::get()->player_cam_MV;
-		}
-
-		auto MVP = view_proj_mat * model;
-
-		
-		// create render job here
-
-		_data->MVP = MVP;
-
-		renderer::get()->_dataList.push_back(_data);
-		
+		// create job
+		thread_pool::get()->add_job(thread_pool::get()->makeTask(create_render_job, &_data, &_parent));
 	}
 }
 

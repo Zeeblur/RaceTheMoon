@@ -96,6 +96,11 @@ void engine::mainLoop()
             if (sys.second->get_visible())
                 sys.second->render();
 
+        while(thread_pool::get()->jd_.jobs_.size() != 0)
+        {
+            // wait on the threads to finish
+        }
+
     }
 }
 
@@ -113,6 +118,7 @@ void engine::cleanup()
         sys.second->shutdown();
     }
 
+    thread_pool::get()->shutdown();
 
     // Clear out all the subsystems causing destructors to call.
     _subsystems.clear();
