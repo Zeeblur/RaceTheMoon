@@ -1,4 +1,5 @@
 #include "engine.h"
+#include "thread_pool.h"
 
 #include <iostream>
 #include <chrono>
@@ -96,7 +97,6 @@ void engine::mainLoop()
 
 void engine::cleanup()
 {
-
     // Unload the content.
     for (auto &sys : _subsystems)
     {
@@ -113,6 +113,8 @@ void engine::cleanup()
     // Clear out all the subsystems causing destructors to call.
     _subsystems.clear();
 
+    thread_pool::get()->shutdown();
+    
     // Engine will now exit.
     // Close OpenGL window and terminate GLFW
     glfwTerminate();

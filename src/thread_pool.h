@@ -28,6 +28,7 @@ struct job_data
     queue<task_data> jobs_;
     mutex queue_mutex;
     condition_variable semaphore;
+    bool kill = false;
 };
 
 class thread_pool
@@ -49,6 +50,7 @@ public:
     }
 
     void init();
+    void shutdown();
     void add_job(std::shared_ptr<task_data> task);
     std::shared_ptr<task_data> makeTask(task_func tf, void *arg1, void *arg2);
 

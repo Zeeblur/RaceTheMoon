@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include "thread_pool.h"
+#include "engine.h"
 
 
 thread_pool::thread_pool()
@@ -16,16 +17,21 @@ thread_pool::thread_pool()
 void wait_for_tasks(job_data& tp)
 {
     std::cout << "hello from thread " << std::endl;
-    while(true)
+    while(engine::get()->get_running())
     {
         unique_lock<mutex> lock(tp.queue_mutex);
 
-        tp.semaphore.wait(lock, [&]{return !tp.jobs_.empty();});
+        tp.semaphore.wait(lock, [&]{return !tp.jobs_.empty() || tp.kill; });
+
+        if (tp.kill)
+            break;
+
         task_data job = tp.jobs_.front();
         tp.jobs_.pop();
 
         job.work(job.data[0], job.data[1]); // function<void()> type
     }
+    std::cout << "die" << std::endl;
 }
 
 void thread_pool::init()
@@ -34,6 +40,15 @@ void thread_pool::init()
     {
         pool_.push_back(thread(wait_for_tasks, ref(jd_)));
     }
+}
+
+void thread_pool::shutdown()
+{
+    jd_.kill = true;
+    jd_.semaphore.notify_all();
+
+    for (auto &t : pool_)
+        t.join();
 }
 
 void thread_pool::add_job(std::shared_ptr<task_data> task)
