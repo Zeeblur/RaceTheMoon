@@ -1,4 +1,5 @@
 #include "engine.h"
+#include "thread_pool.h"
 
 #include <iostream>
 #include <chrono>
@@ -27,7 +28,6 @@ void engine::run()
     mainLoop();
     cleanup();
 }
-
 
 void engine::initWindowMan()
 {
@@ -86,6 +86,11 @@ void engine::mainLoop()
 			if (sys.second->get_active())
 				sys.second->update(deltaTime);
 
+        while(thread_pool::get()->jd_.jobs_.size() != 0)
+        {
+            // wait on the threads to finish
+        }
+
         // Render the subsystems.
         for (auto &sys : _subsystems)
             if (sys.second->get_visible())
@@ -96,7 +101,6 @@ void engine::mainLoop()
 
 void engine::cleanup()
 {
-
     // Unload the content.
     for (auto &sys : _subsystems)
     {
@@ -112,6 +116,8 @@ void engine::cleanup()
 
     // Clear out all the subsystems causing destructors to call.
     _subsystems.clear();
+
+    thread_pool::get()->shutdown();
 
     // Engine will now exit.
     // Close OpenGL window and terminate GLFW

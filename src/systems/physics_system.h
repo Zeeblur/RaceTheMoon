@@ -22,15 +22,18 @@ private:
 
     physics_system();
 
+
+
+public:
+
     void cap_speed(glm::vec3& currentSpeed);
+
 
     // move scale is scaled by framerate
     float moveScale = 60.0f;
 
     glm::vec3 acceleration = glm::vec3(0.2f * moveScale);
     glm::vec3 deceleration = glm::vec3(0.4f * moveScale);
-
-public:
 
     static inline std::shared_ptr<physics_system> get()
     {
@@ -53,6 +56,9 @@ public:
     void unload_content() override final;
 
     void shutdown() override final;
+
+    //void moveTask(void* arg1, void* arg2);
+    ///void moveTask(const std::shared_ptr<physics_data> d, float delta_time);
 
     float maxSpeed = 2.0f * moveScale;
 };
