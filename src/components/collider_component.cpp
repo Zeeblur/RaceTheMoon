@@ -1,10 +1,9 @@
 #include "collider_component.h"
 
-collider_data::collider_data(transform_data trans)
+collider_data::collider_data(transform_data trans, int behaviour)
 {
 
-    //collider_base* collider = new sphere();
-
+    behaviour_ = (colType)behaviour;
 
 	switch (trans.colType) {
         case 0:

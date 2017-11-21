@@ -12,6 +12,8 @@
 #include "pause_state.h"
 #include "game_over_state.h"
 #include "settings_state.h"
+#include "thread_pool.h"
+
 
 //#include <FreeImage-src\FreeImage.h>
 // Include GLEW
