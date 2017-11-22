@@ -107,7 +107,8 @@ namespace gl
 		glm::mat4 M;
 		glm::mat3 N;
 		glm::mat4 MVP;
-
+		glm::vec3 position;
+		std::string parent_name;
 		// Reference to structs
 		std::shared_ptr<gl::Effect> effect;
 

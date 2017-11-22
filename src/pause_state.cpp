@@ -44,7 +44,7 @@ void pause_state::initialise()
 
 void pause_state::on_reset()
 {
-
+	
 }
 
 void pause_state::on_enter()
@@ -53,6 +53,8 @@ void pause_state::on_enter()
 
     glfwSetInputMode(glfw::window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
+	//audio_system::get()->set_volume(0.70f);
+	audio_system::get()->set_paused(true);
     std::cout << "Entered pause state, press ESC to go back to game state or BACKSPACE to go back to menu state" << std::endl;
 }
 

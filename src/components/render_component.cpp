@@ -7,7 +7,7 @@
 #include "camera_component.h"
 #include "../systems/camera_system.h"
 #include "../systems/renderer.h"
-
+#include "../text2D.h"
 #define CHECK_GL_ERROR CheckGL(__LINE__, __FILE__)
 
 using namespace glm;
@@ -42,9 +42,9 @@ void render_component::render()
 	{
 		// "Generate" the transform matrix.
 		vec3 transvec = vec3(_parent->get_trans().x, _parent->get_trans().y, _parent->get_trans().z);
-
+		_data->position = transvec;
 		//std::cout << "rendering the: " + _parent->get_name() << " at (" << transvec.x << ", " << transvec.y << ", " << transvec.z << ")" << std::endl;
-
+		_data->parent_name = _parent->get_name();
 		mat4 trans = glm::translate(mat4(1.0f), transvec);
 
 		mat4 rotation;
