@@ -87,13 +87,13 @@ void settings_state::initialise()
 
 	// Right arrow button
 	auto button_right = entity_manager::get()->create_entity("buttonRight", state_type::SETTINGS, right_arrow_transform);
-	button_right->add_component("clickable", clickable_system::get()->build_component(button_right, glm::vec2(x_center - x_button_size, x_center + x_button_size), glm::vec2(y_center - y_button_size, y_center + y_button_size)));
+	//button_right->add_component("clickable", clickable_system::get()->build_component(button_right, glm::vec2(x_center - x_button_size, x_center + x_button_size), glm::vec2(y_center - y_button_size, y_center + y_button_size)));
 	button_right->add_component("render", renderer::get()->build_component(button_right, "", "res/textures/arrow_right.png", "rectangle", "Gouraud", simple_texture));
 	button_right->add_component("camera", camera_system::get()->build_component(button_right, camera_type::ORTHO));
 
 	// Left arrow button
 	auto button_left = entity_manager::get()->create_entity("buttonLeft", state_type::SETTINGS, left_arrow_transform);
-	button_left->add_component("clickable", clickable_system::get()->build_component(button_left, glm::vec2(x_center - x_button_size, x_center + x_button_size), glm::vec2(y_center - y_button_size, y_center + y_button_size)));
+	//button_left->add_component("clickable", clickable_system::get()->build_component(button_left, glm::vec2(x_center - x_button_size, x_center + x_button_size), glm::vec2(y_center - y_button_size, y_center + y_button_size)));
 	button_left->add_component("render", renderer::get()->build_component(button_left, "", "res/textures/arrow_left.png", "rectangle", "Gouraud", simple_texture));
 	button_left->add_component("camera", camera_system::get()->build_component(button_left, camera_type::ORTHO));
 

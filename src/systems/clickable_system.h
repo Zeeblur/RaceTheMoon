@@ -14,7 +14,7 @@ public:
 
     static std::shared_ptr<clickable_system> get();
 
-    std::shared_ptr<clickable_component> build_component(std::shared_ptr<entity> e, glm::dvec2 x_bounds, glm::dvec2 y_bounds);
+	std::shared_ptr<clickable_component> build_component(std::shared_ptr<entity> e, glm::dvec2 center, glm::dvec2 scale);
 
     std::string get_clicked_component_name();
 

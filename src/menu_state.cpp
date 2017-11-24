@@ -20,6 +20,7 @@ void menu_state::initialise()
 	// button trans
 	transform_data play_button_transform;
 	play_button_transform.scale = glm::vec3(x_button_size, y_button_size, 1.0f);
+
 	play_button_transform.y = 0.0f;
 	transform_data exit_button_transform;
 	exit_button_transform.scale = glm::vec3(x_button_size, y_button_size, 1.0f);
@@ -29,15 +30,20 @@ void menu_state::initialise()
 	int button_offset = 125;
 	// Play button
 	auto button_play = entity_manager::get()->create_entity("buttonPlay", state_type::MENU, play_button_transform);
-	button_play->add_component("clickable", clickable_system::get()->build_component(button_play, glm::vec2(x_center - x_button_size, x_center + x_button_size), glm::vec2(y_center - y_button_size, y_center + y_button_size)));
+	std::shared_ptr<clickable_component> play_clickable = clickable_system::get()->build_component(button_play, glm::dvec2(x_center, y_center), glm::dvec2(x_button_size, y_button_size));
+	button_play->add_component("clickable", play_clickable);
 	button_play->add_component("render", renderer::get()->build_component(button_play, "", "res/textures/play_button.png", "rectangle", "Gouraud", simple_texture));
 	button_play->add_component("camera", camera_system::get()->build_component(button_play, camera_type::ORTHO));
 
 	// Exit button
 	auto button_exit = entity_manager::get()->create_entity("buttonExit", state_type::MENU, exit_button_transform);
 	button_exit->add_component("render", renderer::get()->build_component(button_exit, "", "res/textures/exit_button.png", "rectangle", "Gouraud", simple_texture));
-	button_exit->add_component("clickable", clickable_system::get()->build_component(button_exit, glm::vec2(x_center - x_button_size, x_center + x_button_size), glm::vec2(button_offset + y_center - y_button_size, button_offset + y_center + y_button_size)));
+	std::shared_ptr<clickable_component> exit_clickable = clickable_system::get()->build_component(button_exit, glm::dvec2(x_center, y_center + button_offset ), glm::dvec2(x_button_size, y_button_size));
+	button_exit->add_component("clickable", exit_clickable);
 	button_exit->add_component("camera", camera_system::get()->build_component(button_exit, camera_type::ORTHO));
+
+	clickable_components.push_back(play_clickable);
+	clickable_components.push_back(exit_clickable);
 }
 
 void menu_state::on_reset()
@@ -66,7 +72,18 @@ void menu_state::on_enter()
 
 void menu_state::on_update(float delta_time)
 {
-    //std::cout << "********** MENU DISPLAYED ****************" << std::endl;
+	// TODO: Add some sort of window size changed event and then update center value
+	int x_size;
+	int y_size;
+	glfwGetWindowSize(glfw::window, &x_size, &y_size);
+	int button_offset = 125;
+
+	clickable_components[0].get()->_data.center.x = x_size / 2;
+	clickable_components[0].get()->_data.center.y = y_size / 2;
+
+	clickable_components[1].get()->_data.center.x = x_size / 2;
+	clickable_components[1].get()->_data.center.y = y_size / 2 + 125;
+	//std::cout << "********** MENU DISPLAYED ******;**********" << std::endl;
 }
 
 void menu_state::on_exit()
