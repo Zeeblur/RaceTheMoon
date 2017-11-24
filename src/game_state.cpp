@@ -1,4 +1,5 @@
 #include "game_state.h"
+#include "level_gen.h"
 #include <iostream>
 #include "text2D.h"
 #include <iomanip>
@@ -23,7 +24,11 @@ void game_state::initialise()
         bad_map(i, j);
     }*/
 
-     //Adding cube 1
+    auto levelGenerator = level_gen::get();
+
+    levelGenerator->addWaterfallPuzzle(glm::vec3(0, 0.0f, -0));
+
+    //Adding cube 1
     transform_data cubeTrans;
     cubeTrans.scale = glm::vec3(10.0f, 10.0f, 10.0f);
     cubeTrans.x = -20.0f;
@@ -31,7 +36,7 @@ void game_state::initialise()
     cubeTrans.z = -20.0f;
     auto c = entity_manager::get()->create_entity("Cube", this->type, cubeTrans);
     c->add_component("physics", physics_system::get()->build_component(c));
-    c->add_component("ai", ai_system::get()->build_component(c, 0, glm::vec3(0.0f, 10.0f, 0.0f)));
+    c->add_component("ai", ai_system::get()->build_component(c, UPTHENDOWN, 5.0f, 15.0f));
     c->add_component("render", renderer::get()->build_component(c, "Green", "res/textures/check.jpg", "cube", "Gouraud", phong));
     c->add_component("collider", physics_system::get()->build_collider_component(c));
 
@@ -43,7 +48,7 @@ void game_state::initialise()
     cube2Trans.z = -20.0f;
     auto c2 = entity_manager::get()->create_entity("Cube2", this->type, cube2Trans);
     c2->add_component("physics", physics_system::get()->build_component(c2));
-    c2->add_component("ai", ai_system::get()->build_component(c2, 2, glm::vec3(0.0f, 0.0f, -10.0f)));
+    c2->add_component("ai", ai_system::get()->build_component(c2, FORWARDTHENBACK, -30.0f, -10.0f));
     c2->add_component("render", renderer::get()->build_component(c2, "Green", "", "cube", "Gouraud", phong));
     c2->add_component("collider", physics_system::get()->build_collider_component(c2));
 
@@ -55,7 +60,7 @@ void game_state::initialise()
     cube3Trans.z = -120.0f;
     auto c3 = entity_manager::get()->create_entity("Cube3", this->type, cube3Trans);
     c3->add_component("physics", physics_system::get()->build_component(c3));
-    c3->add_component("ai", ai_system::get()->build_component(c3, 4, glm::vec3(10.0f, 0.0f, 0.0f)));
+    c3->add_component("ai", ai_system::get()->build_component(c3, RIGHTTHENLEFT, 20.0f, 40.0f));
     c3->add_component("render", renderer::get()->build_component(c3, "Green", "res/textures/stone.jpg", "cube", "Gouraud", phong));
     c3->add_component("collider", physics_system::get()->build_collider_component(c3));
 
@@ -67,56 +72,9 @@ void game_state::initialise()
     cube4Trans.z = -120.0f;
     auto c4 = entity_manager::get()->create_entity("Cube4", this->type, cube4Trans);
     c4->add_component("physics", physics_system::get()->build_component(c4));
-    c4->add_component("ai", ai_system::get()->build_component(c4, 5, glm::vec3(-10.0f, 0.0f, 0.0f)));
+    c4->add_component("ai", ai_system::get()->build_component(c4, LEFTTHENRIGHT, -40.0f, -20.0f));
     c4->add_component("render", renderer::get()->build_component(c4, "Green", "res/textures/moon.png", "cube", "Gouraud", phong));
     c4->add_component("collider", physics_system::get()->build_collider_component(c4));
-
-
-    // Attempt at waterfall boxes puzzle
-    // Waterfall piece 1
-    transform_data waterfall1Trans;
-    waterfall1Trans.scale = glm::vec3(40.0f, 40.0f, 40.0f);
-    waterfall1Trans.x = -230.0f;
-    waterfall1Trans.y = 60.0f;
-    waterfall1Trans.z = -800.0f;
-    auto w1 = entity_manager::get()->create_entity("Waterfall1", this->type, waterfall1Trans);
-    w1->add_component("physics", physics_system::get()->build_component(w1));
-    w1->add_component("ai", ai_system::get()->build_component(w1, 1, glm::vec3(0.0f, -40.0f, 0.0f)));
-    w1->add_component("render", renderer::get()->build_component(w1, "Green", "res/textures/stone.jpg", "cube", "Gouraud", phong));
-
-    // Waterfall piece 2
-    transform_data waterfall2Trans;
-    waterfall2Trans.scale = glm::vec3(40.0f, 40.0f, 40.0f);
-    waterfall2Trans.x = -170.0f;
-    waterfall2Trans.y = 20.0f;
-    waterfall2Trans.z = -800.0f;
-    auto w2 = entity_manager::get()->create_entity("Waterfall2", this->type, waterfall2Trans);
-    w2->add_component("physics", physics_system::get()->build_component(w2));
-    w2->add_component("ai", ai_system::get()->build_component(w2, 0, glm::vec3(0.0f, 40.0f, 0.0f)));
-    w2->add_component("render", renderer::get()->build_component(w2, "Green", "res/textures/stone.jpg", "cube", "Gouraud", phong));
-
-    // Waterfall piece 3
-    transform_data waterfall3Trans;
-    waterfall3Trans.scale = glm::vec3(40.0f, 40.0f, 40.0f);
-    waterfall3Trans.x = -110.0f;
-    waterfall3Trans.y = 60.0f;
-    waterfall3Trans.z = -800.0f;
-    auto w3 = entity_manager::get()->create_entity("Waterfall3", this->type, waterfall3Trans);
-    w3->add_component("physics", physics_system::get()->build_component(w3));
-    w3->add_component("ai", ai_system::get()->build_component(w3, 1, glm::vec3(0.0f, -40.0f, 0.0f)));
-    w3->add_component("render", renderer::get()->build_component(w3, "Green", "res/textures/stone.jpg", "cube", "Gouraud", phong));
-
-    // Waterfall piece 4
-    transform_data waterfall4Trans;
-    waterfall4Trans.scale = glm::vec3(40.0f, 40.0f, 40.0f);
-    waterfall4Trans.x = -50.0f;
-    waterfall4Trans.y = 20.0f;
-    waterfall4Trans.z = -800.0f;
-    auto w4 = entity_manager::get()->create_entity("Waterfall4", this->type, waterfall4Trans);
-    w4->add_component("physics", physics_system::get()->build_component(w4));
-    w4->add_component("ai", ai_system::get()->build_component(w4, 0, glm::vec3(0.0f, 40.0f, 0.0f)));
-    w4->add_component("render", renderer::get()->build_component(w4, "Green", "res/textures/stone.jpg", "cube", "Gouraud", phong));
-
 
     // Adding moon sphere
     transform_data moonTrans;
@@ -124,7 +82,7 @@ void game_state::initialise()
     moonTrans.z = -1000.0f;
     auto m = entity_manager::get()->create_entity("Moon", this->type, moonTrans);
     m->add_component("physics", physics_system::get()->build_component(m));
-    m->add_component("ai", ai_system::get()->build_component(m, 6, glm::vec3(0.0f, 0.0f, 0.0f)));
+    m->add_component("ai", ai_system::get()->build_component(m, SUN_MOON, 0.0f, 0.0f));
     m->add_component("render", renderer::get()->build_component(m, "White", "res/textures/moon.png", "sphere", "Gouraud", phong));
 
     // Adding sun sphere
@@ -134,7 +92,7 @@ void game_state::initialise()
     sunTrans.z = -1000.0f;
     auto s = entity_manager::get()->create_entity("Sun", this->type, sunTrans);
     s->add_component("physics", physics_system::get()->build_component(s));
-    s->add_component("ai", ai_system::get()->build_component(s, 6, glm::vec3(0.0f, 0.0f, 0.0f)));
+    s->add_component("ai", ai_system::get()->build_component(s, SUN_MOON, 0.0f, 0.0f));
     s->add_component("render", renderer::get()->build_component(s, "White", "res/textures/sun.png", "sphere", "Gouraud", phong));
 
 

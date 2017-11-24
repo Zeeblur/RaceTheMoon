@@ -41,7 +41,7 @@ public:
         return instance;
     }
     
-    std::shared_ptr<ai_component> build_component(std::shared_ptr<entity> e, unsigned int ai_type, vec3 distance);
+    std::shared_ptr<ai_component> build_component(std::shared_ptr<entity> e, unsigned int ai_type, float min, float max);
 
     std::vector<Command*> handle_ai(std::shared_ptr<ai_data> &d);
 
