@@ -1,7 +1,9 @@
 #include "game_state.h"
 #include <iostream>
-
-
+#include "text2D.h"
+#include <iomanip>
+#include <sstream>
+#include <strstream>
 void game_state::initialise()
 {
 
@@ -62,6 +64,53 @@ void game_state::initialise()
     c4->add_component("render", renderer::get()->build_component(c4, "Green", "res/textures/moon.png", "cube", "Gouraud", phong));
     c4->add_component("collider", physics_system::get()->build_collider_component(c4));
 
+
+    // Attempt at waterfall boxes puzzle
+    // Waterfall piece 1
+    transform_data waterfall1Trans;
+    waterfall1Trans.scale = glm::vec3(40.0f, 40.0f, 40.0f);
+    waterfall1Trans.x = -230.0f;
+    waterfall1Trans.y = 60.0f;
+    waterfall1Trans.z = -800.0f;
+    auto w1 = entity_manager::get()->create_entity("Waterfall1", this->type, waterfall1Trans);
+    w1->add_component("physics", physics_system::get()->build_component(w1));
+    w1->add_component("ai", ai_system::get()->build_component(w1, 1, glm::vec3(0.0f, -40.0f, 0.0f)));
+    w1->add_component("render", renderer::get()->build_component(w1, "Green", "res/textures/stone.jpg", "cube", "Gouraud", phong));
+
+    // Waterfall piece 2
+    transform_data waterfall2Trans;
+    waterfall2Trans.scale = glm::vec3(40.0f, 40.0f, 40.0f);
+    waterfall2Trans.x = -170.0f;
+    waterfall2Trans.y = 20.0f;
+    waterfall2Trans.z = -800.0f;
+    auto w2 = entity_manager::get()->create_entity("Waterfall2", this->type, waterfall2Trans);
+    w2->add_component("physics", physics_system::get()->build_component(w2));
+    w2->add_component("ai", ai_system::get()->build_component(w2, 0, glm::vec3(0.0f, 40.0f, 0.0f)));
+    w2->add_component("render", renderer::get()->build_component(w2, "Green", "res/textures/stone.jpg", "cube", "Gouraud", phong));
+
+    // Waterfall piece 3
+    transform_data waterfall3Trans;
+    waterfall3Trans.scale = glm::vec3(40.0f, 40.0f, 40.0f);
+    waterfall3Trans.x = -110.0f;
+    waterfall3Trans.y = 60.0f;
+    waterfall3Trans.z = -800.0f;
+    auto w3 = entity_manager::get()->create_entity("Waterfall3", this->type, waterfall3Trans);
+    w3->add_component("physics", physics_system::get()->build_component(w3));
+    w3->add_component("ai", ai_system::get()->build_component(w3, 1, glm::vec3(0.0f, -40.0f, 0.0f)));
+    w3->add_component("render", renderer::get()->build_component(w3, "Green", "res/textures/stone.jpg", "cube", "Gouraud", phong));
+
+    // Waterfall piece 4
+    transform_data waterfall4Trans;
+    waterfall4Trans.scale = glm::vec3(40.0f, 40.0f, 40.0f);
+    waterfall4Trans.x = -50.0f;
+    waterfall4Trans.y = 20.0f;
+    waterfall4Trans.z = -800.0f;
+    auto w4 = entity_manager::get()->create_entity("Waterfall4", this->type, waterfall4Trans);
+    w4->add_component("physics", physics_system::get()->build_component(w4));
+    w4->add_component("ai", ai_system::get()->build_component(w4, 0, glm::vec3(0.0f, 40.0f, 0.0f)));
+    w4->add_component("render", renderer::get()->build_component(w4, "Green", "res/textures/stone.jpg", "cube", "Gouraud", phong));
+
+
     // Adding moon sphere
     transform_data moonTrans;
     moonTrans.scale = glm::vec3(10.0f, 10.0f, 10.0f);
@@ -96,6 +145,22 @@ void game_state::initialise()
 	e->add_component("camera", camera_system::get()->build_component(e, camera_type::CHASE));
 	e->add_component("collider", physics_system::get()->build_collider_component(e));
     e->add_component("score", score_system::get()->build_component(e));
+
+	transform_data text_transform;
+	text_transform.x = 10;
+	text_transform.y = 10;
+	auto test = entity_manager::get()->create_entity("test1", state_type::GAME, text_transform);
+	test->add_component("render", renderer::get()->build_component(test, "", "res/textures/exit_button.png", "rectangle", "text", text));
+	test->add_component("text", text_system::get()->build_component(test, "Score: 0"));
+
+	transform_data text_transform2;
+	text_transform2.x = 10;
+	text_transform2.y = 100;
+	auto test2 = entity_manager::get()->create_entity("test2", state_type::GAME, text_transform2);
+	test2->add_component("render", renderer::get()->build_component(test2, "", "res/textures/exit_button.png", "rectangle", "text", text));
+	test2->add_component("text", text_system::get()->build_component(test2, "Score: 0"));
+
+	initText2D("res/textures/myriad.png");
 
 }
 
@@ -147,6 +212,8 @@ void game_state::on_reset()
 
 	// set score system active
 	engine::get()->get_subsystem("score_system")->initialise();
+
+	audio_system::get()->play_music(game);
 }   
 
 void game_state::on_enter()
@@ -157,17 +224,33 @@ void game_state::on_enter()
     engine::get()->get_subsystem("physics_system")->set_active(true);
     engine::get()->get_subsystem("renderer")->set_visible(true);
     engine::get()->get_subsystem("clickable_system")->set_active(false);
-	
+	audio_system::get()->set_volume(100.0f);
 	// set score system active
 	engine::get()->get_subsystem("score_system")->set_active(true);
 
     glfwSetInputMode(glfw::window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-
+	audio_system::get()->set_paused(false);
     std::cout << "Entered game state, press ESC to go to pause state" << std::endl;
 }
 
 void game_state::on_update(float delta_time)
 {
+	static float total_time;
+	total_time += delta_time;
+	//std::shared_ptr<text_system> ts = std::dynamic_pointer_cast<text_system>(engine::get()->get_subsystem("text_system"));
+	std::shared_ptr<text_component> tc = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity("test1")->get_component("text"));
+	std::stringstream stream;
+	stream << std::fixed << std::setprecision(2) << total_time;
+	std::string s = stream.str();
+	tc->_data->text = s;
+
+	std::shared_ptr<text_component> tc2 = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity("test2")->get_component("text"));
+	std::stringstream stream2;
+	stream2 << std::fixed << std::setprecision(2) << total_time;
+	std::string s2 = stream2.str();
+	tc2->_data->text = s2;
+
+	//engine::get()->get_subsystem("score_system")
     //std::cout << "**************** MAIN GAME RUNNING *****************" << std::endl;
 }
 

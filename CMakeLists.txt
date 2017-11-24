@@ -107,7 +107,16 @@ set(ASSIMP_BUILD_X_IMPORTER OFF CACHE BOOL "" FORCE)
 set(ASSIMP_BUILD_GLTF_IMPORTER OFF CACHE BOOL "" FORCE)
 set(ASSIMP_BUILD_3MF_IMPORTER OFF CACHE BOOL "" FORCE)
 set(BuildTests OFF CACHE BOOL "" FORCE)
-
+#SFML
+set(SFML_BUILD_WINDOW OFF CACHE BOOL "" FORCE)
+set(SFML_BUILD_GRAPHICS OFF CACHE BOOL "" FORCE)
+set(SFML_BUILD_NETWORK OFF CACHE BOOL "" FORCE)
+set(SFML_BUILD_AUDIO ON CACHE BOOL "" FORCE)
+#set(SFML_BUILD_FRAMEWORKS ON CACHE BOOL "" FORCE)
+#set(BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)
+#set(DESTINATION CMAKE_LIBRARY_OUTPUT_DIRECTORY)
+#set(PREDEFINED_TARGETS_FOLDER "CMake")
+MESSAGE( STATUS "==========xd============" )
 #================================================
 # GLFW https://github.com/glfw/glfw.git 56ecd62f
 add_subdirectory("lib/glfw")
@@ -122,7 +131,12 @@ add_subdirectory("lib/assimp")
 target_include_directories(RaceTheMoon PUBLIC "lib/assimp/include")
 target_include_directories(RaceTheMoon PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/lib/assimp/include")
 target_include_directories(assimp PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/lib/zlib")
-
+#================================================
+# sfml https://github.com/SFML/SFML 013d053 
+add_subdirectory("lib/sfml")
+target_include_directories(RaceTheMoon PUBLIC "lib/sfml/include")
+#target_include_directories(SFML PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/lib/sfml")
+install(TARGETS RaceTheMoon DESTINATION lib)
 #================================================
 # OpenGL
 FIND_PACKAGE( OpenGL REQUIRED)
@@ -175,6 +189,8 @@ target_link_libraries(RaceTheMoon
 	PUBLIC ${GLEWLIB}
 	PUBLIC glfw
 	PUBLIC assimp
+	PUBLIC sfml-audio
+	#optimized sfml-audio debug sfml-audio-d 
 )
 add_dependencies(RaceTheMoon
 	copy_resources
@@ -182,7 +198,7 @@ add_dependencies(RaceTheMoon
 
 #====================================================================
 
-set(deps glfw assimp ${GLEWLIB} )
+set(deps glfw assimp ${GLEWLIB} sfml-audio)
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")

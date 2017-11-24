@@ -25,8 +25,19 @@ bool ai_component::load_content()
 
 void ai_component::update(float delta_time)
 {
-
+    // update ai current postions
     _ai_data->cur_pos = glm::vec3(_parent->get_trans().x, _parent->get_trans().y, _parent->get_trans().z);
+
+    // get bat position
+    auto bat = entity_manager::get()->get_entity("Bat");
+    auto playerX = bat->get_trans().x;
+    auto playerZ = bat->get_trans().z;
+    // keep sun and moon's x and z the same as the player
+    if (_ai_data->ai_type == 6)
+    {
+        _parent->get_trans().x = playerX;
+        _parent->get_trans().z = playerZ - 1000.0f;
+    }
     // move commands change physics comp.
     // get all commands then execute them.
    // std::vector<Command*> commands = input_handler::get()->handle_ai();

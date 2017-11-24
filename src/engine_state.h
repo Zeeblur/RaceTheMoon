@@ -8,14 +8,15 @@
 #include "systems/camera_system.h"
 #include "systems/score_system.h"
 #include "systems/ai_system.h"
-
+#include "systems/audio_system.h"
+#include "systems/text_system.h"
 enum state_type
 {
     START,
     MENU,
     GAME,
     PAUSE,
-    OPTIONS,
+    SETTINGS,
     EXIT,
 	GAME_OVER,
     NONE
