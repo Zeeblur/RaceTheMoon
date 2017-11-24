@@ -50,7 +50,11 @@ namespace gl
 		// Generate texture with OpenGL
 		glGenTextures(1, &_id);
 		glBindTexture(GL_TEXTURE_2D, _id);
-		// Check for any errors with OpenGL
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+        // Check for any errors with OpenGL
 		if (CHECK_GL_ERROR)
 		{
 			// Problem creating texture object
@@ -462,24 +466,24 @@ namespace gl
         std::vector<glm::vec3> positions
         {
 			// 1
-			glm::vec3(1000.0f, 0.0f, -10000.0f),
-			glm::vec3(-1000.0f,  0.0f, -10000.0f),
-			glm::vec3(-1000.0f,  0.0f, 100.0f),
+			glm::vec3(100.0f, 0.0f, -100.0f),
+			glm::vec3(-100.0f,  0.0f, -100.0f),
+			glm::vec3(-100.0f,  0.0f, 100.0f),
 			// 2
-			glm::vec3(-1000.0f, 0.0f, 100.0f),
-			glm::vec3(1000.0f, 0.0f, 100.0f),
-			glm::vec3(1000.0f,0.0f, -10000.0f)
+			glm::vec3(-100.0f, 0.0f, 100.0f),
+			glm::vec3(100.0f, 0.0f, 100.0f),
+			glm::vec3(100.0f,0.0f, -100.0f)
 
         };
         // These are probably wrong
         std::vector<glm::vec2> tex_coords
         {
-            glm::vec2(0.5, 1),
-            glm::vec2(0, 0),
-            glm::vec2(1, 0),
             glm::vec2(1, 0),
             glm::vec2(0, 0),
-            glm::vec2(0.5, 1)
+            glm::vec2(1, 1),
+            glm::vec2(1, 1),
+            glm::vec2(0, 0),
+            glm::vec2(1, 0)
         };
 
         // Colours

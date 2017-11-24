@@ -12,14 +12,7 @@ void game_state::initialise()
 	// Adding plane
 	auto p = entity_manager::get()->create_entity("Plane", this->type);
 	p->add_component("physics", physics_system::get()->build_component(p));
-	p->add_component("render", renderer::get()->build_component(p, "Red", "", "plane", "Gouraud", simple));
-
-    //For loop for scenery repetition
-    /*for (int i = 0; i < 2; ++i)
-    {
-        for (int j = 0; j < 2; ++j)
-        bad_map(i, j);
-    }*/
+	p->add_component("render", renderer::get()->build_component(p, "Red", "res/textures/floor.jpg", "plane", "Gouraud", phong));
 
      //Adding cube 1
     transform_data cubeTrans;
