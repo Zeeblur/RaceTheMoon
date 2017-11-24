@@ -27,6 +27,10 @@ private:
     Command* aiBack_;
     Command* aiRight_;
     Command* aiLeft_;
+    // Slower sun and moon command
+    Command* moonUp_;
+
+
 
 
 public:
