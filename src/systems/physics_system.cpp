@@ -2,13 +2,16 @@
 // Created by zoe on 11/10/17.
 //
 
+#include <ratio>
 #include "physics_system.h"
+#include "../thread_pool.h"
 
 using namespace glm;
 
 physics_system::physics_system()
 {
     _visible = false;
+    
 }
 
 std::shared_ptr<physics_component> physics_system::build_component(std::shared_ptr<entity> e)
@@ -22,10 +25,22 @@ std::shared_ptr<physics_component> physics_system::build_component(std::shared_p
 std::shared_ptr<collider_component> physics_system::build_collider_component(std::shared_ptr<entity> e)
 {
     auto ree = collider_data(e->get_trans());
-	std::shared_ptr<collider_data> cd = std::make_shared<collider_data>(collider_data(e->get_trans()));
 
-	_collider_data.push_back(cd);
-	return std::make_shared<collider_component>(e, std::ref(_collider_data.back()));
+    if (e->get_name() == "Bat")
+    {
+
+        std::shared_ptr<collider_data> cd = std::make_shared<collider_data>(collider_data(e->get_trans(), colType::PLAYER));
+
+        _bat_collider = std::move(cd);
+        return std::make_shared<collider_component>(e, std::ref(_bat_collider));
+    }
+    else
+    {
+        std::shared_ptr<collider_data> cd = std::make_shared<collider_data>(collider_data(e->get_trans(), colType::DAMAGE));
+
+        _collider_data.push_back(cd);
+        return std::make_shared<collider_component>(e, std::ref(_collider_data.back()));
+    }
 }
 
 bool physics_system::initialise()
@@ -81,85 +96,92 @@ bool is_colliding(collider_base* ac, collider_base* bc)
     return true;
 }
 
+void moveTask(void* arg1, void* arg2)
+{
+
+    std::shared_ptr<physics_system> ps = physics_system::get();
+    std::shared_ptr<physics_data> d = *static_cast<std::shared_ptr<physics_data>*>(arg1);
+    float delta_time = *static_cast<float*> (arg2);
+
+    // If active physics object add 1 to each component.
+
+        //cap speed.
+        ps->cap_speed(d->currentVelocity);
+
+        // change by speed and delta-time.
+        auto movement = d->currentVelocity * delta_time;
+
+        // movement test here....
+        d->x += movement.x;
+        d->y += movement.y;
+        d->z += movement.z;
+
+        if (!d->moveRequest)
+        {
+            //std::cout << moveSpeed.x << ", " << moveSpeed.y << std::endl;
+            // lateral movement
+            if (d->currentVelocity.x < 0) d->currentVelocity.x += ps->deceleration.x;
+            if (d->currentVelocity.x > 0) d->currentVelocity.x -= ps->deceleration.x;
+
+            // if speed within epsilon of zero. Reset to zero
+            if (d->currentVelocity.x > 0 && d->currentVelocity.x < ps->deceleration.x) d->currentVelocity.x = 0;
+            if (d->currentVelocity.x < 0 && d->currentVelocity.x > -ps->deceleration.x) d->currentVelocity.x = 0;
+
+            // vertical movement
+            if (d->currentVelocity.y < 0) d->currentVelocity.y += ps->deceleration.y;
+            if (d->currentVelocity.y > 0) d->currentVelocity.y -= ps->deceleration.y;
+
+            // if speed within epsilon of zero. Reset to zero
+            if (d->currentVelocity.y > 0 && d->currentVelocity.y < ps->deceleration.y) d->currentVelocity.y = 0;
+            if (d->currentVelocity.y < 0 && d->currentVelocity.y > -ps->deceleration.y) d->currentVelocity.y = 0;
+
+            // forwards movement
+            if (d->currentVelocity.z < 0) d->currentVelocity.z += ps->deceleration.z;
+            if (d->currentVelocity.z > 0) d->currentVelocity.z -= ps->deceleration.z;
+
+            // if speed within epsilon of zero. Reset to zero
+            if (d->currentVelocity.z > 0 && d->currentVelocity.z < ps->deceleration.z) d->currentVelocity.z = 0;
+            if (d->currentVelocity.z < 0 && d->currentVelocity.z > -ps->deceleration.z) d->currentVelocity.z = 0;
+        }
+        else
+        {
+            std::cout << d->currentVelocity.y << std::endl;
+        }
+
+        // reset move request
+        d->moveRequest = false;
+
+}
+
+void collision(void* col1, void* batCol)
+{
+    auto &_obstacle = *static_cast<shared_ptr<collider_data>*>(col1);
+    auto &_bat_collider = *static_cast<shared_ptr<collider_data>*>(batCol);
+
+    bool col = is_colliding(_obstacle->collider.get(), _bat_collider->collider.get());
+
+    if (col)
+    {
+        engine::get()->get_subsystem("score_system")->hurt();
+    }
+}
+
 void physics_system::update(float delta_time)
 {
     //std::cout << "Physics system updating" << std::endl;
     for (auto &d : _data)
     {
-        // If active physics object add 1 to each component.
+        //push back task to list.
         if (d->active)
         {
-            //cap speed.
-            cap_speed(d->currentVelocity);
-
-            // change by speed and delta-time.
-            auto movement = d->currentVelocity * delta_time;
-
-            // movement test here....
-            d->x += movement.x;
-            d->y += movement.y;
-            d->z += movement.z;
-
-            if (!d->moveRequest)
-            {
-                //std::cout << moveSpeed.x << ", " << moveSpeed.y << std::endl;
-                // lateral movement
-                if (d->currentVelocity.x < 0) d->currentVelocity.x += deceleration.x;
-                if (d->currentVelocity.x > 0) d->currentVelocity.x -= deceleration.x;
-
-                // if speed within epsilon of zero. Reset to zero
-                if (d->currentVelocity.x > 0 && d->currentVelocity.x < deceleration.x) d->currentVelocity.x = 0;
-                if (d->currentVelocity.x < 0 && d->currentVelocity.x > -deceleration.x) d->currentVelocity.x = 0;
-
-                // vertical movement
-                if (d->currentVelocity.y < 0) d->currentVelocity.y += deceleration.y;
-                if (d->currentVelocity.y > 0) d->currentVelocity.y -= deceleration.y;
-                                       
-                // if speed within epsilon of zero. Reset to zero
-                if (d->currentVelocity.y > 0 && d->currentVelocity.y < deceleration.y) d->currentVelocity.y = 0;
-                if (d->currentVelocity.y < 0 && d->currentVelocity.y > -deceleration.y) d->currentVelocity.y = 0;
-
-                // forwards movement
-                if (d->currentVelocity.z < 0) d->currentVelocity.z += deceleration.z;
-                if (d->currentVelocity.z > 0) d->currentVelocity.z -= deceleration.z;
-
-                // if speed within epsilon of zero. Reset to zero
-                if (d->currentVelocity.z > 0 && d->currentVelocity.z < deceleration.z) d->currentVelocity.z = 0;
-                if (d->currentVelocity.z < 0 && d->currentVelocity.z > -deceleration.z) d->currentVelocity.z = 0;
-            }
-            else
-            {
-                std::cout << d->currentVelocity.y << std::endl;
-            }
-
-            // reset move request
-            d->moveRequest = false;
+            thread_pool::get()->add_job(thread_pool::get()->makeTask(moveTask, &d, &delta_time));
         }
     }
-	// Don't bother checking for collisions unless there are at least 2 colliders
-    // could extend this to only checking bat against everything else?
-	if (_collider_data.size() >= 2)
-	{
-		// Check for collisions
-		for (size_t i = 0; i < _collider_data.size(); ++i)
-		{
-            for(size_t j =0; j < _collider_data.size(); ++j)
-            {
-                if (i == j)
-                    continue;
 
-                bool col = is_colliding(_collider_data[i]->collider.get(), _collider_data[j]->collider.get());
-
-                // need some bat checking here...
-                if (col)
-                {
-                    engine::get()->get_subsystem("score_system")->hurt();
-                    break;
-
-                }
-            }
-		}
-	}
+    for (auto &c : _collider_data)
+    {
+        thread_pool::get()->add_job(thread_pool::get()->makeTask(collision, &c, &_bat_collider));
+    }
 
 }
 

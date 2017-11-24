@@ -1,7 +1,9 @@
 #include "game_state.h"
 #include <iostream>
-
-
+#include "text2D.h"
+#include <iomanip>
+#include <sstream>
+#include <strstream>
 void game_state::initialise()
 {
 
@@ -31,7 +33,7 @@ void game_state::initialise()
     c->add_component("physics", physics_system::get()->build_component(c));
     c->add_component("ai", ai_system::get()->build_component(c, 0, glm::vec3(0.0f, 10.0f, 0.0f)));
     c->add_component("render", renderer::get()->build_component(c, "Green", "res/textures/check.jpg", "cube", "Gouraud", phong));
-    //  c->add_component("collider", physics_system::get()->build_collider_component(c));
+    c->add_component("collider", physics_system::get()->build_collider_component(c));
 
     // Adding cube 2
     transform_data cube2Trans;
@@ -43,7 +45,7 @@ void game_state::initialise()
     c2->add_component("physics", physics_system::get()->build_component(c2));
     c2->add_component("ai", ai_system::get()->build_component(c2, 2, glm::vec3(0.0f, 0.0f, -10.0f)));
     c2->add_component("render", renderer::get()->build_component(c2, "Green", "", "cube", "Gouraud", phong));
-    //c2->add_component("collider", physics_system::get()->build_collider_component(c2));
+    c2->add_component("collider", physics_system::get()->build_collider_component(c2));
 
     // Adding cube 3
     transform_data cube3Trans;
@@ -55,7 +57,7 @@ void game_state::initialise()
     c3->add_component("physics", physics_system::get()->build_component(c3));
     c3->add_component("ai", ai_system::get()->build_component(c3, 4, glm::vec3(10.0f, 0.0f, 0.0f)));
     c3->add_component("render", renderer::get()->build_component(c3, "Green", "res/textures/stone.jpg", "cube", "Gouraud", phong));
-    //c3->add_component("collider", physics_system::get()->build_collider_component(c3));
+    c3->add_component("collider", physics_system::get()->build_collider_component(c3));
 
     // Adding cube 4
     transform_data cube4Trans;
@@ -67,7 +69,8 @@ void game_state::initialise()
     c4->add_component("physics", physics_system::get()->build_component(c4));
     c4->add_component("ai", ai_system::get()->build_component(c4, 5, glm::vec3(-10.0f, 0.0f, 0.0f)));
     c4->add_component("render", renderer::get()->build_component(c4, "Green", "res/textures/moon.png", "cube", "Gouraud", phong));
-    // c4->add_component("collider", physics_system::get()->build_collider_component(c4));
+    c4->add_component("collider", physics_system::get()->build_collider_component(c4));
+
 
     // Attempt at waterfall boxes puzzle
     // Waterfall piece 1
@@ -150,6 +153,22 @@ void game_state::initialise()
 	e->add_component("collider", physics_system::get()->build_collider_component(e));
     e->add_component("score", score_system::get()->build_component(e));
 
+	transform_data text_transform;
+	text_transform.x = 10;
+	text_transform.y = 10;
+	auto test = entity_manager::get()->create_entity("test1", state_type::GAME, text_transform);
+	test->add_component("render", renderer::get()->build_component(test, "", "res/textures/exit_button.png", "rectangle", "text", text));
+	test->add_component("text", text_system::get()->build_component(test, "Score: 0"));
+
+	transform_data text_transform2;
+	text_transform2.x = 10;
+	text_transform2.y = 100;
+	auto test2 = entity_manager::get()->create_entity("test2", state_type::GAME, text_transform2);
+	test2->add_component("render", renderer::get()->build_component(test2, "", "res/textures/exit_button.png", "rectangle", "text", text));
+	test2->add_component("text", text_system::get()->build_component(test2, "Score: 0"));
+
+	initText2D("res/textures/myriad.png");
+
 }
 
 // ** attempt at repeating scenery.. it's crap don't worry **
@@ -200,6 +219,8 @@ void game_state::on_reset()
 
 	// set score system active
 	engine::get()->get_subsystem("score_system")->initialise();
+
+	audio_system::get()->play_music(game);
 }   
 
 void game_state::on_enter()
@@ -210,17 +231,33 @@ void game_state::on_enter()
     engine::get()->get_subsystem("physics_system")->set_active(true);
     engine::get()->get_subsystem("renderer")->set_visible(true);
     engine::get()->get_subsystem("clickable_system")->set_active(false);
-	
+	audio_system::get()->set_volume(100.0f);
 	// set score system active
 	engine::get()->get_subsystem("score_system")->set_active(true);
 
     glfwSetInputMode(glfw::window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-
+	audio_system::get()->set_paused(false);
     std::cout << "Entered game state, press ESC to go to pause state" << std::endl;
 }
 
 void game_state::on_update(float delta_time)
 {
+	static float total_time;
+	total_time += delta_time;
+	//std::shared_ptr<text_system> ts = std::dynamic_pointer_cast<text_system>(engine::get()->get_subsystem("text_system"));
+	std::shared_ptr<text_component> tc = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity("test1")->get_component("text"));
+	std::stringstream stream;
+	stream << std::fixed << std::setprecision(2) << total_time;
+	std::string s = stream.str();
+	tc->_data->text = s;
+
+	std::shared_ptr<text_component> tc2 = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity("test2")->get_component("text"));
+	std::stringstream stream2;
+	stream2 << std::fixed << std::setprecision(2) << total_time;
+	std::string s2 = stream2.str();
+	tc2->_data->text = s2;
+
+	//engine::get()->get_subsystem("score_system")
     //std::cout << "**************** MAIN GAME RUNNING *****************" << std::endl;
 }
 

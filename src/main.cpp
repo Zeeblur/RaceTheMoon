@@ -11,6 +11,9 @@
 #include "menu_state.h"
 #include "pause_state.h"
 #include "game_over_state.h"
+#include "settings_state.h"
+#include "thread_pool.h"
+
 
 //#include <FreeImage-src\FreeImage.h>
 // Include GLEW
@@ -23,8 +26,6 @@ using namespace std;
 // Include GLM
 #include <glm/glm.hpp>
 using namespace glm;
-
-
 
 int main() 
 {
@@ -41,11 +42,13 @@ int main()
 	eng->add_subsystem("camera_system", camera_system::get());
 	eng->add_subsystem("score_system", score_system::get());
     eng->add_subsystem("ai_system", ai_system::get());
-
+	eng->add_subsystem("audio_system", audio_system::get());
+	eng->add_subsystem("text_system", text_system::get());
     engine_state_machine::get()->add_state("menu_state", std::make_shared<menu_state>(), state_type::MENU);
     engine_state_machine::get()->add_state("game_state", std::make_shared<game_state>(), state_type::GAME);
     engine_state_machine::get()->add_state("pause_state", std::make_shared<pause_state>(), state_type::PAUSE);
 	engine_state_machine::get()->add_state("game_over_state", std::make_shared<game_over_state>(), state_type::GAME_OVER);
+	engine_state_machine::get()->add_state("settings_state", std::make_shared<settings_state>(), state_type::SETTINGS);
 
     engine_state_machine::get()->change_state("menu_state");
     eng->run();

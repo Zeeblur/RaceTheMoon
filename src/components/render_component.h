@@ -11,7 +11,8 @@ enum effectType
 {
 	simple,
 	simple_texture,
-	phong
+	phong,
+	text
 };
 
 struct render_component : public component

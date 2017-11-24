@@ -24,11 +24,19 @@ struct sphere : public collider_base
     ~sphere(){};
 };
 
+enum colType
+{
+    DAMAGE,
+    POWER,
+    PLAYER
+};
+
 struct collider_data
 {
+    colType behaviour_;
 	bool active = false;
 	std::shared_ptr<collider_base> collider;
-	collider_data(transform_data trans);
+	collider_data(transform_data trans, int behaviour = 0);
     ~collider_data() = default;
 };
 
