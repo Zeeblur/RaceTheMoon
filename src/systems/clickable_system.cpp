@@ -13,6 +13,7 @@ std::shared_ptr<clickable_system> clickable_system::get()
     return instance;
 }
 
+/*Builds a clickable component, note: buttons are placed with respect to the center of the screen.*/
 std::shared_ptr<clickable_component> clickable_system::build_component(std::shared_ptr<entity> e, glm::dvec2 center, glm::dvec2 scale)
 {
     _data.push_back(clickable_data());
@@ -38,6 +39,8 @@ void clickable_system::update(float delta_time)
 {
     for (auto &d : _data)
     {
+		// cooldown for buttons used to avoid accidentally clicking overlayed buttons when switching states
+		static float cooldown;
         // If active check for click
         if (d.active)
         {
@@ -47,27 +50,24 @@ void clickable_system::update(float delta_time)
             glfwGetCursorPos(glfw::window, &x_pos, &y_pos);
 
             int state = glfwGetMouseButton(glfw::window, GLFW_MOUSE_BUTTON_LEFT);
-			transform_data td = entity_manager::get()->get_entity(d.parent_name)->get_trans();
-			//int x_center;
-			//int y_center;
-			//glfwGetWindowSize(glfw::window, &x_center, &y_center);
+			
+			int x_size = 0;
+			int y_size = 0;
 
-			//std::cout << "x: " << td.x << " y: " << td.y << "z: " << td.z << std::endl;
-			//// x bounds min
-			//d.x_bounds.x = td.x - (td.scale.x / 2);
-			//// x bounds max
-			//d.x_bounds.y = td.x + (td.scale.x / 2);
-			//// y bounds min
-			//d.y_bounds.x = td.y - (td.scale.y / 2);
-			//// y bounds max
-			//d.y_bounds.y = td.y + (td.scale.y / 2);
+			// TODO: Optimization, add some sort of window size changed event
+			glfwGetWindowSize(glfw::window, &x_size, &y_size);
 
-			int x_min = d.center.x - d.scale.x;
-			int x_max = d.center.x + d.scale.x;
-			int y_min = d.center.y - d.scale.y;
-			int y_max = d.center.y + d.scale.y;
+			int x_center = x_size / 2;
+			int y_center = y_size / 2;
 
-            if (state == GLFW_PRESS && x_pos >= x_min && x_pos <= x_max && y_pos >= y_min && y_pos <= y_max
+			int x_min = x_center + d.center.x - d.scale.x;
+			int x_max = x_center + d.center.x + d.scale.x;
+			int y_min = y_center + d.center.y - d.scale.y;
+			int y_max = y_center + d.center.y + d.scale.y;
+			
+			cooldown += delta_time;
+			// Check if click in bounds and cooldown has passed
+            if (cooldown > 0.5f && state == GLFW_PRESS && x_pos >= x_min && x_pos <= x_max && y_pos >= y_min && y_pos <= y_max
 				&& engine_state_machine::get()->get_current_state_type() == entity_manager::get()->get_entity(d.parent_name)->state)
             {
 				audio_system::get()->play_sound(button_press);
@@ -75,6 +75,7 @@ void clickable_system::update(float delta_time)
                 // Save currently clicked component
                 _latest_clicked_component = d.parent_name;
                 d.clicks++;
+				cooldown = 0;
             }
         }
     }

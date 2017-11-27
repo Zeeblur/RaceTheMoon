@@ -4,15 +4,27 @@
 #include <iostream>
 void menu_state::initialise()
 {
-	// TODO: Fix button click event problem when changing window size.
-
 	int x_size = 0;
 	int y_size = 0;
 
 	glfwGetWindowSize(glfw::window, &x_size, &y_size);
 
-	int x_center = x_size / 2;
-	int y_center = y_size / 2;
+	transform_data back_transform;
+	back_transform.scale = glm::vec3(x_size / 1.25, y_size / 1.25, 1.0f);
+	back_transform.z = -1;
+	auto background = entity_manager::get()->create_entity("background", state_type::MENU, back_transform);
+
+	background->add_component("render", renderer::get()->build_component(background, "", "res/textures/race_the_moon.png", "rectangle", "Gouraud", simple_texture));
+	background->add_component("camera", camera_system::get()->build_component(background, camera_type::ORTHO));
+
+	// Menu text transform
+	transform_data menu_transform;
+	menu_transform.x = x_size / 2 - 220;
+	menu_transform.y = y_size - 250;
+	// Menu
+	auto menu_text = entity_manager::get()->create_entity("mainMenu", state_type::MENU, menu_transform);
+	menu_text->add_component("render", renderer::get()->build_component(menu_text, "", "res/textures/play_button.png", "rectangle", "text", text));
+	menu_text->add_component("text", text_system::get()->build_component(menu_text, "MAIN MENU"));
 
 	int x_button_size = 100;
 	int y_button_size = 50;
@@ -30,20 +42,17 @@ void menu_state::initialise()
 	int button_offset = 125;
 	// Play button
 	auto button_play = entity_manager::get()->create_entity("buttonPlay", state_type::MENU, play_button_transform);
-	std::shared_ptr<clickable_component> play_clickable = clickable_system::get()->build_component(button_play, glm::dvec2(x_center, y_center), glm::dvec2(x_button_size, y_button_size));
-	button_play->add_component("clickable", play_clickable);
 	button_play->add_component("render", renderer::get()->build_component(button_play, "", "res/textures/play_button.png", "rectangle", "Gouraud", simple_texture));
+	play_clickable = clickable_system::get()->build_component(button_play, glm::dvec2(0, 0), glm::dvec2(x_button_size, y_button_size));
+	button_play->add_component("clickable", play_clickable);
 	button_play->add_component("camera", camera_system::get()->build_component(button_play, camera_type::ORTHO));
 
 	// Exit button
 	auto button_exit = entity_manager::get()->create_entity("buttonExit", state_type::MENU, exit_button_transform);
 	button_exit->add_component("render", renderer::get()->build_component(button_exit, "", "res/textures/exit_button.png", "rectangle", "Gouraud", simple_texture));
-	std::shared_ptr<clickable_component> exit_clickable = clickable_system::get()->build_component(button_exit, glm::dvec2(x_center, y_center + button_offset ), glm::dvec2(x_button_size, y_button_size));
+	exit_clickable = clickable_system::get()->build_component(button_exit, glm::dvec2(0, 0 + button_offset ), glm::dvec2(x_button_size, y_button_size));
 	button_exit->add_component("clickable", exit_clickable);
 	button_exit->add_component("camera", camera_system::get()->build_component(button_exit, camera_type::ORTHO));
-
-	clickable_components.push_back(play_clickable);
-	clickable_components.push_back(exit_clickable);
 }
 
 void menu_state::on_reset()
@@ -72,18 +81,10 @@ void menu_state::on_enter()
 
 void menu_state::on_update(float delta_time)
 {
-	// TODO: Add some sort of window size changed event and then update center value
 	int x_size;
 	int y_size;
 	glfwGetWindowSize(glfw::window, &x_size, &y_size);
 	int button_offset = 125;
-
-	clickable_components[0].get()->_data.center.x = x_size / 2;
-	clickable_components[0].get()->_data.center.y = y_size / 2;
-
-	clickable_components[1].get()->_data.center.x = x_size / 2;
-	clickable_components[1].get()->_data.center.y = y_size / 2 + 125;
-	//std::cout << "********** MENU DISPLAYED ******;**********" << std::endl;
 }
 
 void menu_state::on_exit()

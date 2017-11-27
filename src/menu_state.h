@@ -4,7 +4,7 @@
 class menu_state : public engine_state
 {
 private:
-	std::vector<std::shared_ptr<clickable_component>> clickable_components;
+
 public:
 	void initialise();
 	
