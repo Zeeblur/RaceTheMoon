@@ -9,11 +9,19 @@ enum resolution
 	_1920x1080,
 };
 
+enum window_mode
+{
+	windowed,
+	fullscreen,
+};
+
 // Settings state
 class settings_state : public engine_state
 {
 public:
 	resolution current_resolution = _1024x768;
+
+	window_mode current_window_mode = windowed;
 
 	void initialise();
 

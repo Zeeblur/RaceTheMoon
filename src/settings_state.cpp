@@ -16,45 +16,67 @@ void settings_state::initialise()
 
 	transform_data back_transform;
 	back_transform.scale = glm::vec3(x_size / 1.25, y_size / 1.25, 1.0f);
-	back_transform.z = -1;
+	back_transform.z = -10;
 	auto background = entity_manager::get()->create_entity("background", state_type::SETTINGS, back_transform);
 
 	background->add_component("render", renderer::get()->build_component(background, "", "res/textures/race_the_moon.png", "rectangle", "Gouraud", simple_texture));
 	background->add_component("camera", camera_system::get()->build_component(background, camera_type::ORTHO));
 
-	// Resolution transform
-	transform_data resolution_transform;
-	resolution_transform.x = x_size / 2 - 225;
-	resolution_transform.y = y_size / 2;
-	// Resolution
-	auto resolution = entity_manager::get()->create_entity("Resolution", state_type::SETTINGS, resolution_transform);
-	resolution->add_component("render", renderer::get()->build_component(resolution, "", "res/textures/play_button.png", "rectangle", "text", text));
-	resolution->add_component("text", text_system::get()->build_component(resolution, "RESOLUTION"));
+	// Back button transform
+	transform_data back_button_transform;
+	back_button_transform.x = 0;
+	back_button_transform.y = -200;
+	back_button_transform.scale.x = 100;
+	back_button_transform.scale.y = 50;
+	// Back button
+	auto back_button = entity_manager::get()->create_entity("backButton", state_type::SETTINGS, back_button_transform);
+	back_button->add_component("render", renderer::get()->build_component(back_button, "", "res/textures/back_button.png", "rectangle", "Gouraud", simple_texture));
+	back_button->add_component("camera", camera_system::get()->build_component(back_button, camera_type::ORTHO));
+	back_button->add_component("clickable", clickable_system::get()->build_component(back_button, vec2(back_button_transform.x, -back_button_transform.y), back_button_transform.scale));
 
 	// Resolution value transform
 	transform_data resolution_value_transform;
-	resolution_value_transform.x = resolution_transform.x;
-	resolution_value_transform.y = y_size / 2 - 50;
+	resolution_value_transform.x = 0;
+	resolution_value_transform.y = 60;
+	resolution_value_transform.scale.x = 100;
+	resolution_value_transform.scale.y = 30;
 	// Resolution value
-	std::stringstream streamx;
-	streamx << std::fixed << std::setprecision(4) << x_size;
-	std::string sx = streamx.str();
-	std::stringstream streamy;
-	streamy << std::fixed << std::setprecision(4) << y_size;
-	std::string sy = streamy.str();
-	std::cout << sx << " x " << sy << std::endl;
-	auto resolution_value = entity_manager::get()->create_entity("ResolutionValue", state_type::SETTINGS, resolution_value_transform);
-	resolution_value->add_component("render", renderer::get()->build_component(resolution_value, "", "res/textures/play_button.png", "rectangle", "text", text));
-	resolution_value->add_component("text", text_system::get()->build_component(resolution_value, sx + " x " + sy));
+	auto resolution_value = entity_manager::get()->create_entity("resolutionValue", state_type::SETTINGS, resolution_value_transform);
+	resolution_value->add_component("render", renderer::get()->build_component(resolution_value, "", "res/textures/1024x768.png", "rectangle", "Gouraud", simple_texture));
+	resolution_value->add_component("camera", camera_system::get()->build_component(resolution_value, camera_type::ORTHO));
 
-	//// Window mode transform
-	//transform_data window_transform;
-	//window_transform.x = 50;
-	//window_transform.y = (y_size / 2) - 50;
-	//// Window mode
-	//auto window_mode = entity_manager::get()->create_entity("WindowMode", state_type::SETTINGS, window_transform);
-	//window_mode->add_component("render", renderer::get()->build_component(window_mode, "", "res/textures/play_button.png", "rectangle", "text", text));
-	//window_mode->add_component("text", text_system::get()->build_component(window_mode, "WINDOW MODE"));
+	// Resolution transform
+	transform_data resolution_transform;
+	resolution_transform.x = 0;
+	resolution_transform.y = 120;
+	resolution_transform.scale.x = 100;
+	resolution_transform.scale.y = 30;
+	// Resolution
+	auto resolution = entity_manager::get()->create_entity("Resolution", state_type::SETTINGS, resolution_transform);
+	resolution->add_component("render", renderer::get()->build_component(resolution, "", "res/textures/resolution.png", "rectangle", "Gouraud", simple_texture));
+	resolution->add_component("camera", camera_system::get()->build_component(resolution, camera_type::ORTHO));
+
+	// Window mode value transform
+	transform_data window_mode_value_transform;
+	window_mode_value_transform.x = 0;
+	window_mode_value_transform.y = -60;
+	window_mode_value_transform.scale.x = 100;
+	window_mode_value_transform.scale.y = 30;
+	// Window mode value
+	auto window_mode_value = entity_manager::get()->create_entity("windowModeValue", state_type::SETTINGS, window_mode_value_transform);
+	window_mode_value->add_component("render", renderer::get()->build_component(window_mode_value, "", "res/textures/fullscreen.png", "rectangle", "Gouraud", simple_texture));
+	window_mode_value->add_component("camera", camera_system::get()->build_component(window_mode_value, camera_type::ORTHO));
+
+	// Window mode transform
+	transform_data window_transform;
+	window_transform.x = 0;
+	window_transform.y = 0;
+	window_transform.scale.x = 100;
+	window_transform.scale.y = 30;
+	// Window mode
+	auto window_mode = entity_manager::get()->create_entity("WindowMode", state_type::SETTINGS, window_transform);
+	window_mode->add_component("render", renderer::get()->build_component(window_mode, "", "res/textures/window_mode.png", "rectangle", "Gouraud", simple_texture));
+	window_mode->add_component("camera", camera_system::get()->build_component(window_mode, camera_type::ORTHO));
 
 	// Title transform
 	transform_data title_transform;
@@ -73,29 +95,53 @@ void settings_state::initialise()
 	int x_button_size = 25;
 	int y_button_size = 25;
 
-	// right arrow trans
-	transform_data right_arrow_transform;
-	right_arrow_transform.scale = glm::vec3(x_button_size, y_button_size, 1.0f);
-	right_arrow_transform.x = 250;
-	right_arrow_transform.y = 60;
+	// resolution right arrow trans
+	transform_data resolution_right_arrow_transform;
+	resolution_right_arrow_transform.scale = glm::vec3(x_button_size, y_button_size, 1.0f);
+	resolution_right_arrow_transform.x = 250;
+	resolution_right_arrow_transform.y = 60;
 
-	// left arrow trans
-	transform_data left_arrow_transform;
-	left_arrow_transform.scale = glm::vec3(x_button_size, y_button_size, 1.0f);
-	left_arrow_transform.x = -250;
-	left_arrow_transform.y = 60;
+	// resolution left arrow trans
+	transform_data resolution_left_arrow_transform;
+	resolution_left_arrow_transform.scale = glm::vec3(x_button_size, y_button_size, 1.0f);
+	resolution_left_arrow_transform.x = -250;
+	resolution_left_arrow_transform.y = 60;
 
-	// Right arrow button
-	auto button_right = entity_manager::get()->create_entity("buttonRight", state_type::SETTINGS, right_arrow_transform);
-	button_right->add_component("clickable", clickable_system::get()->build_component(button_right, glm::dvec2(250, -60), glm::dvec2(x_button_size, y_button_size)));
-	button_right->add_component("render", renderer::get()->build_component(button_right, "", "res/textures/arrow_right_transparent.png", "rectangle", "Gouraud", simple_texture));
-	button_right->add_component("camera", camera_system::get()->build_component(button_right, camera_type::ORTHO));
+	// Right arrow button for resolution
+	auto resolution_button_right = entity_manager::get()->create_entity("resolutionButtonRight", state_type::SETTINGS, resolution_right_arrow_transform);
+	resolution_button_right->add_component("clickable", clickable_system::get()->build_component(resolution_button_right, glm::dvec2(resolution_right_arrow_transform.x, -resolution_right_arrow_transform.y), glm::dvec2(x_button_size, y_button_size)));
+	resolution_button_right->add_component("render", renderer::get()->build_component(resolution_button_right, "", "res/textures/arrow_right_transparent.png", "rectangle", "Gouraud", simple_texture));
+	resolution_button_right->add_component("camera", camera_system::get()->build_component(resolution_button_right, camera_type::ORTHO));
 
-	// Left arrow button
-	auto button_left = entity_manager::get()->create_entity("buttonLeft", state_type::SETTINGS, left_arrow_transform);
-	button_left->add_component("clickable", clickable_system::get()->build_component(button_left, glm::dvec2(-250, -60), glm::dvec2(x_button_size, y_button_size)));
-	button_left->add_component("render", renderer::get()->build_component(button_left, "", "res/textures/arrow_left_transparent.png", "rectangle", "Gouraud", simple_texture));
-	button_left->add_component("camera", camera_system::get()->build_component(button_left, camera_type::ORTHO));
+	// Left arrow button for resolution
+	auto resolution_button_left = entity_manager::get()->create_entity("resolutionButtonLeft", state_type::SETTINGS, resolution_left_arrow_transform);
+	resolution_button_left->add_component("clickable", clickable_system::get()->build_component(resolution_button_left, glm::dvec2(resolution_left_arrow_transform.x, -resolution_left_arrow_transform.y), glm::dvec2(x_button_size, y_button_size)));
+	resolution_button_left->add_component("render", renderer::get()->build_component(resolution_button_left, "", "res/textures/arrow_left_transparent.png", "rectangle", "Gouraud", simple_texture));
+	resolution_button_left->add_component("camera", camera_system::get()->build_component(resolution_button_left, camera_type::ORTHO));
+
+	// window mode right arrow trans
+	transform_data window_mode_right_arrow_transform;
+	window_mode_right_arrow_transform.scale = glm::vec3(x_button_size, y_button_size, 1.0f);
+	window_mode_right_arrow_transform.x = 250;
+	window_mode_right_arrow_transform.y = -60;
+
+	// resolution left arrow trans
+	transform_data window_mode_left_arrow_transform;
+	window_mode_left_arrow_transform.scale = glm::vec3(x_button_size, y_button_size, 1.0f);
+	window_mode_left_arrow_transform.x = -250;
+	window_mode_left_arrow_transform.y = -60;
+
+	// Right arrow button for window mode
+	auto window_mode_button_right = entity_manager::get()->create_entity("windowModeButtonRight", state_type::SETTINGS, window_mode_right_arrow_transform);
+	window_mode_button_right->add_component("clickable", clickable_system::get()->build_component(window_mode_button_right, glm::dvec2(window_mode_right_arrow_transform.x, -window_mode_right_arrow_transform.y), glm::dvec2(x_button_size, y_button_size)));
+	window_mode_button_right->add_component("render", renderer::get()->build_component(window_mode_button_right, "", "res/textures/arrow_right_transparent.png", "rectangle", "Gouraud", simple_texture));
+	window_mode_button_right->add_component("camera", camera_system::get()->build_component(window_mode_button_right, camera_type::ORTHO));
+
+	// Left arrow button for window mode
+	auto window_mode_button_left = entity_manager::get()->create_entity("windowModeButtonLeft", state_type::SETTINGS, window_mode_left_arrow_transform);
+	window_mode_button_left->add_component("clickable", clickable_system::get()->build_component(window_mode_button_left, glm::dvec2(window_mode_left_arrow_transform.x, -window_mode_left_arrow_transform.y), glm::dvec2(x_button_size, y_button_size)));
+	window_mode_button_left->add_component("render", renderer::get()->build_component(window_mode_button_left, "", "res/textures/arrow_left_transparent.png", "rectangle", "Gouraud", simple_texture));
+	window_mode_button_left->add_component("camera", camera_system::get()->build_component(window_mode_button_left, camera_type::ORTHO));
 
 }
 
@@ -140,11 +186,24 @@ void determine_screen_res(resolution &res)
 	}
 }
 
+void determine_window_mode(window_mode &window_mode)
+{
+	switch (window_mode)
+	{
+	case fullscreen:
+		// Handle logic for fullscreen
+		break;
+	case windowed:
+		// Handle logic for windowed
+		break;
+	}
+}
+
 void settings_state::on_update(float delta_time)
 {
 	//std::cout << "********** SETTINGS DISPLAYED ****************" << std::endl;
 	std::shared_ptr<clickable_system> cs = std::static_pointer_cast<clickable_system>(engine::get()->get_subsystem("clickable_system"));
-	if (cs->get_clicked_component_name() == "buttonRight")
+	if (cs->get_clicked_component_name() == "resolutionButtonRight")
 	{
 		// Wrap around
 		switch (current_resolution)
@@ -168,7 +227,7 @@ void settings_state::on_update(float delta_time)
 		cs->clear_clicked_component_name();
 
 	}
-	else if (cs->get_clicked_component_name() == "buttonLeft")
+	else if (cs->get_clicked_component_name() == "resolutionButtonLeft")
 	{
 		// Wrap around
 		switch (current_resolution)
@@ -188,6 +247,36 @@ void settings_state::on_update(float delta_time)
 		}
 		determine_screen_res(current_resolution);
 
+		cs->clear_clicked_component_name();
+	}
+	else if (cs->get_clicked_component_name() == "windowModeButtonLeft")
+	{
+		// Wrap around
+		switch (current_resolution)
+		{
+		case windowed:
+			current_window_mode = fullscreen;
+			break;
+		case fullscreen:
+			current_window_mode = windowed;
+			break;
+		}
+		determine_window_mode(current_window_mode);
+		cs->clear_clicked_component_name();
+	}
+	else if (cs->get_clicked_component_name() == "windowModeButtonRight")
+	{
+		// Wrap around
+		switch (current_resolution)
+		{
+		case windowed:
+			current_window_mode = fullscreen;
+			break;
+		case fullscreen:
+			current_window_mode = windowed;
+			break;
+		}
+		determine_window_mode(current_window_mode);
 		cs->clear_clicked_component_name();
 	}
 }
