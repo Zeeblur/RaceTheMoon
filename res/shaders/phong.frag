@@ -66,7 +66,7 @@ void main()
     // sample texture
     vec4 tex_colour = texture2D(tex, tex_coord);
 
-    vec4 primary = mat.emissive +  diffuse;
+    vec4 primary = mat.emissive + ambient + diffuse;
 
     out_colour = primary*tex_colour;// + specular;
     //out_colour = vec4(k,k,k, 1.0);

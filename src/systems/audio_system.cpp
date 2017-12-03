@@ -52,6 +52,9 @@ void audio_system::play_sound(sound_id id)
 	sf::SoundBuffer* sb = sb_ptr.get();
 	sounds.push_back(sf::Sound(*sb));
 	sf::Sound& sound = sounds.back();
+
+	// vol
+	set_volume(0);
 	sound.play();
 }
 
@@ -72,7 +75,7 @@ void audio_system::play_music(music_id id)
 	
 	if (!music.openFromFile(filename))
 		throw std::runtime_error("Music " + filename + " could not be loaded.");
-	volume = 100.0f;
+	volume = 0.0;
 	music.setVolume(volume);
 	music.setLoop(true);
 	music.play();
@@ -85,7 +88,7 @@ void audio_system::stop_music()
 
 void audio_system::set_volume(float volume)
 {
-	this->volume = volume;
+	this->volume = 0;// volume;
 }
 
 void audio_system::set_paused(bool paused)

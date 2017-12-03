@@ -24,14 +24,14 @@ std::shared_ptr<physics_component> physics_system::build_component(std::shared_p
 
 std::shared_ptr<collider_component> physics_system::build_collider_component(std::shared_ptr<entity> e)
 {
-    auto ree = collider_data(e->get_trans());
+    auto ree = e->get_trans();
 
     if (e->get_name() == "Bat")
     {
 
         std::shared_ptr<collider_data> cd = std::make_shared<collider_data>(collider_data(e->get_trans(), colType::PLAYER));
 
-        _bat_collider = std::move(cd);
+        _bat_collider = std::ref(cd);
         return std::make_shared<collider_component>(e, std::ref(_bat_collider));
     }
     else
@@ -59,7 +59,7 @@ glm::vec3 check_radii(collider_base* col)
 {
     glm::vec3 radii;
 
-    if (auto aabb = static_cast<AABB*>(col))
+    if (auto aabb = dynamic_cast<AABB*>(col))
     {
         for(int i = 0; i < 3; i++)
         {

@@ -7,11 +7,6 @@
 #include <strstream>
 void game_state::initialise()
 {
-
-	// can add a transformation in using struct now
-//	auto light = entity_manager::get()->create_entity("Light", this->type);
-
-
 	// Adding plane
 	auto p = entity_manager::get()->create_entity("Plane", this->type);
 	p->add_component("physics", physics_system::get()->build_component(p));
@@ -77,7 +72,8 @@ void game_state::initialise()
     m->add_component("physics", physics_system::get()->build_component(m));
 	m->add_component("light", renderer::get()->build_light(m));
     m->add_component("ai", ai_system::get()->build_component(m, SUN_MOON, 0.0f, 0.0f));
-    m->add_component("render", renderer::get()->build_component(m, glm::vec4(0.0f), "res/textures/moon.png", "sphere", "Gouraud", phong));
+	m->add_component("light", renderer::get()->build_light(m));
+
 
     // Adding sun sphere
     transform_data sunTrans;
@@ -88,6 +84,8 @@ void game_state::initialise()
     s->add_component("physics", physics_system::get()->build_component(s));
     s->add_component("ai", ai_system::get()->build_component(s, SUN_MOON, 0.0f, 0.0f));
     s->add_component("render", renderer::get()->build_component(s, glm::vec4(0.0f), "res/textures/sun.png", "sphere", "Gouraud", phong));
+
+
 
 	transform_data batTrans;
 	batTrans.y = 1.0f;
