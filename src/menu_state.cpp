@@ -30,12 +30,12 @@ void menu_state::initialise()
 	// Play button
 	auto button_play = entity_manager::get()->create_entity("buttonPlay", state_type::MENU, play_button_transform);
 	button_play->add_component("clickable", clickable_system::get()->build_component(button_play, glm::vec2(x_center - x_button_size, x_center + x_button_size), glm::vec2(y_center - y_button_size, y_center + y_button_size)));
-	button_play->add_component("render", renderer::get()->build_component(button_play, "", "res/textures/play_button.png", "rectangle", "Gouraud", simple_texture));
+	button_play->add_component("render", renderer::get()->build_component(button_play, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/play_button.png", "rectangle", "Gouraud", simple_texture));
 	button_play->add_component("camera", camera_system::get()->build_component(button_play, camera_type::ORTHO));
 
 	// Exit button
 	auto button_exit = entity_manager::get()->create_entity("buttonExit", state_type::MENU, exit_button_transform);
-	button_exit->add_component("render", renderer::get()->build_component(button_exit, "", "res/textures/exit_button.png", "rectangle", "Gouraud", simple_texture));
+	button_exit->add_component("render", renderer::get()->build_component(button_exit, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/exit_button.png", "rectangle", "Gouraud", simple_texture));
 	button_exit->add_component("clickable", clickable_system::get()->build_component(button_exit, glm::vec2(x_center - x_button_size, x_center + x_button_size), glm::vec2(button_offset + y_center - y_button_size, button_offset + y_center + y_button_size)));
 	button_exit->add_component("camera", camera_system::get()->build_component(button_exit, camera_type::ORTHO));
 }

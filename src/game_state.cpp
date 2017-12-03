@@ -14,7 +14,7 @@ void game_state::initialise()
 	// Adding plane
 	auto p = entity_manager::get()->create_entity("Plane", this->type);
 	p->add_component("physics", physics_system::get()->build_component(p));
-	p->add_component("render", renderer::get()->build_component(p, "Red", "res/textures/floor.jpg", "plane", "Gouraud", phong));
+	p->add_component("render", renderer::get()->build_component(p, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), "res/textures/floor.jpg", "plane", "Gouraud", phong));
 
      //Adding cube 1
     transform_data cubeTrans;
@@ -25,7 +25,7 @@ void game_state::initialise()
     auto c = entity_manager::get()->create_entity("Cube", this->type, cubeTrans);
     c->add_component("physics", physics_system::get()->build_component(c));
     c->add_component("ai", ai_system::get()->build_component(c, 0, glm::vec3(0.0f, 10.0f, 0.0f)));
-    c->add_component("render", renderer::get()->build_component(c, "Green", "res/textures/check.jpg", "cube", "Gouraud", phong));
+    c->add_component("render", renderer::get()->build_component(c, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f), "res/textures/check.jpg", "cube", "Gouraud", phong));
     c->add_component("collider", physics_system::get()->build_collider_component(c));
 
     // Adding cube 2
@@ -37,7 +37,7 @@ void game_state::initialise()
     auto c2 = entity_manager::get()->create_entity("Cube2", this->type, cube2Trans);
     c2->add_component("physics", physics_system::get()->build_component(c2));
     c2->add_component("ai", ai_system::get()->build_component(c2, 2, glm::vec3(0.0f, 0.0f, -10.0f)));
-    c2->add_component("render", renderer::get()->build_component(c2, "Green", "", "cube", "Gouraud", phong));
+    c2->add_component("render", renderer::get()->build_component(c2, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f), "", "cube", "Gouraud", phong));
     c2->add_component("collider", physics_system::get()->build_collider_component(c2));
 
     // Adding cube 3
@@ -49,7 +49,7 @@ void game_state::initialise()
     auto c3 = entity_manager::get()->create_entity("Cube3", this->type, cube3Trans);
     c3->add_component("physics", physics_system::get()->build_component(c3));
     c3->add_component("ai", ai_system::get()->build_component(c3, 4, glm::vec3(10.0f, 0.0f, 0.0f)));
-    c3->add_component("render", renderer::get()->build_component(c3, "Green", "res/textures/stone.jpg", "cube", "Gouraud", phong));
+    c3->add_component("render", renderer::get()->build_component(c3, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f), "res/textures/stone.jpg", "cube", "Gouraud", phong));
     c3->add_component("collider", physics_system::get()->build_collider_component(c3));
 
     // Adding cube 4
@@ -61,7 +61,7 @@ void game_state::initialise()
     auto c4 = entity_manager::get()->create_entity("Cube4", this->type, cube4Trans);
     c4->add_component("physics", physics_system::get()->build_component(c4));
     c4->add_component("ai", ai_system::get()->build_component(c4, 5, glm::vec3(-10.0f, 0.0f, 0.0f)));
-    c4->add_component("render", renderer::get()->build_component(c4, "Green", "res/textures/moon.png", "cube", "Gouraud", phong));
+    c4->add_component("render", renderer::get()->build_component(c4, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f), "res/textures/moon.png", "cube", "Gouraud", phong));
     c4->add_component("collider", physics_system::get()->build_collider_component(c4));
 
 
@@ -75,7 +75,7 @@ void game_state::initialise()
     auto w1 = entity_manager::get()->create_entity("Waterfall1", this->type, waterfall1Trans);
     w1->add_component("physics", physics_system::get()->build_component(w1));
     w1->add_component("ai", ai_system::get()->build_component(w1, 1, glm::vec3(0.0f, -40.0f, 0.0f)));
-    w1->add_component("render", renderer::get()->build_component(w1, "Green", "res/textures/stone.jpg", "cube", "Gouraud", phong));
+    w1->add_component("render", renderer::get()->build_component(w1, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f), "res/textures/stone.jpg", "cube", "Gouraud", phong));
 
     // Waterfall piece 2
     transform_data waterfall2Trans;
@@ -86,7 +86,7 @@ void game_state::initialise()
     auto w2 = entity_manager::get()->create_entity("Waterfall2", this->type, waterfall2Trans);
     w2->add_component("physics", physics_system::get()->build_component(w2));
     w2->add_component("ai", ai_system::get()->build_component(w2, 0, glm::vec3(0.0f, 40.0f, 0.0f)));
-    w2->add_component("render", renderer::get()->build_component(w2, "Green", "res/textures/stone.jpg", "cube", "Gouraud", phong));
+    w2->add_component("render", renderer::get()->build_component(w2, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f), "res/textures/stone.jpg", "cube", "Gouraud", phong));
 
     // Waterfall piece 3
     transform_data waterfall3Trans;
@@ -97,7 +97,7 @@ void game_state::initialise()
     auto w3 = entity_manager::get()->create_entity("Waterfall3", this->type, waterfall3Trans);
     w3->add_component("physics", physics_system::get()->build_component(w3));
     w3->add_component("ai", ai_system::get()->build_component(w3, 1, glm::vec3(0.0f, -40.0f, 0.0f)));
-    w3->add_component("render", renderer::get()->build_component(w3, "Green", "res/textures/stone.jpg", "cube", "Gouraud", phong));
+    w3->add_component("render", renderer::get()->build_component(w3, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f), "res/textures/stone.jpg", "cube", "Gouraud", phong));
 
     // Waterfall piece 4
     transform_data waterfall4Trans;
@@ -108,7 +108,7 @@ void game_state::initialise()
     auto w4 = entity_manager::get()->create_entity("Waterfall4", this->type, waterfall4Trans);
     w4->add_component("physics", physics_system::get()->build_component(w4));
     w4->add_component("ai", ai_system::get()->build_component(w4, 0, glm::vec3(0.0f, 40.0f, 0.0f)));
-    w4->add_component("render", renderer::get()->build_component(w4, "Green", "res/textures/stone.jpg", "cube", "Gouraud", phong));
+    w4->add_component("render", renderer::get()->build_component(w4, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f), "res/textures/stone.jpg", "cube", "Gouraud", phong));
 
 
     // Adding moon sphere
@@ -118,7 +118,7 @@ void game_state::initialise()
     auto m = entity_manager::get()->create_entity("Moon", this->type, moonTrans);
     m->add_component("physics", physics_system::get()->build_component(m));
     m->add_component("ai", ai_system::get()->build_component(m, 6, glm::vec3(0.0f, 0.0f, 0.0f)));
-    m->add_component("render", renderer::get()->build_component(m, "White", "res/textures/moon.png", "sphere", "Gouraud", phong));
+    m->add_component("render", renderer::get()->build_component(m, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), "res/textures/moon.png", "sphere", "Gouraud", phong));
 
     // Adding sun sphere
     transform_data sunTrans;
@@ -128,7 +128,7 @@ void game_state::initialise()
     auto s = entity_manager::get()->create_entity("Sun", this->type, sunTrans);
     s->add_component("physics", physics_system::get()->build_component(s));
     s->add_component("ai", ai_system::get()->build_component(s, 6, glm::vec3(0.0f, 0.0f, 0.0f)));
-    s->add_component("render", renderer::get()->build_component(s, "White", "res/textures/sun.png", "sphere", "Gouraud", phong));
+    s->add_component("render", renderer::get()->build_component(s, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), "res/textures/sun.png", "sphere", "Gouraud", phong));
 
 
 
@@ -141,7 +141,7 @@ void game_state::initialise()
 	auto e = entity_manager::get()->create_entity("Bat", this->type, batTrans);
 	e->add_component("physics", physics_system::get()->build_component(e));
 	e->add_component("input", input_handler::get()->build_component(e));
-	e->add_component("render", renderer::get()->build_component(e, "Blue", "res/textures/bat.jpg", "res/models/bat.obj", "Gouraud", phong));
+	e->add_component("render", renderer::get()->build_component(e, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), "res/textures/bat.jpg", "res/models/bat.obj", "Gouraud", phong));
 	e->add_component("camera", camera_system::get()->build_component(e, camera_type::CHASE));
 	e->add_component("collider", physics_system::get()->build_collider_component(e));
     e->add_component("score", score_system::get()->build_component(e));
@@ -150,14 +150,14 @@ void game_state::initialise()
 	text_transform.x = 10;
 	text_transform.y = 10;
 	auto test = entity_manager::get()->create_entity("test1", state_type::GAME, text_transform);
-	test->add_component("render", renderer::get()->build_component(test, "", "res/textures/exit_button.png", "rectangle", "text", text));
+	test->add_component("render", renderer::get()->build_component(test, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), "res/textures/exit_button.png", "rectangle", "text", text));
 	test->add_component("text", text_system::get()->build_component(test, "Score: 0"));
 
 	transform_data text_transform2;
 	text_transform2.x = 10;
 	text_transform2.y = 100;
 	auto test2 = entity_manager::get()->create_entity("test2", state_type::GAME, text_transform2);
-	test2->add_component("render", renderer::get()->build_component(test2, "", "res/textures/exit_button.png", "rectangle", "text", text));
+	test2->add_component("render", renderer::get()->build_component(test2, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), "res/textures/exit_button.png", "rectangle", "text", text));
 	test2->add_component("text", text_system::get()->build_component(test2, "Score: 0"));
 
 	initText2D("res/textures/myriad.png");

@@ -474,7 +474,7 @@ namespace gl
 			glm::vec3(-100.0f, 0.0f, 100.0f),
 			glm::vec3(100.0f, 0.0f, 100.0f),
 			glm::vec3(100.0f,0.0f, -100.0f)
-			
+
         };
 
         std::vector<glm::vec2> tex_coords
@@ -814,11 +814,10 @@ namespace gl
 	void bind_light(GLuint programID, light_data light)
 	{
 		// Check for ambient intensity
-		auto idx = glGetUniformLocation(programID, "dir_light.ambient_intensity");
+		auto idx = glGetUniformLocation(programID, "light.ambient_intensity");
 
-
-		if (idx != -1)
-			glUniform1fv(idx, 1, glm::value_ptr(glm::vec3(light._ambient)));
+        if (idx != -1)
+            glUniform4fv(idx, 1, glm::value_ptr(glm::vec4(light._ambient)));
 
 		if (CHECK_GL_ERROR)
 		{
@@ -829,7 +828,7 @@ namespace gl
 		}
 
 		// Check for light colour
-		idx = glGetUniformLocation(programID, "dir_light.light_colour");
+		idx = glGetUniformLocation(programID, "light.light_colour");
 		if (idx != -1)
 			glUniform3fv(idx, 1, glm::value_ptr(light._colour));
 
@@ -842,7 +841,7 @@ namespace gl
 		}
 
 		// Check for light direction
-		idx = glGetUniformLocation(programID, "dir_light.light_dir");
+		idx = glGetUniformLocation(programID, "light.light_dir");
 		if (idx != -1)
 			glUniform3fv(idx, 1, glm::value_ptr(light._direction));
 		// Check for error
@@ -881,7 +880,64 @@ namespace gl
 		}
 	}
 
-	void render(std::shared_ptr<render_data> rd)
+
+    void bind_material(GLuint programID, material_data mat)
+    {
+        // Check for diffuse
+        auto idx = glGetUniformLocation(programID, "mat.diffuse_reflection");
+
+        if (idx != -1)
+            glUniform4fv(idx, 1, glm::value_ptr(mat._diffuse));
+
+        if (CHECK_GL_ERROR)
+        {
+            std::cerr << "ERROR - binding material to renderer" << std::endl;
+            std::cerr << "OpenGL could not set the uniforms" << std::endl;
+            // Throw exception
+            throw std::runtime_error("Error using material with renderer");
+        }
+
+        // Check for emissive
+        idx = glGetUniformLocation(programID, "mat.emissive");
+        if (idx != -1)
+            glUniform4fv(idx, 1, glm::value_ptr(mat._emissive));
+
+        if (CHECK_GL_ERROR)
+        {
+            std::cerr << "ERROR - binding material to renderer" << std::endl;
+            std::cerr << "OpenGL could not set the uniforms" << std::endl;
+            // Throw exception
+            throw std::runtime_error("Error using material with renderer");
+        }
+
+        // Check for specular
+        idx = glGetUniformLocation(programID, "mat.specular_reflection");
+        if (idx != -1)
+            glUniform4fv(idx, 1, glm::value_ptr(mat._specular));
+        // Check for error
+        if (CHECK_GL_ERROR)
+        {
+            std::cerr << "ERROR - binding material to renderer" << std::endl;
+            std::cerr << "OpenGL could not set the uniforms" << std::endl;
+            // Throw exception
+            throw std::runtime_error("Error using material with renderer");
+        }
+
+        // Check for shiny
+        idx = glGetUniformLocation(programID, "mat.shininess");
+        if (idx != -1)
+            glUniform1f(idx, mat._shininess);
+        // Check for error
+        if (CHECK_GL_ERROR)
+        {
+            std::cerr << "ERROR - binding material to renderer" << std::endl;
+            std::cerr << "OpenGL could not set the uniforms" << std::endl;
+            // Throw exception
+            throw std::runtime_error("Error using material with renderer");
+        }
+    }
+
+    void render(std::shared_ptr<render_data> rd)
 	{
 		auto programID = rd->effect->program;
 
@@ -894,6 +950,9 @@ namespace gl
 		// bind the lights
 		for (auto &light : rd->effect->lights)
 			bind_light(programID, light);
+
+        // bind the material
+        bind_material(programID, rd->matData);
 
 		// bind the texture if it exists // TODO: change index to something meaningful
 		if (rd->textureObj)

@@ -21,6 +21,13 @@
 
 namespace gl
 {
+    struct material_data
+    {
+        glm::vec4 _diffuse;
+        glm::vec4 _emissive = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+        glm::vec4 _specular = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+        float _shininess = 2.0f;
+    };
 
 	struct light_data
 	{
@@ -33,6 +40,13 @@ namespace gl
 
 		// pos
 		glm::vec3 _position = glm::vec3(0.0, 0.0, 0.0f);
+
+		// The constant factor of the attenuation
+		float _constant;
+		// The linear factor of the attenuation
+		float _linear;
+		// The quadratic factor of the attenuation
+		float _quadratic;
 	};
 
 	struct texture
@@ -100,10 +114,7 @@ namespace gl
 	struct render_data
 	{
 		bool visible;// = true;
-					 // Let's pretend this is a matrix that was built.
-		std::string colour;// = "Red";
 		std::string shader;// = "Phong";
-
 		glm::mat4 M;
 		glm::mat3 N;
 		glm::mat4 MVP;
@@ -117,6 +128,9 @@ namespace gl
 
 		// Reference to texture object
 		std::shared_ptr<texture> textureObj;
+
+        // reference to material obj
+        gl::material_data matData;
 	};
 
     // store vao/vbos for obj

@@ -3,6 +3,9 @@
 audio_system::audio_system()
 {
 	_visible = false;
+
+	// turned audio off to work without it
+	_active = false;
 }
 
 bool audio_system::initialise()

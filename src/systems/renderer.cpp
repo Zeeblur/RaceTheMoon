@@ -28,10 +28,11 @@ renderer::renderer()
 	//programIDs[phong]->lights = 
 }
 
-std::shared_ptr<render_component> renderer::build_component(std::shared_ptr<entity> &e, std::string colour, std::string texture_path, std::string shape, std::string shader, effectType effType)
+std::shared_ptr<render_component> renderer::build_component(std::shared_ptr<entity> &e, glm::vec4 colour, std::string texture_path, std::string shape, std::string shader, effectType effType)
 {
     auto _rd = std::make_shared<gl::render_data>();
-    _rd->colour = colour;
+    _rd->matData = gl::material_data();
+    _rd->matData._diffuse = colour;
 	
     _rd->shader = shader;
     _rd->mesh = gl::load_mesh(shape);

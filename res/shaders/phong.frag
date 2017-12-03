@@ -18,21 +18,56 @@ struct directional_light
 {
 	vec3 light_colour;
 	vec3 light_dir;
-	float ambient_intensity;
+	vec4 ambient_intensity;
 };
 #endif
 
+#ifndef MATERIAL
+#define MATERIAL
+struct material
+{
+	vec4 emissive;
+	vec4 diffuse_reflection;
+	vec4 specular_reflection;
+	float shininess;
+};
+#endif
 
+// Position of the camera
+uniform vec3 eye_pos;
 
-uniform directional_light dir_light; 
+uniform material mat;
+
+uniform directional_light light;
 // Sampler used to get texture colour
 uniform sampler2D tex;
 
 void main()
 {
+    // calculate ambient
+    vec4 ambient = vec4(mat.diffuse_reflection * (light.ambient_intensity), 1.0);
 
-	float diffuse = max(0.0, dot(normalize(trans_normal), -dir_light.light_dir));
-	vec4 ambient = vec4(dir_light.light_colour * (dir_light.ambient_intensity + diffuse), 1.0);
-	out_colour = texture(tex, tex_coord) * ambient;
-	out_colour.a = 1.0f;
+    float dotD = dot(normal, light.light_dir);
+    float k = max(dotD, 0);
+    vec4 diffuse = mat.diffuse_reflection * light.light_colour * k;
+
+    // calculate view direction & half vector
+    vec3 view_dir = normalize(eye_pos - vertex_pos);
+    vec3 halfV = normalize(view_dir + light.light_dir);
+
+
+    // specular
+    float dotS = dot(halfV, normal);
+    float kSpec = max(dotS, 0);
+
+    vec4 specular = mat.specular_reflection * light.light_colour * pow(kSpec, mat.shininess);
+
+
+    // sample texture
+    vec4 tex_colour = texture2D(tex, tex_coord);
+
+    vec4 primary = mat.emissive + ambient + diffuse;
+
+    out_colour = primary*tex_colour + specular;
+    out_colour.a = 1.0f;
 }
