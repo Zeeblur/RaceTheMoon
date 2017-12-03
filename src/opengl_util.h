@@ -32,7 +32,7 @@ namespace gl
 	struct light_data
 	{
 		// Ambient intensity of the light
-		glm::vec4 _ambient = glm::vec4(0.7f, 0.7f, 0.7f, 1.0f);
+		glm::vec4 _ambient = glm::vec4(0.2f, 0.2f, 0.2f, 1.0f);
 		// The colour of the light
 		glm::vec4 _colour = glm::vec4(0.9f, 0.9f, 0.9f, 1.0f);
 		// The direction the light is facing

@@ -7,13 +7,21 @@
 #include <strstream>
 void game_state::initialise()
 {
+	// Add background sphere
+	transform_data sphTrans;
+	sphTrans.scale = glm::vec3(1000.0f, 1000.0f, 1000.0f);
+	auto sph = entity_manager::get()->create_entity("Sphere", this->type, sphTrans);
+	sph->add_component("physics", physics_system::get()->build_component(sph));
+	sph->add_component("render", renderer::get()->build_component(sph, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), "", "sphere", "Gouraud", sky));
+	 
+
 	// Adding plane
 	auto p = entity_manager::get()->create_entity("Plane", this->type);
 	p->add_component("physics", physics_system::get()->build_component(p));
 	p->add_component("render", renderer::get()->build_component(p, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), "res/textures/floor.jpg", "plane", "Gouraud", phong));
 
     auto levelGenerator = level_gen::get();
-
+	 
     levelGenerator->addWaterfallPuzzle(glm::vec3(0, 0.0f, -0));
 
     //Adding cube 1

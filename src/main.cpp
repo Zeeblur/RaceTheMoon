@@ -14,7 +14,7 @@
 #include "settings_state.h"
 #include "thread_pool.h"
 
-
+ 
 //#include <FreeImage-src\FreeImage.h>
 // Include GLEW
 #include <GL/glew.h>

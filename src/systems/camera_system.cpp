@@ -21,14 +21,14 @@ std::shared_ptr<camera_component> camera_system::build_component(std::shared_ptr
 		proj.fov = 1.0472f;
 		proj.aspect = (16.0f / 9.0f);
 		proj.near = 0.01f;
-		proj.far = 1000.0f;
+		proj.far = 1500.0f;
 		proj.type = CHASE;
 		break;
 	case camera_type::ORTHO:
 		proj.fov = 1.0472f;
 		proj.aspect = (16.0f / 9.0f);
 		proj.near = -1000.0f;
-		proj.far = 1000.0f;
+		proj.far = 1500.0f;
 		proj.left = -0.5f * (float)width;
 		proj.bottom = -0.5f * (float)height;
 		proj.type = ORTHO;

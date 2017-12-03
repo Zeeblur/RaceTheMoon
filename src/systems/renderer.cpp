@@ -19,6 +19,8 @@ renderer::renderer()
 	programIDs[phong] = std::make_shared<gl::Effect>();
 	programIDs[simple_texture] = std::make_shared<gl::Effect>();
 	programIDs[text] = std::make_shared<gl::Effect>();
+	programIDs[sky] = std::make_shared<gl::Effect>();
+
 
 	programIDs[simple]->program = gl::LoadShaders("res/shaders/simple.vert", "res/shaders/simple.frag");
 	programIDs[phong]->program = gl::LoadShaders("res/shaders/phong.vert", "res/shaders/phong.frag");
@@ -26,6 +28,8 @@ renderer::renderer()
 	programIDs[text]->program = gl::LoadShaders("res/shaders/text.vert", "res/shaders/text.frag");
 	// TODO add lights to effect
 	//programIDs[phong]->lights = 
+	programIDs[sky]->program = gl::LoadShaders("res/shaders/sky.vert", "res/shaders/sky.frag");
+	
 }
 
 std::shared_ptr<render_component> renderer::build_component(std::shared_ptr<entity> &e, glm::vec4 colour, std::string texture_path, std::string shape, std::string shader, effectType effType)
@@ -77,6 +81,7 @@ std::shared_ptr<light_component> renderer::build_light(std::shared_ptr<entity> &
 	auto _ld = std::make_shared<gl::light_data>();
 
 	programIDs[phong]->lights.push_back(_ld);
+	//programIDs[sky]->lights.push_back(_ld);
 
 	return std::make_shared<light_component>(e, _ld);
 }

@@ -968,16 +968,43 @@ namespace gl
 
 		glUseProgram(programID);
 
-		gl::glData* om = static_cast<gl::glData *>(rd->mesh->GpuData);
+		glDepthMask(true);
+		glEnable(GL_CULL_FACE);
 
+		gl::glData* om = static_cast<gl::glData *>(rd->mesh->GpuData);
+		 
 		auto e1 = glGetError();
 
-		// bind the lights
+		// bind the lights 
 		for (auto &light : rd->effect->lights)
+		{ 
 			bind_light(programID, light);
 
+
+		}
+
+		 
+
+
+		// bind sun pos if got
+		auto loc = glGetUniformLocation(programID, "sunPosition");
+		if (loc != -1)
+		{
+			float inclination =  0.49f; // elevation / inclination
+			float azimuth = 0.25f; // Facing front
+			float distance = 900.0f;
+			float theta = pi<float>() * (inclination - 0.5);
+			float phi = 2 * pi<float>() * (azimuth - 0.5);
+			vec3 sunPosition = vec3(distance * cos(phi), distance * sin(phi) * sin(theta), distance * sin(phi) * cos(theta));
+
+
+			glUniform3fv(loc, 1, glm::value_ptr(sunPosition));
+			glDisable(GL_CULL_FACE);
+			glDepthMask(false);
+		}
+		 
         // bind the material
-        bind_material(programID, rd->matData);
+        bind_material(programID, rd->matData); 
 
 		// bind the texture if it exists // TODO: change index to something meaningful
 		if (rd->textureObj)
@@ -986,7 +1013,7 @@ namespace gl
 		}
 		
 		//bind eye pos
-		auto loc = glGetUniformLocation(programID, "eye_pos");
+		loc = glGetUniformLocation(programID, "eye_pos");
 		if (loc != -1)
 			glUniform3fv(loc, 1, glm::value_ptr(rd->cam_pos));
 
@@ -1034,7 +1061,7 @@ namespace gl
 			// Throw exception
 			throw std::runtime_error("Error rendering geometry");
 		}
-
+		 
 		// If there is an index buffer then use to render
 		if (om->has_indices)
 		{
@@ -1048,6 +1075,8 @@ namespace gl
 				// Throw exception
 				throw std::runtime_error("Error rendering geometry");
 			}
+
+			//glDisable(GL_CULL_FACE);
 
 			// Draw elements
 			glDrawElements(om->type, om->indice_count, GL_UNSIGNED_INT, nullptr);
@@ -1063,6 +1092,7 @@ namespace gl
 		}
 		else
 		{
+			//glDisable(GL_CULL_FACE);
 			// Draw arrays
 			glDrawArrays(om->type, 0, om->vertex_count);
 			// Check for error
