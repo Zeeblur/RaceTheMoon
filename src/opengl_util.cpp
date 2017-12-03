@@ -887,6 +887,10 @@ namespace gl
 
 	void render(std::shared_ptr<render_data> rd)
 	{
+		// Enable for transparency with PNG
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 		auto programID = rd->effect->program;
 
 		glUseProgram(programID);

@@ -13,6 +13,8 @@ enum resolution
 class settings_state : public engine_state
 {
 public:
+	resolution current_resolution = _1024x768;
+
 	void initialise();
 
 	void on_reset();

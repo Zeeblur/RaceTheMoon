@@ -29,23 +29,36 @@ void menu_state::initialise()
 	int x_button_size = 100;
 	int y_button_size = 50;
 
-	// button trans
+	// Buttons transformations
+	// Play button
 	transform_data play_button_transform;
 	play_button_transform.scale = glm::vec3(x_button_size, y_button_size, 1.0f);
-
-	play_button_transform.y = 0.0f;
+	play_button_transform.y = 125.0f;
+	// Settings button
+	transform_data settings_button_transform;
+	settings_button_transform.scale = glm::vec3(x_button_size, y_button_size, 1.0f);
+	// Exit button
 	transform_data exit_button_transform;
 	exit_button_transform.scale = glm::vec3(x_button_size, y_button_size, 1.0f);
 	exit_button_transform.y = -125.0f;
+
+
+
 
 	// Y offset between buttons
 	int button_offset = 125;
 	// Play button
 	auto button_play = entity_manager::get()->create_entity("buttonPlay", state_type::MENU, play_button_transform);
 	button_play->add_component("render", renderer::get()->build_component(button_play, "", "res/textures/play_button.png", "rectangle", "Gouraud", simple_texture));
-	
-	button_play->add_component("clickable", clickable_system::get()->build_component(button_play, glm::dvec2(0, 0), glm::dvec2(x_button_size, y_button_size)));
+	button_play->add_component("clickable", clickable_system::get()->build_component(button_play, glm::dvec2(0, 0 - button_offset), glm::dvec2(x_button_size, y_button_size)));
 	button_play->add_component("camera", camera_system::get()->build_component(button_play, camera_type::ORTHO));
+
+	// Settings button
+	auto button_settings = entity_manager::get()->create_entity("buttonSettings", state_type::MENU, settings_button_transform);
+	button_settings->add_component("render", renderer::get()->build_component(button_settings, "", "res/textures/play_button.png", "rectangle", "Gouraud", simple_texture));
+
+	button_settings->add_component("clickable", clickable_system::get()->build_component(button_settings, glm::dvec2(0, 0), glm::dvec2(x_button_size, y_button_size)));
+	button_settings->add_component("camera", camera_system::get()->build_component(button_settings, camera_type::ORTHO));
 
 	// Exit button
 	auto button_exit = entity_manager::get()->create_entity("buttonExit", state_type::MENU, exit_button_transform);

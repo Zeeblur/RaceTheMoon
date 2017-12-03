@@ -88,13 +88,13 @@ void settings_state::initialise()
 	// Right arrow button
 	auto button_right = entity_manager::get()->create_entity("buttonRight", state_type::SETTINGS, right_arrow_transform);
 	button_right->add_component("clickable", clickable_system::get()->build_component(button_right, glm::dvec2(250, -60), glm::dvec2(x_button_size, y_button_size)));
-	button_right->add_component("render", renderer::get()->build_component(button_right, "", "res/textures/arrow_right.png", "rectangle", "Gouraud", simple_texture));
+	button_right->add_component("render", renderer::get()->build_component(button_right, "", "res/textures/arrow_right_transparent.png", "rectangle", "Gouraud", simple_texture));
 	button_right->add_component("camera", camera_system::get()->build_component(button_right, camera_type::ORTHO));
 
 	// Left arrow button
 	auto button_left = entity_manager::get()->create_entity("buttonLeft", state_type::SETTINGS, left_arrow_transform);
 	button_left->add_component("clickable", clickable_system::get()->build_component(button_left, glm::dvec2(-250, -60), glm::dvec2(x_button_size, y_button_size)));
-	button_left->add_component("render", renderer::get()->build_component(button_left, "", "res/textures/arrow_left.png", "rectangle", "Gouraud", simple_texture));
+	button_left->add_component("render", renderer::get()->build_component(button_left, "", "res/textures/arrow_left_transparent.png", "rectangle", "Gouraud", simple_texture));
 	button_left->add_component("camera", camera_system::get()->build_component(button_left, camera_type::ORTHO));
 
 }
@@ -121,9 +121,75 @@ void settings_state::on_enter()
 	std::cout << "Entered settings state, press ENTER to go to game state" << std::endl;
 }
 
+void determine_screen_res(resolution &res)
+{
+	switch (res)
+	{
+		case _1024x768:
+			glfwSetWindowSize(glfw::window, 1024, 768);
+			break;
+		case _1280x720:
+			glfwSetWindowSize(glfw::window, 1280, 720);
+			break;
+		case _1600x1200:
+			glfwSetWindowSize(glfw::window, 1600, 1200);
+			break;
+		case _1920x1080:
+			glfwSetWindowSize(glfw::window, 1920, 1080);
+			break;
+	}
+}
+
 void settings_state::on_update(float delta_time)
 {
 	//std::cout << "********** SETTINGS DISPLAYED ****************" << std::endl;
+	std::shared_ptr<clickable_system> cs = std::static_pointer_cast<clickable_system>(engine::get()->get_subsystem("clickable_system"));
+	if (cs->get_clicked_component_name() == "buttonRight")
+	{
+		// Wrap around
+		switch (current_resolution)
+		{
+		case _1024x768:
+			current_resolution = _1280x720;
+			break;
+		case _1280x720:
+			current_resolution = _1600x1200;
+			break;
+		case _1600x1200:
+			current_resolution = _1920x1080;
+			break;
+		case _1920x1080:
+			current_resolution = _1024x768;
+			break;
+		}
+		determine_screen_res(current_resolution);
+
+		//glfwSetWindowSize(glfw::window, 1600, 1200);
+		cs->clear_clicked_component_name();
+
+	}
+	else if (cs->get_clicked_component_name() == "buttonLeft")
+	{
+		// Wrap around
+		switch (current_resolution)
+		{
+		case _1024x768:
+			current_resolution = _1920x1080;
+			break;
+		case _1280x720:
+			current_resolution = _1024x768;
+			break;
+		case _1600x1200:
+			current_resolution = _1280x720;
+			break;
+		case _1920x1080:
+			current_resolution = _1600x1200;
+			break;
+		}
+		determine_screen_res(current_resolution);
+
+		cs->clear_clicked_component_name();
+	}
 }
 
 void settings_state::on_exit()
