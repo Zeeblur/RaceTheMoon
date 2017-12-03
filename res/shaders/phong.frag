@@ -18,7 +18,7 @@ struct directional_light
 {
 	vec3 light_colour;
 	vec3 light_dir;
-	vec4 ambient_intensity;
+	vec3 ambient_intensity;
 };
 #endif
 
@@ -38,29 +38,29 @@ uniform vec3 eye_pos;
 
 uniform material mat;
 
-uniform directional_light light;
+uniform directional_light dir_light; 
 // Sampler used to get texture colour
 uniform sampler2D tex;
 
 void main()
 {
-    // calculate ambient
-    vec4 ambient = vec4(mat.diffuse_reflection * (light.ambient_intensity), 1.0);
+	// calculate ambient
+    vec4 ambient = mat.diffuse_reflection * vec4(dir_light.ambient_intensity, 1.0);
 
-    float dotD = dot(normal, light.light_dir);
+    float dotD = dot(trans_normal, dir_light.light_dir);
     float k = max(dotD, 0);
-    vec4 diffuse = mat.diffuse_reflection * light.light_colour * k;
+    vec4 diffuse = mat.diffuse_reflection * vec4(dir_light.light_colour, 1.0) * k;
 
     // calculate view direction & half vector
     vec3 view_dir = normalize(eye_pos - vertex_pos);
-    vec3 halfV = normalize(view_dir + light.light_dir);
+    vec3 halfV = normalize(view_dir + dir_light.light_dir);
 
 
     // specular
-    float dotS = dot(halfV, normal);
+    float dotS = dot(halfV, trans_normal);
     float kSpec = max(dotS, 0);
 
-    vec4 specular = mat.specular_reflection * light.light_colour * pow(kSpec, mat.shininess);
+    vec4 specular = mat.specular_reflection * vec4(dir_light.light_colour, 1.0) * pow(kSpec, mat.shininess);
 
 
     // sample texture

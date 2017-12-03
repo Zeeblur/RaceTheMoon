@@ -224,7 +224,8 @@ void game_state::on_enter()
     engine::get()->get_subsystem("physics_system")->set_active(true);
     engine::get()->get_subsystem("renderer")->set_visible(true);
     engine::get()->get_subsystem("clickable_system")->set_active(false);
-	audio_system::get()->set_volume(100.0f);
+	// set to zero
+	audio_system::get()->set_volume(0.0f);
 	// set score system active
 	engine::get()->get_subsystem("score_system")->set_active(true);
 

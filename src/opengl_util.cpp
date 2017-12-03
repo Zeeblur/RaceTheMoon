@@ -813,22 +813,22 @@ namespace gl
 
 	void bind_light(GLuint programID, light_data light)
 	{
-		// Check for ambient intensity
-		auto idx = glGetUniformLocation(programID, "light.ambient_intensity");
-
+		// Check for ambient intensity  
+		auto idx = glGetUniformLocation(programID, "dir_light.ambient_intensity");
+		         
         if (idx != -1)
-            glUniform4fv(idx, 1, glm::value_ptr(glm::vec4(light._ambient)));
-
-		if (CHECK_GL_ERROR)
+            glUniform3fv(idx, 1, glm::value_ptr(glm::vec3(light._ambient)));
+		  
+		if (CHECK_GL_ERROR) 
 		{
 			std::cerr << "ERROR - binding directional light to renderer" << std::endl;
 			std::cerr << "OpenGL could not set the uniforms" << std::endl;
 			// Throw exception
 			throw std::runtime_error("Error using directional light with renderer");
-		}
+		} 
 
 		// Check for light colour
-		idx = glGetUniformLocation(programID, "light.light_colour");
+		idx = glGetUniformLocation(programID, "dir_light.light_colour");
 		if (idx != -1)
 			glUniform3fv(idx, 1, glm::value_ptr(light._colour));
 
@@ -841,7 +841,7 @@ namespace gl
 		}
 
 		// Check for light direction
-		idx = glGetUniformLocation(programID, "light.light_dir");
+		idx = glGetUniformLocation(programID, "dir_light.light_dir");
 		if (idx != -1)
 			glUniform3fv(idx, 1, glm::value_ptr(light._direction));
 		// Check for error
