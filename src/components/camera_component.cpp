@@ -75,4 +75,5 @@ void camera_component::update(float delta_time)
 	_view = glm::lookAt(desired_position, _target, _up);
 
 	_data->model_view = _projection * _view;
+	_data->cam_pos = desired_position;
 }

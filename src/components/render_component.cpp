@@ -64,6 +64,7 @@ void render_component::render()
 		int width, height;
 		glfwGetWindowSize(glfw::window, &width, &height);
 		mat4 view_proj_mat;
+		vec3 eye_pos;
 
 		if (camera != nullptr)
 		{
@@ -71,11 +72,13 @@ void render_component::render()
 				view_proj_mat = camera->get_projection() * camera->get_view();
 			else
 				view_proj_mat = glm::ortho(-0.5f * (float)width, 0.5f * (float)width, -0.5f * (float)height, 0.5f * (float)height, -1000.0f, 1000.0f);
-
+		
+			eye_pos = camera->get_data()->cam_pos;
 		}
 		else
 		{
 			view_proj_mat = camera_system::get()->player_cam_MV;
+			eye_pos = camera_system::get()->player_cam_pos;
 		}
 
 		auto MVP = view_proj_mat * model;
@@ -84,6 +87,7 @@ void render_component::render()
 		// create render job here
 
 		_data->MVP = MVP;
+		_data->cam_pos = eye_pos;
 
 		renderer::get()->_dataList.push_back(_data);
 		

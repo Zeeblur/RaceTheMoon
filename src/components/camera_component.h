@@ -30,7 +30,7 @@ struct camera_projection
 
 	camera_type type;
 	glm::mat4 model_view;
-
+	glm::vec3 cam_pos;
 };
 
 class camera_component : public component

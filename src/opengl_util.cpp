@@ -176,6 +176,14 @@ namespace gl
 			printf("%s\n", &FragmentShaderErrorMessage[0]);
 		}
 
+		 
+		glBindAttribLocation(VertexShaderID, BUFFER_INDEXES::POSITION_BUFFER, "position");
+
+		glBindAttribLocation(VertexShaderID, BUFFER_INDEXES::COLOUR_BUFFER, "in_colour");
+
+		glBindAttribLocation(VertexShaderID, BUFFER_INDEXES::NORMAL_BUFFER, "normal");
+
+		glBindAttribLocation(VertexShaderID, BUFFER_INDEXES::TEXTURE_COORDS_0, "tex_coord_in");
 
 
 		// Link the program
@@ -577,7 +585,7 @@ namespace gl
 		glm::vec2(0.0f, 1.0f),
 		glm::vec2(0.0f, 0.0f),
 		glm::vec2(0.0f, 0.0f),
-		glm::vec2(1.0f, 0.0f),
+		glm::vec2(1.0f, 0.0f), 
 		glm::vec2(1.0f, 1.0f)
 	};
 
@@ -767,7 +775,7 @@ namespace gl
 		else if (msh_.size() > 0)
 		{
 			mesh = get_model_mesh(msh_);
-		}
+		} 
 		else
 		{
 			std::cerr << "ERROR - empty string" << std::endl;
@@ -795,8 +803,8 @@ namespace gl
 		if (mesh->tex_coords.size() != 0)
 		{
 			add_buffer(*om, mesh->tex_coords, BUFFER_INDEXES::TEXTURE_COORDS_0);
-		}
-
+		} 
+		 
 
 		if (mesh->indices.size() != 0)
 		{
@@ -811,26 +819,26 @@ namespace gl
 		return std::shared_ptr<mesh_geom>(mesh);
 	}
 
-	void bind_light(GLuint programID, light_data light)
+	void bind_light(GLuint programID, std::shared_ptr<light_data> &light)
 	{
 		// Check for ambient intensity  
 		auto idx = glGetUniformLocation(programID, "dir_light.ambient_intensity");
 		         
         if (idx != -1)
-            glUniform3fv(idx, 1, glm::value_ptr(glm::vec3(light._ambient)));
+            glUniform3fv(idx, 1, glm::value_ptr(glm::vec3(light->_ambient)));
 		  
 		if (CHECK_GL_ERROR) 
 		{
 			std::cerr << "ERROR - binding directional light to renderer" << std::endl;
 			std::cerr << "OpenGL could not set the uniforms" << std::endl;
-			// Throw exception
+			// Throw exception  
 			throw std::runtime_error("Error using directional light with renderer");
 		} 
-
+		  
 		// Check for light colour
 		idx = glGetUniformLocation(programID, "dir_light.light_colour");
 		if (idx != -1)
-			glUniform3fv(idx, 1, glm::value_ptr(light._colour));
+			glUniform3fv(idx, 1, glm::value_ptr(light->_colour));
 
 		if (CHECK_GL_ERROR)
 		{
@@ -838,12 +846,25 @@ namespace gl
 			std::cerr << "OpenGL could not set the uniforms" << std::endl;
 			// Throw exception
 			throw std::runtime_error("Error using directional light with renderer");
-		}
+		} 
 
 		// Check for light direction
 		idx = glGetUniformLocation(programID, "dir_light.light_dir");
 		if (idx != -1)
-			glUniform3fv(idx, 1, glm::value_ptr(light._direction));
+			glUniform3fv(idx, 1, glm::value_ptr(light->_direction));
+		// Check for error
+		if (CHECK_GL_ERROR)
+		{
+			std::cerr << "ERROR - binding directional light to renderer" << std::endl;
+			std::cerr << "OpenGL could not set the uniforms" << std::endl;
+			// Throw exception
+			throw std::runtime_error("Error using directional light with renderer");
+		} 
+
+		// Check for light position
+		idx = glGetUniformLocation(programID, "dir_light.position");
+		if (idx != -1)
+			glUniform3fv(idx, 1, glm::value_ptr(light->_position));
 		// Check for error
 		if (CHECK_GL_ERROR)
 		{
@@ -958,12 +979,16 @@ namespace gl
 		if (rd->textureObj)
 		{
 			glBindTexture(GL_TEXTURE_2D, rd->textureObj->_id);
-			//bind_texture(*rd->texture, rd->texture->_id);
 		}
 		
+		//bind eye pos
+		auto loc = glGetUniformLocation(programID, "eye_pos");
+		if (loc != -1)
+			glUniform3fv(loc, 1, glm::value_ptr(rd->cam_pos));
+
 		// bind the matrices
 
-		auto loc = glGetUniformLocation(programID, "MVP");
+		loc = glGetUniformLocation(programID, "MVP");
 		if (loc != -1)
 			glUniformMatrix4fv(loc, 1, GL_FALSE, value_ptr(rd->MVP));
 

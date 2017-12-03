@@ -23,7 +23,7 @@ private:
 	std::shared_ptr<gl::light_data> _light;
 
 	glm::vec3 _position;
-	glm::vec3 _direction;
+	glm::vec3 _direction = glm::vec3(0.0f, 1.0f, 0.0f);
 
 public:
 	light_component(std::shared_ptr<entity> &e, std::shared_ptr<gl::light_data> &data);

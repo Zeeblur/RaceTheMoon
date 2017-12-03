@@ -34,6 +34,8 @@ std::shared_ptr<render_component> renderer::build_component(std::shared_ptr<enti
     _rd->matData = gl::material_data();
     _rd->matData._diffuse = colour;
 	
+	_rd->N = mat3(1.0f);
+
     _rd->shader = shader;
     _rd->mesh = gl::load_mesh(shape);
 	
@@ -74,7 +76,7 @@ std::shared_ptr<light_component> renderer::build_light(std::shared_ptr<entity> &
 {
 	auto _ld = std::make_shared<gl::light_data>();
 
-	programIDs[phong]->lights.push_back(*_ld);
+	programIDs[phong]->lights.push_back(_ld);
 
 	return std::make_shared<light_component>(e, _ld);
 }

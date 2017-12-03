@@ -60,6 +60,7 @@ void camera_system::update(float delta_time)
 		{
 		case camera_type::CHASE:
 			player_cam_MV = c->model_view;
+			player_cam_pos = c->cam_pos;
 			break;
 		case camera_type::ORTHO:
 			break;

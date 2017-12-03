@@ -36,7 +36,7 @@ namespace gl
 		// The colour of the light
 		glm::vec4 _colour = glm::vec4(0.9f, 0.9f, 0.9f, 1.0f);
 		// The direction the light is facing
-		glm::vec3 _direction = glm::vec3(1.0f, 0.0f, 0.0f);
+		glm::vec3 _direction = glm::vec3(0.0f, 1.0f, 0.0f);
 
 		// pos
 		glm::vec3 _position = glm::vec3(0.0, 0.0, 0.0f);
@@ -62,7 +62,7 @@ namespace gl
 		texture(std::string filename);
 		 
 	};
-
+	 
     enum BUFFER_INDEXES
     {
         // The position data
@@ -108,13 +108,14 @@ namespace gl
 		void *GpuData;
 		GLuint program;
 
-		std::vector<light_data> lights;
+		std::vector<std::shared_ptr<light_data>> lights;
 	};
 
 	struct render_data
 	{
 		bool visible;// = true;
 		std::string shader;// = "Phong";
+		glm::vec3 cam_pos;
 		glm::mat4 M;
 		glm::mat3 N;
 		glm::mat4 MVP;

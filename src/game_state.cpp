@@ -8,8 +8,8 @@ void game_state::initialise()
 {
 
 	// can add a transformation in using struct now
-	auto light = entity_manager::get()->create_entity("Light", this->type);
-	light->add_component("light", renderer::get()->build_light(light));
+//	auto light = entity_manager::get()->create_entity("Light", this->type);
+
 
 	// Adding plane
 	auto p = entity_manager::get()->create_entity("Plane", this->type);
@@ -119,6 +119,8 @@ void game_state::initialise()
     m->add_component("physics", physics_system::get()->build_component(m));
     m->add_component("ai", ai_system::get()->build_component(m, 6, glm::vec3(0.0f, 0.0f, 0.0f)));
     m->add_component("render", renderer::get()->build_component(m, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), "res/textures/moon.png", "sphere", "Gouraud", phong));
+	m->add_component("light", renderer::get()->build_light(m));
+
 
     // Adding sun sphere
     transform_data sunTrans;
