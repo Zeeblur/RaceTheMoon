@@ -1,9 +1,10 @@
 #pragma once
 #include "state_machine.h"
-
 // Menu state
 class menu_state : public engine_state
 {
+private:
+
 public:
 	void initialise();
 	

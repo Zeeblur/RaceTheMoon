@@ -5,15 +5,29 @@
 
 void pause_state::initialise()
 {
-	// TODO: Fix button click event problem when changing window size.
-
 	int x_size = 0;
 	int y_size = 0;
 
 	glfwGetWindowSize(glfw::window, &x_size, &y_size);
 
-	int x_center = x_size / 2;
-	int y_center = y_size / 2;
+	// Pause text transform
+	transform_data paused_transform;
+	paused_transform.x = x_size / 2 - 175;
+	paused_transform.y = y_size - 250;
+	// Pause
+	auto paused_text = entity_manager::get()->create_entity("pause", state_type::PAUSE, paused_transform);
+	paused_text->add_component("render", renderer::get()->build_component(paused_text, glm::vec4(0.0f, 0.0f,  0.0f, 1.0f), "res/textures/play_button.png", "rectangle", "text", text));
+	paused_text->add_component("text", text_system::get()->build_component(paused_text, "PAUSED"));
+
+	transform_data back_transform;
+	back_transform.scale = glm::vec3(x_size / 1.25, y_size / 1.25, 1.0f);
+	back_transform.z = -1;
+	auto background = entity_manager::get()->create_entity("background", state_type::PAUSE, back_transform);
+
+	background->add_component("render", renderer::get()->build_component(background, glm::vec4(0.0f, 0.0f,  0.0f, 1.0f), "res/textures/race_the_moon.png", "rectangle", "Gouraud", simple_texture));
+	background->add_component("camera", camera_system::get()->build_component(background, camera_type::ORTHO));
+
+
 
 	int x_button_size = 100;
 	int y_button_size = 50;
@@ -31,14 +45,15 @@ void pause_state::initialise()
 
 	// Continue button
 	auto button_continue = entity_manager::get()->create_entity("buttonContinue", state_type::PAUSE, continue_button_transform);
-	button_continue->add_component("render", renderer::get()->build_component(button_continue, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/continue_button.png", "rectangle", "Gouraud", simple_texture));
-	button_continue->add_component("clickable", clickable_system::get()->build_component(button_continue, glm::vec2(x_center - x_button_size, x_center + x_button_size), glm::vec2(y_center - y_button_size, y_center + y_button_size)));
+
+	button_continue->add_component("render", renderer::get()->build_component(button_continue, glm::vec4(0.0f, 0.0f,  0.0f, 1.0f), "res/textures/continue_button.png", "rectangle", "Gouraud", simple_texture));
+	button_continue->add_component("clickable", clickable_system::get()->build_component(button_continue, glm::dvec2(0, 0), glm::dvec2(x_button_size, y_button_size)));
 	button_continue->add_component("camera", camera_system::get()->build_component(button_continue, camera_type::ORTHO));
 
 	// Menu button
 	auto button_menu = entity_manager::get()->create_entity("buttonMenu", state_type::PAUSE, menu_button_transform);
-	button_menu->add_component("render", renderer::get()->build_component(button_menu, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/menu_button.png", "rectangle", "Gouraud", simple_texture));
-	button_menu->add_component("clickable", clickable_system::get()->build_component(button_menu, glm::vec2(x_center - x_button_size, x_center + x_button_size), glm::vec2(button_offset + y_center - y_button_size, button_offset + y_center + y_button_size)));
+	button_menu->add_component("render", renderer::get()->build_component(button_menu, glm::vec4(0.0f, 0.0f,  0.0f, 1.0f), "res/textures/menu_button.png", "rectangle", "Gouraud", simple_texture));
+	button_menu->add_component("clickable", clickable_system::get()->build_component(button_menu, glm::dvec2(0, 0 + button_offset), glm::dvec2(x_button_size, y_button_size)));
 	button_menu->add_component("camera", camera_system::get()->build_component(button_menu, camera_type::ORTHO));
 }
 
