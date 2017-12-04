@@ -5,6 +5,7 @@
 #pragma once
 #include <memory>
 #include "state_machine.h"
+#include <functional>
 
 class level_gen
 {
@@ -18,5 +19,11 @@ public:
         return instance;
     }
 
-    void addWaterfallPuzzle(glm::vec3 p);
+    void static addWaterfallPuzzle(glm::vec3 p);
+    void static addCrusher(glm::vec3 p);
+	void static addSnakeBalls(glm::vec3 p);
+
+    std::map<std::string, std::function<void(glm::vec3 p)>> level_gen_functions;
+    
+    void addFunc();
 };

@@ -52,6 +52,9 @@ void main()
     vec4 diffuse = mat.diffuse_reflection * vec4(dir_light.light_colour, 1.0) * k;
 
     // calculate view direction & half vector
+	float lengthy = length(eye_pos - vertex_pos);
+	lengthy = 1/lengthy;
+	lengthy = max(0.0, min(1.0, lengthy*200));
     vec3 view_dir = normalize(eye_pos - vertex_pos);
     vec3 halfV = normalize(view_dir + dir_light.light_dir);
 
@@ -64,11 +67,11 @@ void main()
 
 
     // sample texture
-    vec4 tex_colour = texture(tex, tex_coord);
+    vec4 tex_colour = texture2D(tex, tex_coord);
 
     vec4 primary = mat.emissive + ambient + diffuse;
 
     out_colour = primary*tex_colour + specular;
     //out_colour = vec4(k,k,k, 1.0);
-	out_colour.a = 1.0;
+	out_colour.a = lengthy;
 }

@@ -475,15 +475,21 @@ namespace gl
 		std::vector<glm::vec3> positions
 		{
 			// 1
-			glm::vec3(1000.0f, 0.0f, -1000.0f),
-			glm::vec3(-1000.0f,  0.0f, -1000.0f),
+			glm::vec3(1000.0f, 0.0f, -5000.0f),
+			glm::vec3(-1000.0f,  0.0f, -5000.0f),
 			glm::vec3(-1000.0f,  0.0f, 100.0f),
 			// 2
 			glm::vec3(-1000.0f, 0.0f, 100.0f),
 			glm::vec3(1000.0f, 0.0f, 100.0f),
-			glm::vec3(1000.0f,0.0f, -1000.0f)
+			glm::vec3(1000.0f,0.0f, -5000.0f)
 
         };
+
+		std::vector<glm::vec3> normals;
+		for (int i = 0; i < positions.size(); ++i)
+		{
+			normals.push_back(glm::vec3(0.0f, 1.0f, 0.0f));
+		}
 
         std::vector<glm::vec2> tex_coords
         {
@@ -509,6 +515,7 @@ namespace gl
         mesh->positions = positions;
         mesh->tex_coords = tex_coords;
         mesh->colours = colours;
+		mesh->normals = normals;
 
 		return mesh;
 	}

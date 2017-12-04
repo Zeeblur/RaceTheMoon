@@ -11,6 +11,7 @@ enum effectType
 {
 	simple,
 	simple_texture,
+	phongDistance,
 	phong,
 	sky,
 	text

@@ -58,6 +58,7 @@ namespace gl
 		GLuint _height;
 		GLuint _width;
 
+		std::string _filename;
 
 		texture(std::string filename);
 		 
