@@ -55,7 +55,7 @@ void menu_state::initialise()
 
 	// Settings button
 	auto button_settings = entity_manager::get()->create_entity("buttonSettings", state_type::MENU, settings_button_transform);
-	button_settings->add_component("render", renderer::get()->build_component(button_settings, glm::vec4(0.0f, 0.0f,  0.0f, 1.0f), "res/textures/play_button.png", "rectangle", "Gouraud", simple_texture));
+	button_settings->add_component("render", renderer::get()->build_component(button_settings, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/settings_button.png", "rectangle", "Gouraud", simple_texture));
 	button_settings->add_component("clickable", clickable_system::get()->build_component(button_settings, glm::dvec2(0, 0), glm::dvec2(x_button_size, y_button_size)));
 	button_settings->add_component("camera", camera_system::get()->build_component(button_settings, camera_type::ORTHO));
 

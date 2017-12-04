@@ -37,10 +37,12 @@ bool clickable_system::load_content()
 
 void clickable_system::update(float delta_time)
 {
+	// cooldown for buttons used to avoid accidentally clicking overlayed buttons when switching states
+	static float cooldown;
+	cooldown += delta_time;
     for (auto &d : _data)
     {
-		// cooldown for buttons used to avoid accidentally clicking overlayed buttons when switching states
-		static float cooldown;
+
         // If active check for click
         if (d.active)
         {
@@ -65,7 +67,7 @@ void clickable_system::update(float delta_time)
 			int y_min = y_center + d.center.y - d.scale.y;
 			int y_max = y_center + d.center.y + d.scale.y;
 			
-			cooldown += delta_time;
+			
 			// Check if click in bounds and cooldown has passed
             if (cooldown > 0.5f && state == GLFW_PRESS && x_pos >= x_min && x_pos <= x_max && y_pos >= y_min && y_pos <= y_max
 				&& engine_state_machine::get()->get_current_state_type() == entity_manager::get()->get_entity(d.parent_name)->state)
