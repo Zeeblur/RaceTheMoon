@@ -23,8 +23,11 @@ private:
 
     Command* fakeMove_;
 
-
 public:
+	int glfw_button_up;
+	int glfw_button_down;
+	int glfw_button_left;
+	int glfw_button_right;
 
     inline static std::shared_ptr<input_handler> get()
     {
@@ -35,6 +38,8 @@ public:
     std::shared_ptr<input_component> build_component(std::shared_ptr<entity> e);
 
     std::vector<Command*> handle_input();
+
+	void load_input_settings();
 
     bool initialise();
     bool load_content();

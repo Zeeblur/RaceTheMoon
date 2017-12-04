@@ -5,6 +5,7 @@
 #include "text2D.h"
 #include <sstream>
 #include <iomanip>
+#include <fstream>
 void settings_state::initialise()
 {
 	initText2D("res/textures/myriad.png");
@@ -144,6 +145,18 @@ void settings_state::initialise()
 	window_mode_button_left->add_component("render", renderer::get()->build_component(window_mode_button_left, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/arrow_left_transparent.png", "rectangle", "Gouraud", simple_texture));
 	window_mode_button_left->add_component("camera", camera_system::get()->build_component(window_mode_button_left, camera_type::ORTHO));
 
+	// key move left trans
+	transform_data key_move_left_transform;
+	key_move_left_transform.scale = glm::vec3(20, 20, 1.0f);
+	key_move_left_transform.x = -200;
+	key_move_left_transform.y = -120;
+
+	// Left arrow button for window mode
+	auto key_move_left = entity_manager::get()->create_entity("keyMoveLeft", state_type::SETTINGS, key_move_left_transform);
+	key_move_left->add_component("clickable", clickable_system::get()->build_component(key_move_left, glm::dvec2(key_move_left_transform.x, -key_move_left_transform.y), glm::dvec2(20, 20)));
+	key_move_left->add_component("render", renderer::get()->build_component(key_move_left, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/letters/A.png", "rectangle", "Gouraud", simple_texture));
+	key_move_left->add_component("camera", camera_system::get()->build_component(key_move_left, camera_type::ORTHO));
+
 }
 
 void settings_state::on_reset()
@@ -279,6 +292,21 @@ void settings_state::on_update(float delta_time)
 		}
 		determine_window_mode(current_window_mode);
 		cs->clear_clicked_component_name();
+	}
+	else if (cs->get_clicked_component_name() == "keyMoveLeft")
+	{
+		
+		std::ofstream user_pref_file;
+		user_pref_file.open("res/buttons.txt", std::ofstream::out | std::ofstream::trunc);
+		if (user_pref_file.is_open())
+		{
+			user_pref_file << "Left: " << GLFW_KEY_LEFT << "\n";
+			user_pref_file << "Right: " << input_handler::get()->glfw_button_right << "\n";
+			user_pref_file << "Front: " << input_handler::get()->glfw_button_up << "\n";
+			user_pref_file << "Back: " << input_handler::get()->glfw_button_down << "\n";
+		}
+		user_pref_file.close();
+		input_handler::get()->load_input_settings();
 	}
 }
 
