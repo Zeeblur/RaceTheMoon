@@ -44,6 +44,7 @@ int main()
     eng->add_subsystem("ai_system", ai_system::get());
 	eng->add_subsystem("audio_system", audio_system::get());
 	eng->add_subsystem("text_system", text_system::get());
+	eng->add_subsystem("level_gen", level_gen::get());
     engine_state_machine::get()->add_state("menu_state", std::make_shared<menu_state>(), state_type::MENU);
     engine_state_machine::get()->add_state("game_state", std::make_shared<game_state>(), state_type::GAME);
     engine_state_machine::get()->add_state("pause_state", std::make_shared<pause_state>(), state_type::PAUSE);

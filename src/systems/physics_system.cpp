@@ -150,10 +150,6 @@ void moveTask(void* arg1, void* arg2)
             if (d->currentVelocity.z > 0 && d->currentVelocity.z < ps->deceleration.z) d->currentVelocity.z = 0;
             if (d->currentVelocity.z < 0 && d->currentVelocity.z > -ps->deceleration.z) d->currentVelocity.z = 0;
         }
-        else
-        {
-            std::cout << d->currentVelocity.y << std::endl;
-        }
 
         // reset move request
         d->moveRequest = false;

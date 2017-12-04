@@ -63,6 +63,10 @@ std::shared_ptr<render_component> renderer::build_component(std::shared_ptr<enti
 		
 		_rd->textureObj = textureList[texture_path];
 	}
+	else
+	{
+		_rd->textureObj = nullptr;
+	}
 
 	return std::make_shared<render_component>(e, _rd);
 }
