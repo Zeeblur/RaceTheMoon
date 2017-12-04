@@ -86,6 +86,7 @@ void game_state::initialise()
 
 void game_state::on_reset()
 {
+
 	auto bat = entity_manager::get()->get_entity("Bat");
 	bat->get_component("physics")->initialise();
 

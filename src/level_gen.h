@@ -14,7 +14,7 @@ private:
 
 	transform_data leftWall, rightWall;
 
-	std::map<int, std::vector<std::shared_ptr<entity>>> puzzleBlocks;
+	std::map<int, std::vector<std::weak_ptr<entity>>> puzzleBlocks;
 
 	int blocksize = 400;
 	int currentBlock = -400;

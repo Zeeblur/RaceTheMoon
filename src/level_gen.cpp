@@ -33,6 +33,7 @@ bool level_gen::load_content() { return true; }
 
 void level_gen::update(float delta_time)
 {
+	// remove block that has passed
 	auto pos = entity_manager::get()->get_entity("Bat")->get_trans().z;
 
 	if (pos < currentBlock)
@@ -42,14 +43,17 @@ void level_gen::update(float delta_time)
 		// remove all components from entities
 		for (auto &e : puzzleBlocks[currentBlock])
 		{
-			e->unload_content();
-			e->shutdown();
+			entity_manager::get()->delete_entity(e._Get()->get_name());
 		}
 
 		// remove entities
-		puzzleBlocks[currentBlock].erase(puzzleBlocks[currentBlock].begin(), puzzleBlocks[currentBlock].end());
 		currentBlock -= blocksize;
+
+		// add new block
+		int rng = rand() % level_gen_functions.size();
+		level_gen_functions[rng](currentBlock - 1200);
 	}
+
 }
 
 void level_gen::render() {}
@@ -72,7 +76,7 @@ void level_gen::addWaterfallPuzzle(int blockIdx)
     wL->add_component("render", renderer::get()->build_component(wL, glm::vec4(1.0f), "res/textures/concrete.jpg", "cube", "Gouraud", phong));
     wL->add_component("collider", physics_system::get()->build_collider_component(wL));
 
-	levelGenInstance->puzzleBlocks[blockIdx].push_back(std::ref(wL));
+	levelGenInstance->puzzleBlocks[blockIdx].push_back(wL);
 
     // Waterfall piece 1
     transform_data waterfall1Trans;
@@ -86,7 +90,7 @@ void level_gen::addWaterfallPuzzle(int blockIdx)
     w1->add_component("render", renderer::get()->build_component(w1, glm::vec4(1.0f), "res/textures/concrete.jpg", "cube", "Gouraud", phong));
     w1->add_component("collider", physics_system::get()->build_collider_component(w1));
 
-	levelGenInstance->puzzleBlocks[blockIdx].push_back(std::ref(w1));
+	levelGenInstance->puzzleBlocks[blockIdx].push_back((w1));
 
     // Waterfall piece 2
     transform_data waterfall2Trans;
@@ -100,7 +104,7 @@ void level_gen::addWaterfallPuzzle(int blockIdx)
     w2->add_component("render", renderer::get()->build_component(w2, glm::vec4(1.0f), "res/textures/concrete.jpg", "cube", "Gouraud", phong));
     w2->add_component("collider", physics_system::get()->build_collider_component(w2));
 
-	levelGenInstance->puzzleBlocks[blockIdx].push_back(std::ref(w2));
+	levelGenInstance->puzzleBlocks[blockIdx].push_back((w2));
 
     // Waterfall piece 3
     transform_data waterfall3Trans;
@@ -114,7 +118,7 @@ void level_gen::addWaterfallPuzzle(int blockIdx)
     w3->add_component("render", renderer::get()->build_component(w3, glm::vec4(1.0f), "res/textures/concrete.jpg", "cube", "Gouraud", phong));
     w3->add_component("collider", physics_system::get()->build_collider_component(w3));
 
-	levelGenInstance->puzzleBlocks[blockIdx].push_back(std::ref(w3));
+	levelGenInstance->puzzleBlocks[blockIdx].push_back((w3));
 
     // Waterfall piece 4
     transform_data waterfall4Trans;
@@ -128,7 +132,7 @@ void level_gen::addWaterfallPuzzle(int blockIdx)
     w4->add_component("render", renderer::get()->build_component(w4, glm::vec4(1.0f), "res/textures/concrete.jpg", "cube", "Gouraud", phong));
     w4->add_component("collider", physics_system::get()->build_collider_component(w4));
 
-	levelGenInstance->puzzleBlocks[blockIdx].push_back(std::ref(w4));
+	levelGenInstance->puzzleBlocks[blockIdx].push_back((w4));
     
     // Waterfall piece 5
     transform_data waterfall5Trans;
@@ -142,7 +146,7 @@ void level_gen::addWaterfallPuzzle(int blockIdx)
     w5->add_component("render", renderer::get()->build_component(w5, glm::vec4(1.0f), "res/textures/concrete.jpg", "cube", "Gouraud", phong));
     w5->add_component("collider", physics_system::get()->build_collider_component(w5));
 
-	levelGenInstance->puzzleBlocks[blockIdx].push_back(std::ref(w5));
+	levelGenInstance->puzzleBlocks[blockIdx].push_back((w5));
 
     // Waterfall piece 6
     transform_data waterfall6Trans;
@@ -156,7 +160,7 @@ void level_gen::addWaterfallPuzzle(int blockIdx)
     w6->add_component("render", renderer::get()->build_component(w6, glm::vec4(1.0f), "res/textures/concrete.jpg", "cube", "Gouraud", phong));
     w6->add_component("collider", physics_system::get()->build_collider_component(w6));
 
-	levelGenInstance->puzzleBlocks[blockIdx].push_back(std::ref(w6));
+	levelGenInstance->puzzleBlocks[blockIdx].push_back((w6));
 
     // Waterfall piece 7
     transform_data waterfall7Trans;
@@ -170,7 +174,7 @@ void level_gen::addWaterfallPuzzle(int blockIdx)
     w7->add_component("render", renderer::get()->build_component(w7, glm::vec4(1.0f), "res/textures/concrete.jpg", "cube", "Gouraud", phong));
     w7->add_component("collider", physics_system::get()->build_collider_component(w7));
 
-	levelGenInstance->puzzleBlocks[blockIdx].push_back(std::ref(w7));
+	levelGenInstance->puzzleBlocks[blockIdx].push_back((w7));
 
     // Waterfall piece 8
     transform_data waterfall8Trans;
@@ -184,7 +188,7 @@ void level_gen::addWaterfallPuzzle(int blockIdx)
     w8->add_component("render", renderer::get()->build_component(w8, glm::vec4(1.0f), "res/textures/concrete.jpg", "cube", "Gouraud", phong));
     w8->add_component("collider", physics_system::get()->build_collider_component(w8));
 
-	levelGenInstance->puzzleBlocks[blockIdx].push_back(std::ref(w8));
+	levelGenInstance->puzzleBlocks[blockIdx].push_back((w8));
 
     //Right wall piece
     transform_data waterfallRightWallTrans;
@@ -197,7 +201,7 @@ void level_gen::addWaterfallPuzzle(int blockIdx)
     wR->add_component("render", renderer::get()->build_component(wR, glm::vec4(1.0f), "res/textures/concrete.jpg", "cube", "Gouraud", phong));
     wR->add_component("collider", physics_system::get()->build_collider_component(wR));
 
-	levelGenInstance->puzzleBlocks[blockIdx].push_back(std::ref(wR));
+	levelGenInstance->puzzleBlocks[blockIdx].push_back((wR));
 }
 
 void level_gen::addCrusher(int blockIdx)
@@ -215,7 +219,7 @@ void level_gen::addCrusher(int blockIdx)
     cL->add_component("render", renderer::get()->build_component(cL, glm::vec4(1.0f), "res/textures/concrete.jpg", "cube", "Gouraud", phong));
     cL->add_component("collider", physics_system::get()->build_collider_component(cL));
 
-	levelGenInstance->puzzleBlocks[blockIdx].push_back(std::ref(cL));
+	levelGenInstance->puzzleBlocks[blockIdx].push_back((cL));
 
     // Adding crusher left 1
     transform_data crusherL1Ttrans;
@@ -229,7 +233,7 @@ void level_gen::addCrusher(int blockIdx)
     cL1->add_component("render", renderer::get()->build_component(cL1, glm::vec4(1.0f), "res/textures/concrete.jpg", "cube", "Gouraud", phong));
     cL1->add_component("collider", physics_system::get()->build_collider_component(cL1));
 
-	levelGenInstance->puzzleBlocks[blockIdx].push_back(std::ref(cL1));
+	levelGenInstance->puzzleBlocks[blockIdx].push_back((cL1));
 
     // Adding crusher right 1
     transform_data crusherR1Ttrans;
@@ -243,7 +247,7 @@ void level_gen::addCrusher(int blockIdx)
     cR1->add_component("render", renderer::get()->build_component(cR1, glm::vec4(1.0f), "res/textures/concrete.jpg", "cube", "Gouraud", phong));
     cR1->add_component("collider", physics_system::get()->build_collider_component(cR1));
 
-	levelGenInstance->puzzleBlocks[blockIdx].push_back(std::ref(cR1));
+	levelGenInstance->puzzleBlocks[blockIdx].push_back((cR1));
 
     // Adding crusher left 2
     transform_data crusherL2Ttrans;
@@ -257,7 +261,7 @@ void level_gen::addCrusher(int blockIdx)
     cL2->add_component("render", renderer::get()->build_component(cL2, glm::vec4(1.0f), "res/textures/concrete.jpg", "cube", "Gouraud", phong));
     cL2->add_component("collider", physics_system::get()->build_collider_component(cL2));
 
-	levelGenInstance->puzzleBlocks[blockIdx].push_back(std::ref(cL2));
+	levelGenInstance->puzzleBlocks[blockIdx].push_back((cL2));
 
     // Adding crusher right 2
     transform_data crusherR2Ttrans;
@@ -271,7 +275,7 @@ void level_gen::addCrusher(int blockIdx)
     cR2->add_component("render", renderer::get()->build_component(cR2, glm::vec4(1.0f), "res/textures/concrete.jpg", "cube", "Gouraud", phong));
     cR2->add_component("collider", physics_system::get()->build_collider_component(cR2));
 
-	levelGenInstance->puzzleBlocks[blockIdx].push_back(std::ref(cR2));
+	levelGenInstance->puzzleBlocks[blockIdx].push_back((cR2));
 
 	// Adding crusher left 3
 	transform_data crusherL3Trans;
@@ -285,7 +289,7 @@ void level_gen::addCrusher(int blockIdx)
 	cL3->add_component("render", renderer::get()->build_component(cL3, glm::vec4(1.0f), "res/textures/concrete.jpg", "cube", "Gouraud", phong));
 	cL3->add_component("collider", physics_system::get()->build_collider_component(cL3));
 
-	levelGenInstance->puzzleBlocks[blockIdx].push_back(std::ref(cL3));
+	levelGenInstance->puzzleBlocks[blockIdx].push_back((cL3));
 
 	// Adding crusher right 3
 	transform_data crushR3;
@@ -299,35 +303,35 @@ void level_gen::addCrusher(int blockIdx)
 	cR3->add_component("render", renderer::get()->build_component(cR3, glm::vec4(1.0f), "res/textures/concrete.jpg", "cube", "Gouraud", phong));
 	cR3->add_component("collider", physics_system::get()->build_collider_component(cR3));
 
-	levelGenInstance->puzzleBlocks[blockIdx].push_back(std::ref(cR3));
+	levelGenInstance->puzzleBlocks[blockIdx].push_back((cR3));
 
 	// Adding crusher left 4
 	transform_data crusherL4Trans;
 	crusherL4Trans.scale = glm::vec3(10.0f, 20.0f, 60.0f);
 	crusherL4Trans.x =  -60.0f;
 	crusherL4Trans.y =  5.0f;
-	crusherL4Trans.z = blockIdx + 300.0f;
+	crusherL4Trans.z = blockIdx + 250.0f;
 	auto cL4 = entity_manager::get()->create_entity("CrusherL4" + std::to_string(blockIdx), state_type::GAME, crusherL4Trans);
 	cL4->add_component("physics", physics_system::get()->build_component(cL4));
 	cL4->add_component("ai", ai_system::get()->build_component(cL4, RIGHTTHENLEFT,  -60.0f,  -40.0f));
 	cL4->add_component("render", renderer::get()->build_component(cL4, glm::vec4(1.0f), "res/textures/concrete.jpg", "cube", "Gouraud", phong));
 	cL4->add_component("collider", physics_system::get()->build_collider_component(cL4));
 
-	levelGenInstance->puzzleBlocks[blockIdx].push_back(std::ref(cL4));
+	levelGenInstance->puzzleBlocks[blockIdx].push_back((cL4));
 
 	// Adding crusher right 4
 	transform_data crushR4;
 	crushR4.scale = glm::vec3(10.0f, 20.0f, 60.0f);
 	crushR4.x =  0.0f;
 	crushR4.y =  5.0f;
-	crushR4.z = blockIdx + 300.0f;
+	crushR4.z = blockIdx + 250.0f;
 	auto cR4 = entity_manager::get()->create_entity("CrusherR4" + std::to_string(blockIdx), state_type::GAME, crushR4);
 	cR4->add_component("physics", physics_system::get()->build_component(cR4));
 	cR4->add_component("ai", ai_system::get()->build_component(cR4, LEFTTHENRIGHT,  -20.0f,  0.0f));
 	cR4->add_component("render", renderer::get()->build_component(cR4, glm::vec4(1.0f), "res/textures/concrete.jpg", "cube", "Gouraud", phong));
 	cR4->add_component("collider", physics_system::get()->build_collider_component(cR4));
 
-	levelGenInstance->puzzleBlocks[blockIdx].push_back(std::ref(cR4));
+	levelGenInstance->puzzleBlocks[blockIdx].push_back((cR4));
 
     //Right wall piece
     transform_data crusherRightWallTrans;
@@ -340,7 +344,7 @@ void level_gen::addCrusher(int blockIdx)
     cR->add_component("render", renderer::get()->build_component(cR, glm::vec4(1.0f), "res/textures/concrete.jpg", "cube", "Gouraud", phong));
     cR->add_component("collider", physics_system::get()->build_collider_component(cR));
 
-	levelGenInstance->puzzleBlocks[blockIdx].push_back(std::ref(cR));
+	levelGenInstance->puzzleBlocks[blockIdx].push_back((cR));
 }
 
 void level_gen::addSnakeBalls(int blockIdx)
@@ -358,7 +362,7 @@ void level_gen::addSnakeBalls(int blockIdx)
 	sL->add_component("render", renderer::get()->build_component(sL, glm::vec4(1.0f), "res/textures/concrete.jpg", "cube", "Gouraud", phong));
 	sL->add_component("collider", physics_system::get()->build_collider_component(sL));
 
-	levelGenInstance->puzzleBlocks[blockIdx].push_back(std::ref(sL));
+	levelGenInstance->puzzleBlocks[blockIdx].push_back((sL));
 
 	// Ball 1
 	transform_data snakeBall1;
@@ -372,7 +376,7 @@ void level_gen::addSnakeBalls(int blockIdx)
 	sB1->add_component("render", renderer::get()->build_component(sB1, glm::vec4(1.0f), "res/textures/concrete.jpg", "sphere", "Gouraud", phong));
 	sB1->add_component("collider", physics_system::get()->build_collider_component(sB1));
 
-	levelGenInstance->puzzleBlocks[blockIdx].push_back(std::ref(sB1));
+	levelGenInstance->puzzleBlocks[blockIdx].push_back((sB1));
 
 	//Ball 2
 	transform_data snakeBall2;
@@ -386,7 +390,7 @@ void level_gen::addSnakeBalls(int blockIdx)
 	sB2->add_component("render", renderer::get()->build_component(sB2, glm::vec4(1.0f), "res/textures/concrete.jpg", "sphere", "Gouraud", phong));
 	sB2->add_component("collider", physics_system::get()->build_collider_component(sB2));
 
-	levelGenInstance->puzzleBlocks[blockIdx].push_back(std::ref(sB2));
+	levelGenInstance->puzzleBlocks[blockIdx].push_back((sB2));
 
 	//Ball 3
 	transform_data snakeBall3;
@@ -400,7 +404,7 @@ void level_gen::addSnakeBalls(int blockIdx)
 	sB3->add_component("render", renderer::get()->build_component(sB3, glm::vec4(1.0f), "res/textures/concrete.jpg", "sphere", "Gouraud", phong));
 	sB3->add_component("collider", physics_system::get()->build_collider_component(sB3));
 
-	levelGenInstance->puzzleBlocks[blockIdx].push_back(std::ref(sB3));
+	levelGenInstance->puzzleBlocks[blockIdx].push_back((sB3));
 
 	//Ball 4
 	transform_data snakeBall4;
@@ -414,7 +418,7 @@ void level_gen::addSnakeBalls(int blockIdx)
 	sB4->add_component("render", renderer::get()->build_component(sB4, glm::vec4(1.0f), "res/textures/concrete.jpg", "sphere", "Gouraud", phong));
 	sB4->add_component("collider", physics_system::get()->build_collider_component(sB4));
 
-	levelGenInstance->puzzleBlocks[blockIdx].push_back(std::ref(sB4));
+	levelGenInstance->puzzleBlocks[blockIdx].push_back((sB4));
 
 	//Ball 5
 	transform_data snakeBall5;
@@ -429,7 +433,7 @@ void level_gen::addSnakeBalls(int blockIdx)
 	sB5->add_component("render", renderer::get()->build_component(sB5, glm::vec4(1.0f), "res/textures/concrete.jpg", "sphere", "Gouraud", phong));
 	sB5->add_component("collider", physics_system::get()->build_collider_component(sB5));
 
-	levelGenInstance->puzzleBlocks[blockIdx].push_back(std::ref(sB5));
+	levelGenInstance->puzzleBlocks[blockIdx].push_back((sB5));
 
 	//Ball 6
 	transform_data snakeBall6;
@@ -444,7 +448,7 @@ void level_gen::addSnakeBalls(int blockIdx)
 	sB6->add_component("render", renderer::get()->build_component(sB6, glm::vec4(1.0f), "res/textures/concrete.jpg", "sphere", "Gouraud", phong));
 	sB6->add_component("collider", physics_system::get()->build_collider_component(sB6));
 
-	levelGenInstance->puzzleBlocks[blockIdx].push_back(std::ref(sB6));
+	levelGenInstance->puzzleBlocks[blockIdx].push_back((sB6));
 
 	//Ball 7
 	transform_data snakeBall7;
@@ -459,7 +463,7 @@ void level_gen::addSnakeBalls(int blockIdx)
 	sB7->add_component("render", renderer::get()->build_component(sB7, glm::vec4(1.0f), "res/textures/concrete.jpg", "sphere", "Gouraud", phong));
 	sB7->add_component("collider", physics_system::get()->build_collider_component(sB7));
 
-	levelGenInstance->puzzleBlocks[blockIdx].push_back(std::ref(sB7));
+	levelGenInstance->puzzleBlocks[blockIdx].push_back((sB7));
 
 	//Ball 8
 	transform_data snakeBall8;
@@ -474,7 +478,7 @@ void level_gen::addSnakeBalls(int blockIdx)
 	sB8->add_component("render", renderer::get()->build_component(sB8, glm::vec4(1.0f), "res/textures/concrete.jpg", "sphere", "Gouraud", phong));
 	sB8->add_component("collider", physics_system::get()->build_collider_component(sB8));
 
-	levelGenInstance->puzzleBlocks[blockIdx].push_back(std::ref(sB8));
+	levelGenInstance->puzzleBlocks[blockIdx].push_back((sB8));
 
 	//Right wall piece
 	transform_data snakeRightWall;
@@ -487,7 +491,7 @@ void level_gen::addSnakeBalls(int blockIdx)
 	sR->add_component("render", renderer::get()->build_component(sR, glm::vec4(1.0f), "res/textures/concrete.jpg", "cube", "Gouraud", phong));
 	sR->add_component("collider", physics_system::get()->build_collider_component(sR));
 
-	levelGenInstance->puzzleBlocks[blockIdx].push_back(std::ref(sR));
+	levelGenInstance->puzzleBlocks[blockIdx].push_back((sR));
 }
 
 

@@ -15,13 +15,11 @@ class physics_system : public subsystem
 {
 private:
    
-
-	std::vector<std::shared_ptr<collider_data>> _collider_data;
+	std::vector<std::weak_ptr<collider_data>> _collider_data;
 
     std::shared_ptr<collider_data> _bat_collider;
 
     physics_system();
-
 
 
 public:
@@ -29,7 +27,6 @@ public:
 	std::vector<std::shared_ptr<physics_data>> _data;
 
     void cap_speed(glm::vec3& currentSpeed);
-
 
     // move scale is scaled by framerate
     float moveScale = 60.0f;

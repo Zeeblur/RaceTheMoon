@@ -18,7 +18,7 @@ std::shared_ptr<physics_component> physics_system::build_component(std::shared_p
 {
 	auto pd = std::make_shared<physics_data>(physics_data(e->get_trans()));
 
-	_data.push_back(pd);
+	_data.push_back(std::ref(pd));
     return std::make_shared<physics_component>(e, pd);
 }
 
@@ -39,14 +39,15 @@ std::shared_ptr<collider_component> physics_system::build_collider_component(std
         std::shared_ptr<collider_data> cd = std::make_shared<collider_data>(collider_data(e->get_trans(), colType::PLAYER));
 
         _bat_collider = std::ref(cd);
-        return std::make_shared<collider_component>(e, std::ref(_bat_collider));
+        return std::make_shared<collider_component>(e, _bat_collider);
     }
     else
     {
-        std::shared_ptr<collider_data> cd = std::make_shared<collider_data>(collider_data(e->get_trans(), colType::DAMAGE));
+        auto cd = std::make_shared<collider_data>(e->get_trans(), colType::DAMAGE);
 
+		
         _collider_data.push_back(cd);
-        return std::make_shared<collider_component>(e, std::ref(_collider_data.back()));
+        return std::make_shared<collider_component>(e, std::move(cd));
     }
 }
 
@@ -183,7 +184,8 @@ void physics_system::update(float delta_time)
 
     for (auto &c : _collider_data)
     {
-        thread_pool::get()->add_job(thread_pool::get()->makeTask(collision, &c, &_bat_collider));
+		if (!c.expired())
+			thread_pool::get()->add_job(thread_pool::get()->makeTask(collision, &c, &_bat_collider));
     }
 
 }

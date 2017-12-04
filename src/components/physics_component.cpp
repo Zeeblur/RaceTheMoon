@@ -50,6 +50,8 @@ void physics_component::render()
 
 void physics_component::unload_content()
 {
+	// remove collider data
+	_data.reset();
 }
 
 void physics_component::shutdown()
