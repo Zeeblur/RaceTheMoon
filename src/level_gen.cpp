@@ -8,6 +8,8 @@
 void level_gen::addWaterfallPuzzle(glm::vec3 p)
 {
     // Attempt at waterfall boxes puzzle
+    //Left wall piece
+
     // Waterfall piece 1
     transform_data waterfall1Trans;
     waterfall1Trans.scale = glm::vec3(40.0f, 40.0f, 40.0f);
@@ -55,4 +57,29 @@ void level_gen::addWaterfallPuzzle(glm::vec3 p)
     w4->add_component("ai", ai_system::get()->build_component(w4, UPTHENDOWN, 20.0f, 60.0f));
     w4->add_component("render", renderer::get()->build_component(w4, glm::vec4(1.0f), "", "cube", "Gouraud", phong));
     w4->add_component("collider", physics_system::get()->build_collider_component(w4));
+
+    
+    // Waterfall piece 5
+    transform_data waterfall5Trans;
+    waterfall5Trans.scale = glm::vec3(40.0f, 40.0f, 40.0f);
+    waterfall5Trans.x = p.x + 10.0f;
+    waterfall5Trans.y = p.y + 20.0f;
+    waterfall5Trans.z = p.z + 0.0f;
+    auto w5 = entity_manager::get()->create_entity("Waterfall1", state_type::GAME, waterfall5Trans);
+    w5->add_component("physics", physics_system::get()->build_component(w5));
+    w5->add_component("ai", ai_system::get()->build_component(w5, DOWNTHENUP, 20.0f, 60.0f));
+    w5->add_component("render", renderer::get()->build_component(w5, glm::vec4(1.0f), "", "cube", "Gouraud", phong));
+    w5->add_component("collider", physics_system::get()->build_collider_component(w5));
+
+    // Waterfall piece 6
+    transform_data waterfall6Trans;
+    waterfall6Trans.scale = glm::vec3(40.0f, 40.0f, 40.0f);
+    waterfall6Trans.x = p.x + 10.0f;
+    waterfall6Trans.y = p.y + 20.0f;
+    waterfall6Trans.z = p.z + 0.0f;
+    auto w6 = entity_manager::get()->create_entity("Waterfall1", state_type::GAME, waterfall6Trans);
+    w6->add_component("physics", physics_system::get()->build_component(w6));
+    w6->add_component("ai", ai_system::get()->build_component(w6, DOWNTHENUP, 20.0f, 60.0f));
+    w6->add_component("render", renderer::get()->build_component(w6, glm::vec4(1.0f), "", "cube", "Gouraud", phong));
+    w6->add_component("collider", physics_system::get()->build_collider_component(w6));
 }
