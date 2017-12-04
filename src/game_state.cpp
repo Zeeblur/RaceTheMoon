@@ -21,8 +21,13 @@ void game_state::initialise()
 	p->add_component("render", renderer::get()->build_component(p, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), "res/textures/floor.jpg", "plane", "Gouraud", phong));
 
     auto levelGenerator = level_gen::get();
+   /* levelGenerator->addFunc();
+
+    levelGenerator->level_gen_functions*/
 	 
-    levelGenerator->addWaterfallPuzzle(glm::vec3(0, 0.0f, -250));
+    levelGenerator->addWaterfallPuzzle(glm::vec3(200.0f, 0.0f, -1200.0f));
+
+    levelGenerator->addCrusher(glm::vec3(-200.0f, 0.0f, -500.0f));
 
     //Adding cube 1
     transform_data cubeTrans;
@@ -47,30 +52,6 @@ void game_state::initialise()
     c2->add_component("ai", ai_system::get()->build_component(c2, FORWARDTHENBACK, -30.0f, -10.0f));
     c2->add_component("render", renderer::get()->build_component(c2, glm::vec4(1.0f), "", "cube", "Gouraud", phong));
     c2->add_component("collider", physics_system::get()->build_collider_component(c2));
-
-    // Adding cube 3
-    transform_data cube3Trans;
-    cube3Trans.scale = glm::vec3(10.0f, 20.0f, 60.0f);
-    cube3Trans.x = 20.0f;
-    cube3Trans.y = 5.0f;
-    cube3Trans.z = -120.0f;
-    auto c3 = entity_manager::get()->create_entity("Cube3", this->type, cube3Trans);
-    c3->add_component("physics", physics_system::get()->build_component(c3));
-    c3->add_component("ai", ai_system::get()->build_component(c3, RIGHTTHENLEFT, 20.0f, 40.0f));
-    c3->add_component("render", renderer::get()->build_component(c3, glm::vec4(1.0f), "res/textures/stone.jpg", "cube", "Gouraud", phong));
-    c3->add_component("collider", physics_system::get()->build_collider_component(c3));
-
-    // Adding cube 4
-    transform_data cube4Trans;
-    cube4Trans.scale = glm::vec3(10.0f, 20.0f, 60.0f);
-    cube4Trans.x = -20.0f;
-    cube4Trans.y = 5.0f;
-    cube4Trans.z = -120.0f;
-    auto c4 = entity_manager::get()->create_entity("Cube4", this->type, cube4Trans);
-    c4->add_component("physics", physics_system::get()->build_component(c4));
-    c4->add_component("ai", ai_system::get()->build_component(c4, LEFTTHENRIGHT, -40.0f, -20.0f));
-    c4->add_component("render", renderer::get()->build_component(c4, glm::vec4(1.0f), "res/textures/moon.png", "cube", "Gouraud", phong));
-    c4->add_component("collider", physics_system::get()->build_collider_component(c4));
 
     // Adding moon sphere
     transform_data moonTrans;
