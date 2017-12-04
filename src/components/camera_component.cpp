@@ -13,7 +13,7 @@ camera_component::camera_component(std::shared_ptr<entity> &e, std::shared_ptr<c
 bool camera_component::initialise()
 { 
 	return true;
-}
+} 
 
 bool camera_component::load_content() { return true; }
 void camera_component::render() {} // should never be called

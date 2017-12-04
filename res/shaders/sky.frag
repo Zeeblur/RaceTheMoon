@@ -117,16 +117,20 @@ uniform vec3 sunPosition;
 out vec4 out_colour;
 
 void main() {
+
+	vec3 sunPos = sunPosition;
+	sunPos.x = 0;
+
     vec3 color = atmosphere(
         normalize(vertex_pos),          // normalized ray direction
         vec3(0,6372e3,0),               // ray origin
-        sunPosition,                    // position of the sun
+        sunPos,							// position of the sun
         22.0,                           // intensity of the sun
         6371e3,                         // radius of the planet in meters
         6471e3,                         // radius of the atmosphere in meters
         vec3(5.5e-6, 13.0e-6, 22.4e-6), // Rayleigh scattering coefficient
         21e-6,                          // Mie scattering coefficient
-        8e3,                            // Rayleigh scale height
+        4e3,                            // Rayleigh scale height
         1.2e3,                          // Mie scale height
         0.758                           // Mie preferred scattering direction
     );

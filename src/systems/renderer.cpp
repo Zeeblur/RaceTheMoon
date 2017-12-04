@@ -38,6 +38,8 @@ std::shared_ptr<render_component> renderer::build_component(std::shared_ptr<enti
     _rd->matData = gl::material_data();
     _rd->matData._diffuse = colour;
 	
+	_rd->MVP = mat4(1.0f);
+	_rd->M = mat4(1.0f);
 	_rd->N = mat3(1.0f);
 
     _rd->shader = shader;

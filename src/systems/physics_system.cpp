@@ -22,6 +22,13 @@ std::shared_ptr<physics_component> physics_system::build_component(std::shared_p
     return std::make_shared<physics_component>(e, pd);
 }
 
+std::shared_ptr<physics_component> physics_system::build_component(std::shared_ptr<entity> e, std::shared_ptr<physics_data> d)
+{
+
+	//_data.push_back(d);
+	return std::make_shared<physics_component>(e, d);
+}
+
 std::shared_ptr<collider_component> physics_system::build_collider_component(std::shared_ptr<entity> e)
 {
     auto ree = e->get_trans();

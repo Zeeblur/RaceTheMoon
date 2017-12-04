@@ -475,24 +475,24 @@ namespace gl
 		std::vector<glm::vec3> positions
 		{
 			// 1
-			glm::vec3(100.0f, 0.0f, -100.0f),
-			glm::vec3(-100.0f,  0.0f, -100.0f),
-			glm::vec3(-100.0f,  0.0f, 100.0f),
+			glm::vec3(1000.0f, 0.0f, -1000.0f),
+			glm::vec3(-1000.0f,  0.0f, -1000.0f),
+			glm::vec3(-1000.0f,  0.0f, 100.0f),
 			// 2
-			glm::vec3(-100.0f, 0.0f, 100.0f),
-			glm::vec3(100.0f, 0.0f, 100.0f),
-			glm::vec3(100.0f,0.0f, -100.0f)
+			glm::vec3(-1000.0f, 0.0f, 100.0f),
+			glm::vec3(1000.0f, 0.0f, 100.0f),
+			glm::vec3(1000.0f,0.0f, -1000.0f)
 
         };
 
         std::vector<glm::vec2> tex_coords
         {
-            glm::vec2(1, 0),
+            glm::vec2(100, 0),
             glm::vec2(0, 0),
-            glm::vec2(1, 1),
-            glm::vec2(1, 1),
+            glm::vec2(100, 100),
+            glm::vec2(100, 100),
             glm::vec2(0, 0),
-            glm::vec2(1, 0)
+            glm::vec2(100, 0)
         };
 
         // Colours
@@ -979,25 +979,15 @@ namespace gl
 		for (auto &light : rd->effect->lights)
 		{ 
 			bind_light(programID, light);
-
-
 		}
-
-		 
-
 
 		// bind sun pos if got
 		auto loc = glGetUniformLocation(programID, "sunPosition");
 		if (loc != -1)
 		{
-			float inclination =  0.49f; // elevation / inclination
-			float azimuth = 0.25f; // Facing front
-			float distance = 900.0f;
-			float theta = pi<float>() * (inclination - 0.5);
-			float phi = 2 * pi<float>() * (azimuth - 0.5);
-			vec3 sunPosition = vec3(distance * cos(phi), distance * sin(phi) * sin(theta), distance * sin(phi) * cos(theta));
-
-
+			auto sunPosition = vec3(entity_manager::get()->entity_manager::get_entity("Moon").get()->get_trans().x, 
+				entity_manager::get()->entity_manager::get_entity("Moon").get()->get_trans().y,
+				entity_manager::get()->entity_manager::get_entity("Moon").get()->get_trans().z);
 			glUniform3fv(loc, 1, glm::value_ptr(sunPosition));
 			glDisable(GL_CULL_FACE);
 			glDepthMask(false);

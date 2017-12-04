@@ -13,7 +13,7 @@ void game_state::initialise()
 	auto sph = entity_manager::get()->create_entity("Sphere", this->type, sphTrans);
 	sph->add_component("physics", physics_system::get()->build_component(sph));
 	sph->add_component("render", renderer::get()->build_component(sph, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), "", "sphere", "Gouraud", sky));
-	 
+
 
 	// Adding plane
 	auto p = entity_manager::get()->create_entity("Plane", this->type);
@@ -22,7 +22,7 @@ void game_state::initialise()
 
     auto levelGenerator = level_gen::get();
 	 
-    levelGenerator->addWaterfallPuzzle(glm::vec3(0, 0.0f, -0));
+    levelGenerator->addWaterfallPuzzle(glm::vec3(0, 0.0f, -250));
 
     //Adding cube 1
     transform_data cubeTrans;
@@ -104,10 +104,12 @@ void game_state::initialise()
 	auto e = entity_manager::get()->create_entity("Bat", this->type, batTrans);
 	e->add_component("physics", physics_system::get()->build_component(e));
 	e->add_component("input", input_handler::get()->build_component(e));
-	e->add_component("render", renderer::get()->build_component(e, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), "res/textures/bat.jpg", "res/models/bat.obj", "Gouraud", phong));
+	e->add_component("render", renderer::get()->build_component(e, glm::vec4(0.5f, 0.2f, 0.05f, 1.0f), "res/textures/bat.jpg", "res/models/bat.obj", "Gouraud", phong));
 	e->add_component("camera", camera_system::get()->build_component(e, camera_type::CHASE));
 	e->add_component("collider", physics_system::get()->build_collider_component(e));
     e->add_component("score", score_system::get()->build_component(e));
+
+
 
 	transform_data text_transform;
 	text_transform.x = 10;
