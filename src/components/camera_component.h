@@ -30,7 +30,7 @@ struct camera_projection
 
 	camera_type type;
 	glm::mat4 model_view;
-
+	glm::vec3 cam_pos;
 };
 
 class camera_component : public component
@@ -54,11 +54,11 @@ private:
 
 
 	// The offset of the camera from its desired position
-	glm::vec3 _pos_offset = glm::vec3(0.0f, 30.0f, 45.f);
+	glm::vec3 _pos_offset = glm::vec3(0.0f, 30.0f, 35.f);
 	//glm::vec3(0.0f, 30.0f, 25.f);
 
 	// The offset of the camera relative to the target
-	glm::vec3 _target_offset = glm::vec3(0.0f, -30.0f, -100.f);;
+	glm::vec3 _target_offset = glm::vec3(0.0f, -20.0f, -100.f);;
 
 	// Springiness factor of the camera
 	float _springiness = 2.0f;

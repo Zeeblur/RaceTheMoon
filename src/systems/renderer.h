@@ -20,7 +20,7 @@ public:
         return instance;
     }
 
-    std::shared_ptr<render_component> build_component(std::shared_ptr<entity> &e, std::string colour, std::string texture_path, std::string shape, std::string shader, effectType effType);
+    std::shared_ptr<render_component> build_component(std::shared_ptr<entity> &e, glm::vec4 colour, std::string texture_path, std::string shape, std::string shader, effectType effType);
 
 
 	std::shared_ptr<light_component> build_light(std::shared_ptr<entity> &e);

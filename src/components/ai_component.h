@@ -24,7 +24,8 @@ enum ai_type
 struct ai_data
 {
     unsigned int ai_type;
-    glm::vec3 distance = glm::vec3(0.0f, 0.0f, 0.0f);
+    float min = 0.0f;
+    float max = 0.0f;
     glm::vec3 init_pos = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::vec3 cur_pos = glm::vec3(0.0f, 0.0f, 0.0f);
     bool flagA = 0;

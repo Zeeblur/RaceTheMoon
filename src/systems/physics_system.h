@@ -43,7 +43,10 @@ public:
 
     std::shared_ptr<physics_component> build_component(std::shared_ptr<entity> e);
 
+	std::shared_ptr<physics_component> build_component(std::shared_ptr<entity> e, std::shared_ptr<physics_data> d);
+
 	std::shared_ptr<collider_component> build_collider_component(std::shared_ptr<entity> e);
+
 
     bool initialise() override final;
 

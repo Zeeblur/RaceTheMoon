@@ -12,6 +12,7 @@ enum effectType
 	simple,
 	simple_texture,
 	phong,
+	sky,
 	text
 };
 

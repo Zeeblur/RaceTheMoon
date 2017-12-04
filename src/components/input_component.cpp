@@ -30,8 +30,13 @@ void input_component::update(float delta_time)
     // get all commands then execute them.
     std::vector<Command*> commands = input_handler::get()->handle_input();
 
-    for (Command* com : commands)
-        com->execute(_parent);
+	auto back = entity_manager::get()->get_entity("Sphere");
+
+	for (Command* com : commands)
+	{
+		com->execute(_parent);
+		com->execute(back);
+	}
 
 }
 

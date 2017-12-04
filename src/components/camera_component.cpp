@@ -13,7 +13,7 @@ camera_component::camera_component(std::shared_ptr<entity> &e, std::shared_ptr<c
 bool camera_component::initialise()
 { 
 	return true;
-}
+} 
 
 bool camera_component::load_content() { return true; }
 void camera_component::render() {} // should never be called
@@ -75,4 +75,5 @@ void camera_component::update(float delta_time)
 	_view = glm::lookAt(desired_position, _target, _up);
 
 	_data->model_view = _projection * _view;
+	_data->cam_pos = desired_position;
 }

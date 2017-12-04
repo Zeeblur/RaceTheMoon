@@ -52,6 +52,7 @@ public:
 
     void add_impulse(glm::vec3& direction);
 
+	std::shared_ptr<physics_data> get_data() { return _data; };
 };
 
 #endif //RACETHEMOON_PHYSICS_COMPONENT_H

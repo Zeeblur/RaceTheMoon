@@ -21,18 +21,32 @@
 
 namespace gl
 {
+    struct material_data
+    {
+        glm::vec4 _diffuse;
+        glm::vec4 _emissive = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+        glm::vec4 _specular = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+        float _shininess = 2.0f;
+    };
 
 	struct light_data
 	{
 		// Ambient intensity of the light
-		glm::vec4 _ambient = glm::vec4(0.7f, 0.7f, 0.7f, 1.0f);
+		glm::vec4 _ambient = glm::vec4(0.2f, 0.2f, 0.2f, 1.0f);
 		// The colour of the light
 		glm::vec4 _colour = glm::vec4(0.9f, 0.9f, 0.9f, 1.0f);
 		// The direction the light is facing
-		glm::vec3 _direction = glm::vec3(1.0f, 0.0f, 0.0f);
+		glm::vec3 _direction = glm::vec3(0.0f, 1.0f, 0.0f);
 
 		// pos
 		glm::vec3 _position = glm::vec3(0.0, 0.0, 0.0f);
+
+		// The constant factor of the attenuation
+		float _constant;
+		// The linear factor of the attenuation
+		float _linear;
+		// The quadratic factor of the attenuation
+		float _quadratic;
 	};
 
 	struct texture
@@ -48,7 +62,7 @@ namespace gl
 		texture(std::string filename);
 		 
 	};
-
+	 
     enum BUFFER_INDEXES
     {
         // The position data
@@ -94,16 +108,14 @@ namespace gl
 		void *GpuData;
 		GLuint program;
 
-		std::vector<light_data> lights;
+		std::vector<std::shared_ptr<light_data>> lights;
 	};
 
 	struct render_data
 	{
 		bool visible;// = true;
-					 // Let's pretend this is a matrix that was built.
-		std::string colour;// = "Red";
 		std::string shader;// = "Phong";
-
+		glm::vec3 cam_pos;
 		glm::mat4 M;
 		glm::mat3 N;
 		glm::mat4 MVP;
@@ -117,6 +129,9 @@ namespace gl
 
 		// Reference to texture object
 		std::shared_ptr<texture> textureObj;
+
+        // reference to material obj
+        gl::material_data matData;
 	};
 
     // store vao/vbos for obj
