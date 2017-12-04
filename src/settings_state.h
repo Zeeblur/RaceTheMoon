@@ -18,7 +18,11 @@ enum window_mode
 // Settings state
 class settings_state : public engine_state
 {
+private:
+
 public:
+
+
 	resolution current_resolution = _1024x768;
 
 	window_mode current_window_mode = windowed;
@@ -33,3 +37,5 @@ public:
 
 	void on_exit();
 };
+
+static int latest_key_press;

@@ -157,6 +157,18 @@ void settings_state::initialise()
 	key_move_left->add_component("render", renderer::get()->build_component(key_move_left, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/letters/A.png", "rectangle", "Gouraud", simple_texture));
 	key_move_left->add_component("camera", camera_system::get()->build_component(key_move_left, camera_type::ORTHO));
 
+	// key move right trans
+	transform_data key_move_right_transform;
+	key_move_right_transform.scale = glm::vec3(20, 20, 1.0f);
+	key_move_right_transform.x = -100;
+	key_move_right_transform.y = -120;
+
+	// Left arrow button for window mode
+	auto key_move_right = entity_manager::get()->create_entity("keyMoveRight", state_type::SETTINGS, key_move_right_transform);
+	key_move_right->add_component("clickable", clickable_system::get()->build_component(key_move_right, glm::dvec2(key_move_right_transform.x, -key_move_right_transform.y), glm::dvec2(20, 20)));
+	key_move_right->add_component("render", renderer::get()->build_component(key_move_right, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/letters/D.png", "rectangle", "Gouraud", simple_texture));
+	key_move_right->add_component("camera", camera_system::get()->build_component(key_move_right, camera_type::ORTHO));
+
 }
 
 void settings_state::on_reset()
@@ -210,6 +222,14 @@ void determine_window_mode(window_mode &window_mode)
 	case windowed:
 		// Handle logic for windowed
 		break;
+	}
+}
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	if (action == GLFW_PRESS)
+	{
+		latest_key_press = key;
 	}
 }
 
@@ -295,18 +315,54 @@ void settings_state::on_update(float delta_time)
 	}
 	else if (cs->get_clicked_component_name() == "keyMoveLeft")
 	{
-		
-		std::ofstream user_pref_file;
-		user_pref_file.open("res/buttons.txt", std::ofstream::out | std::ofstream::trunc);
-		if (user_pref_file.is_open())
+		glfwSetKeyCallback(glfw::window, key_callback);
+		//TODO: Don't set key if user presses escape, doesnt work for some reason right now
+		if (latest_key_press != GLFW_KEY_ESCAPE)
 		{
-			user_pref_file << "Left: " << GLFW_KEY_LEFT << "\n";
-			user_pref_file << "Right: " << input_handler::get()->glfw_button_right << "\n";
-			user_pref_file << "Front: " << input_handler::get()->glfw_button_up << "\n";
-			user_pref_file << "Back: " << input_handler::get()->glfw_button_down << "\n";
+			glfwWaitEvents();
+			std::ofstream user_pref_file;
+			// Open file and clear
+			user_pref_file.open("res/buttons.txt", std::ofstream::out | std::ofstream::trunc);
+			if (user_pref_file.is_open())
+			{
+				// Add new button and old buttons
+				user_pref_file << "Left: " << latest_key_press << "\n";
+				user_pref_file << "Right: " << input_handler::get()->glfw_button_right << "\n";
+				user_pref_file << "Front: " << input_handler::get()->glfw_button_up << "\n";
+				user_pref_file << "Back: " << input_handler::get()->glfw_button_down << "\n";
+			}
+			// Close
+			user_pref_file.close();
+			// Re-load input keys
+			input_handler::get()->load_input_settings();
 		}
-		user_pref_file.close();
-		input_handler::get()->load_input_settings();
+	}
+	else if (cs->get_clicked_component_name() == "keyMoveRight")
+	{
+		glfwSetKeyCallback(glfw::window, key_callback);
+		//TODO: Don't set key if user presses escape, doesnt work for some reason right now
+		if (latest_key_press != GLFW_KEY_ESCAPE)
+		{
+			glfwWaitEvents();
+			std::string letter;
+			letter = (char)latest_key_press;
+			std::cout <<"res/textures/" << letter << ".png" << std::endl;
+			std::ofstream user_pref_file;
+			// Open file and clear
+			user_pref_file.open("res/buttons.txt", std::ofstream::out | std::ofstream::trunc);
+			if (user_pref_file.is_open())
+			{
+				// Add new button and old buttons
+				user_pref_file << "Left: " << input_handler::get()->glfw_button_left << "\n";
+				user_pref_file << "Right: " << latest_key_press << "\n";
+				user_pref_file << "Front: " << input_handler::get()->glfw_button_up << "\n";
+				user_pref_file << "Back: " << input_handler::get()->glfw_button_down << "\n";
+			}
+			// Close
+			user_pref_file.close();
+			// Re-load input keys
+			input_handler::get()->load_input_settings();
+		}
 	}
 }
 
