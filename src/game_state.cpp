@@ -18,40 +18,61 @@ void game_state::initialise()
 	// Adding plane
 	auto p = entity_manager::get()->create_entity("Plane", this->type);
 	p->add_component("physics", physics_system::get()->build_component(p));
-	p->add_component("render", renderer::get()->build_component(p, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), "res/textures/floor.jpg", "plane", "Gouraud", phong));
+	p->add_component("render", renderer::get()->build_component(p, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), "res/textures/floor.jpg", "plane", "Gouraud", phongDistance));
 
     auto levelGenerator = level_gen::get();
    /* levelGenerator->addFunc();
 
     levelGenerator->level_gen_functions*/
 	 
-    levelGenerator->addWaterfallPuzzle(glm::vec3(200.0f, 0.0f, -1200.0f));
+    levelGenerator->addWaterfallPuzzle(glm::vec3(0.0f, 0.0f, -800.0f));
 
-    levelGenerator->addCrusher(glm::vec3(-200.0f, 0.0f, -500.0f));
+    levelGenerator->addCrusher(glm::vec3(0.0f, 0.0f, -400.0f));
 
-    //Adding cube 1
-    transform_data cubeTrans;
-    cubeTrans.scale = glm::vec3(10.0f, 10.0f, 10.0f);
-    cubeTrans.x = -20.0f;
-    cubeTrans.y = 5.0f;
-    cubeTrans.z = -20.0f;
-    auto c = entity_manager::get()->create_entity("Cube", this->type, cubeTrans);
-    c->add_component("physics", physics_system::get()->build_component(c));
-    c->add_component("ai", ai_system::get()->build_component(c, UPTHENDOWN, 5.0f, 15.0f));
-    c->add_component("render", renderer::get()->build_component(c, glm::vec4(1.0f), "res/textures/check.jpg", "cube", "Gouraud", phong));
-    c->add_component("collider", physics_system::get()->build_collider_component(c));
+	levelGenerator->addSnakeBalls(glm::vec3(0.0f, 0.0f, -1200.0f));
 
-    // Adding cube 2
-    transform_data cube2Trans;
-    cube2Trans.scale = glm::vec3(10.0f, 30.0f, 10.0f);
-    cube2Trans.x = 20.0f;
-    cube2Trans.y = 5.0f;
-    cube2Trans.z = -20.0f;
-    auto c2 = entity_manager::get()->create_entity("Cube2", this->type, cube2Trans);
-    c2->add_component("physics", physics_system::get()->build_component(c2));
-    c2->add_component("ai", ai_system::get()->build_component(c2, FORWARDTHENBACK, -30.0f, -10.0f));
-    c2->add_component("render", renderer::get()->build_component(c2, glm::vec4(1.0f), "", "cube", "Gouraud", phong));
-    c2->add_component("collider", physics_system::get()->build_collider_component(c2));
+	levelGenerator->addCrusher(glm::vec3(0.0f, 0.0f, -1500.0f));
+	
+	levelGenerator->addWaterfallPuzzle(glm::vec3(0.0f, 0.0f, -2000.0f));
+
+	levelGenerator->addCrusher(glm::vec3(0.0f, 0.0f, -1700.0f));
+
+	levelGenerator->addWaterfallPuzzle(glm::vec3(0.0f, 0.0f, -2200.0f));
+
+	levelGenerator->addCrusher(glm::vec3(0.0f, 0.0f, -2700.0f));
+
+	levelGenerator->addCrusher(glm::vec3(0.0f, 0.0f, -2900.0f));
+
+	levelGenerator->addWaterfallPuzzle(glm::vec3(0.0f, 0.0f, -3000.0f));
+
+	levelGenerator->addWaterfallPuzzle(glm::vec3(0.0f, 0.0f, -3500.0f));
+
+	levelGenerator->addCrusher(glm::vec3(0.0f, 0.0f, -3200.0f));
+
+    ////Adding cube 1
+    //transform_data cubeTrans;
+    //cubeTrans.scale = glm::vec3(10.0f, 10.0f, 10.0f);
+    //cubeTrans.x = -20.0f;
+    //cubeTrans.y = 5.0f;
+    //cubeTrans.z = -20.0f;
+    //auto c = entity_manager::get()->create_entity("Cube", this->type, cubeTrans);
+    //c->add_component("physics", physics_system::get()->build_component(c));
+    //c->add_component("ai", ai_system::get()->build_component(c, UPTHENDOWN, 5.0f, 15.0f));
+    //c->add_component("render", renderer::get()->build_component(c, glm::vec4(1.0f), "res/textures/check.jpg", "cube", "Gouraud", phongDistance));
+    //c->add_component("collider", physics_system::get()->build_collider_component(c));
+
+    //// Adding cube 2
+    //transform_data cube2Trans;
+    //cube2Trans.scale = glm::vec3(10.0f, 30.0f, 10.0f);
+    //cube2Trans.x = 20.0f;
+    //cube2Trans.y = 5.0f;
+    //cube2Trans.z = -20.0f;
+    //auto c2 = entity_manager::get()->create_entity("Cube2", this->type, cube2Trans);
+    //c2->add_component("physics", physics_system::get()->build_component(c2));
+    //c2->add_component("ai", ai_system::get()->build_component(c2, FORWARDTHENBACK, -30.0f, -10.0f));
+    //c2->add_component("render", renderer::get()->build_component(c2, glm::vec4(1.0f), "", "cube", "Gouraud", phongDistance));
+    //c2->add_component("collider", physics_system::get()->build_collider_component(c2));
+
 
     // Adding moon sphere
     transform_data moonTrans;
@@ -61,7 +82,7 @@ void game_state::initialise()
     m->add_component("physics", physics_system::get()->build_component(m));
 	m->add_component("light", renderer::get()->build_light(m));
     m->add_component("ai", ai_system::get()->build_component(m, SUN_MOON, 0.0f, 0.0f));
-	m->add_component("light", renderer::get()->build_light(m));
+	m->add_component("render", renderer::get()->build_component(m, glm::vec4(0.0f), "res/textures/sun.png", "sphere", "Gouraud", phong));
 
 
     // Adding sun sphere
@@ -114,6 +135,11 @@ void game_state::on_reset()
 {
 	auto bat = entity_manager::get()->get_entity("Bat");
 	bat->get_component("physics")->initialise();
+
+	for (auto d : physics_system::get()->_data)
+	{
+		d->reset_data();
+	}
 
 	// set score system active
 	engine::get()->get_subsystem("score_system")->initialise();

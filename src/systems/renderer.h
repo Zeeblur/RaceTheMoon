@@ -11,6 +11,8 @@ class renderer : public subsystem
 {
 private:
 	std::map<effectType, std::shared_ptr<gl::Effect>> programIDs;
+	std::map<std::string, std::shared_ptr<gl::texture>> textureList;
+
     renderer();
 public:
 

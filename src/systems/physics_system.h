@@ -14,7 +14,7 @@
 class physics_system : public subsystem
 {
 private:
-    std::vector<std::shared_ptr<physics_data>> _data;
+   
 
 	std::vector<std::shared_ptr<collider_data>> _collider_data;
 
@@ -25,6 +25,8 @@ private:
 
 
 public:
+
+	std::vector<std::shared_ptr<physics_data>> _data;
 
     void cap_speed(glm::vec3& currentSpeed);
 

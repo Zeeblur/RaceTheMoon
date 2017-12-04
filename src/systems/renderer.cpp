@@ -16,20 +16,21 @@ renderer::renderer()
 {
     _active = false; 
 	programIDs[simple] = std::make_shared<gl::Effect>();
-	programIDs[phong] = std::make_shared<gl::Effect>();
+	programIDs[phongDistance] = std::make_shared<gl::Effect>();
 	programIDs[simple_texture] = std::make_shared<gl::Effect>();
 	programIDs[text] = std::make_shared<gl::Effect>();
 	programIDs[sky] = std::make_shared<gl::Effect>();
+	programIDs[phong] = std::make_shared<gl::Effect>();
 
 
 	programIDs[simple]->program = gl::LoadShaders("res/shaders/simple.vert", "res/shaders/simple.frag");
-	programIDs[phong]->program = gl::LoadShaders("res/shaders/phong.vert", "res/shaders/phong.frag");
+	programIDs[phongDistance]->program = gl::LoadShaders("res/shaders/phong.vert", "res/shaders/phongDist.frag");
 	programIDs[simple_texture]->program = gl::LoadShaders("res/shaders/simple_texture.vert", "res/shaders/simple_texture.frag");
 	programIDs[text]->program = gl::LoadShaders("res/shaders/text.vert", "res/shaders/text.frag");
 	// TODO add lights to effect
 	//programIDs[phong]->lights = 
 	programIDs[sky]->program = gl::LoadShaders("res/shaders/sky.vert", "res/shaders/sky.frag");
-	
+	programIDs[phong]->program = gl::LoadShaders("res/shaders/phong.vert", "res/shaders/phong.frag");
 }
 
 std::shared_ptr<render_component> renderer::build_component(std::shared_ptr<entity> &e, glm::vec4 colour, std::string texture_path, std::string shape, std::string shader, effectType effType)
@@ -53,7 +54,15 @@ std::shared_ptr<render_component> renderer::build_component(std::shared_ptr<enti
 
 	// add texture stuff
 	if (texture_path != "")
-		_rd->textureObj = std::make_shared<gl::texture>(gl::texture(texture_path));
+	{
+		if (textureList[texture_path] == nullptr)
+		{
+			textureList[texture_path] = std::make_shared<gl::texture>(gl::texture(texture_path));
+		}
+		
+		
+		_rd->textureObj = textureList[texture_path];
+	}
 
 	return std::make_shared<render_component>(e, _rd);
 }
@@ -82,6 +91,7 @@ std::shared_ptr<light_component> renderer::build_light(std::shared_ptr<entity> &
 {
 	auto _ld = std::make_shared<gl::light_data>();
 
+	programIDs[phongDistance]->lights.push_back(_ld);
 	programIDs[phong]->lights.push_back(_ld);
 	//programIDs[sky]->lights.push_back(_ld);
 

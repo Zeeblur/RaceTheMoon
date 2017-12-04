@@ -21,6 +21,7 @@ public:
 
     void static addWaterfallPuzzle(glm::vec3 p);
     void static addCrusher(glm::vec3 p);
+	void static addSnakeBalls(glm::vec3 p);
 
     std::map<std::string, std::function<void(glm::vec3 p)>> level_gen_functions;
     
