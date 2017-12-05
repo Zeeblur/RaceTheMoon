@@ -78,19 +78,19 @@ void input_handler::load_input_settings()
 	// Load in keys from file
 	while (user_pref_file >> input)
 	{
-		if (input._Equal("Left:"))
+		if (input == "Left:")
 		{
 			user_pref_file >> glfw_button_left;
 		}
-		else if (input._Equal("Right:"))
+		else if (input == "Right:")
 		{
 			user_pref_file >> glfw_button_right;;
 		}
-		else if (input._Equal("Front:"))
+		else if (input == "Front:")
 		{
 			user_pref_file >> glfw_button_up;
 		}
-		else if (input._Equal("Back:"))
+		else if (input == "Back:")
 		{
 			user_pref_file >> glfw_button_down;
 		}
