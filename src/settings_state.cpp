@@ -6,8 +6,30 @@
 #include <sstream>
 #include <iomanip>
 #include <fstream>
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	//latest_key_press = -1;
+
+	if (action == GLFW_PRESS)
+	{
+		latest_key_press = key;
+		std::cout << "pressed" << std::endl;
+		std::shared_ptr<text_component> tc = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity("help_text")->get_component("text"));
+		tc->_data->text = " ";
+	}
+}
+
+void key_callback_fake(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	latest_key_press = -1;
+}
+
 void settings_state::initialise()
 {
+
+	latest_key_press = -1;
+
 	initText2D("res/textures/myriad.png");
 
 	int x_size = 0;
@@ -26,7 +48,7 @@ void settings_state::initialise()
 	// Back button transform
 	transform_data back_button_transform;
 	back_button_transform.x = 0;
-	back_button_transform.y = -200;
+	back_button_transform.y = -270;
 	back_button_transform.scale.x = 100;
 	back_button_transform.scale.y = 50;
 	// Back button
@@ -38,7 +60,7 @@ void settings_state::initialise()
 	// Resolution value transform
 	transform_data resolution_value_transform;
 	resolution_value_transform.x = 0;
-	resolution_value_transform.y = 60;
+	resolution_value_transform.y = 180;
 	resolution_value_transform.scale.x = 100;
 	resolution_value_transform.scale.y = 30;
 	// Resolution value
@@ -49,7 +71,7 @@ void settings_state::initialise()
 	// Resolution transform
 	transform_data resolution_transform;
 	resolution_transform.x = 0;
-	resolution_transform.y = 120;
+	resolution_transform.y = 240;
 	resolution_transform.scale.x = 100;
 	resolution_transform.scale.y = 30;
 	// Resolution
@@ -60,7 +82,7 @@ void settings_state::initialise()
 	// Window mode value transform
 	transform_data window_mode_value_transform;
 	window_mode_value_transform.x = 0;
-	window_mode_value_transform.y = -60;
+	window_mode_value_transform.y = 60;
 	window_mode_value_transform.scale.x = 100;
 	window_mode_value_transform.scale.y = 30;
 	// Window mode value
@@ -71,7 +93,7 @@ void settings_state::initialise()
 	// Window mode transform
 	transform_data window_transform;
 	window_transform.x = 0;
-	window_transform.y = 0;
+	window_transform.y = 120;
 	window_transform.scale.x = 100;
 	window_transform.scale.y = 30;
 	// Window mode
@@ -101,13 +123,13 @@ void settings_state::initialise()
 	transform_data resolution_right_arrow_transform;
 	resolution_right_arrow_transform.scale = glm::vec3(x_button_size, y_button_size, 1.0f);
 	resolution_right_arrow_transform.x = 250;
-	resolution_right_arrow_transform.y = 60;
+	resolution_right_arrow_transform.y = 180;
 
 	// resolution left arrow trans
 	transform_data resolution_left_arrow_transform;
 	resolution_left_arrow_transform.scale = glm::vec3(x_button_size, y_button_size, 1.0f);
 	resolution_left_arrow_transform.x = -250;
-	resolution_left_arrow_transform.y = 60;
+	resolution_left_arrow_transform.y = 180;
 
 	// Right arrow button for resolution
 	auto resolution_button_right = entity_manager::get()->create_entity("resolutionButtonRight", state_type::SETTINGS, resolution_right_arrow_transform);
@@ -125,13 +147,13 @@ void settings_state::initialise()
 	transform_data window_mode_right_arrow_transform;
 	window_mode_right_arrow_transform.scale = glm::vec3(x_button_size, y_button_size, 1.0f);
 	window_mode_right_arrow_transform.x = 250;
-	window_mode_right_arrow_transform.y = -60;
+	window_mode_right_arrow_transform.y = 60;
 
 	// resolution left arrow trans
 	transform_data window_mode_left_arrow_transform;
 	window_mode_left_arrow_transform.scale = glm::vec3(x_button_size, y_button_size, 1.0f);
 	window_mode_left_arrow_transform.x = -250;
-	window_mode_left_arrow_transform.y = -60;
+	window_mode_left_arrow_transform.y = 60;
 
 	// Right arrow button for window mode
 	auto window_mode_button_right = entity_manager::get()->create_entity("windowModeButtonRight", state_type::SETTINGS, window_mode_right_arrow_transform);
@@ -145,30 +167,69 @@ void settings_state::initialise()
 	window_mode_button_left->add_component("render", renderer::get()->build_component(window_mode_button_left, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/arrow_left_transparent.png", "rectangle", "Gouraud", simple_texture));
 	window_mode_button_left->add_component("camera", camera_system::get()->build_component(window_mode_button_left, camera_type::ORTHO));
 
+	// move left trans
+	transform_data move_left_transform;
+	move_left_transform.scale = glm::vec3(100, 30, 1.0f);
+	move_left_transform.x = -30;
+	move_left_transform.y = -60;
+
+	// move left
+	auto move_left = entity_manager::get()->create_entity("moveLeft", state_type::SETTINGS, move_left_transform);
+	move_left->add_component("render", renderer::get()->build_component(move_left, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/move_left.png", "rectangle", "Gouraud", simple_texture));
+	move_left->add_component("camera", camera_system::get()->build_component(move_left, camera_type::ORTHO));
+
+	// move right trans
+	transform_data move_right_transform;
+	move_right_transform.scale = glm::vec3(100, 30, 1.0f);
+	move_right_transform.x = -30;
+	move_right_transform.y = -120;
+
+	// move right
+	auto move_right = entity_manager::get()->create_entity("moveRight", state_type::SETTINGS, move_right_transform);
+	move_right->add_component("render", renderer::get()->build_component(move_right, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/move_right.png", "rectangle", "Gouraud", simple_texture));
+	move_right->add_component("camera", camera_system::get()->build_component(move_right, camera_type::ORTHO));
+
 	// key move left trans
 	transform_data key_move_left_transform;
-	key_move_left_transform.scale = glm::vec3(20, 20, 1.0f);
-	key_move_left_transform.x = -200;
-	key_move_left_transform.y = -120;
+	key_move_left_transform.scale = glm::vec3(15, 15, 1.0f);
+	key_move_left_transform.x = 90;
+	key_move_left_transform.y = -60;
 
-	// Left arrow button for window mode
+	// key move left
 	auto key_move_left = entity_manager::get()->create_entity("keyMoveLeft", state_type::SETTINGS, key_move_left_transform);
-	key_move_left->add_component("clickable", clickable_system::get()->build_component(key_move_left, glm::dvec2(key_move_left_transform.x, -key_move_left_transform.y), glm::dvec2(20, 20)));
+	key_move_left->add_component("clickable", clickable_system::get()->build_component(key_move_left, glm::dvec2(key_move_left_transform.x, -key_move_left_transform.y), glm::dvec2(15, 15)));
 	key_move_left->add_component("render", renderer::get()->build_component(key_move_left, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/letters/A.png", "rectangle", "Gouraud", simple_texture));
 	key_move_left->add_component("camera", camera_system::get()->build_component(key_move_left, camera_type::ORTHO));
 
 	// key move right trans
 	transform_data key_move_right_transform;
-	key_move_right_transform.scale = glm::vec3(20, 20, 1.0f);
-	key_move_right_transform.x = -100;
+	key_move_right_transform.scale = glm::vec3(15, 15, 1.0f);
+	key_move_right_transform.x = 90;
 	key_move_right_transform.y = -120;
 
-	// Left arrow button for window mode
+	// key move right
 	auto key_move_right = entity_manager::get()->create_entity("keyMoveRight", state_type::SETTINGS, key_move_right_transform);
-	key_move_right->add_component("clickable", clickable_system::get()->build_component(key_move_right, glm::dvec2(key_move_right_transform.x, -key_move_right_transform.y), glm::dvec2(20, 20)));
+	key_move_right->add_component("clickable", clickable_system::get()->build_component(key_move_right, glm::dvec2(key_move_right_transform.x, -key_move_right_transform.y), glm::dvec2(15, 15)));
 	key_move_right->add_component("render", renderer::get()->build_component(key_move_right, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/letters/D.png", "rectangle", "Gouraud", simple_texture));
 	key_move_right->add_component("camera", camera_system::get()->build_component(key_move_right, camera_type::ORTHO));
 
+	// Controls trans
+	transform_data controls_transform;
+	controls_transform.scale = glm::vec3(100, 30, 1.0f);
+	controls_transform.x = 0;
+	controls_transform.y = 0;
+
+	// Controls
+	auto controls = entity_manager::get()->create_entity("controls", state_type::SETTINGS, controls_transform);
+	controls->add_component("render", renderer::get()->build_component(controls, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/controls.png", "rectangle", "Gouraud", simple_texture));
+	controls->add_component("camera", camera_system::get()->build_component(controls, camera_type::ORTHO));
+
+	transform_data text_transform;
+	text_transform.x = 10;
+	text_transform.y = 10;
+	auto help_text = entity_manager::get()->create_entity("help_text", state_type::SETTINGS, text_transform);
+	help_text->add_component("render", renderer::get()->build_component(help_text, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), "res/textures/exit_button.png", "rectangle", "text", text));
+	help_text->add_component("text", text_system::get()->build_component(help_text, " "));
 }
 
 void settings_state::on_reset()
@@ -197,18 +258,18 @@ void determine_screen_res(resolution &res)
 {
 	switch (res)
 	{
-		case _1024x768:
-			glfwSetWindowSize(glfw::window, 1024, 768);
-			break;
-		case _1280x720:
-			glfwSetWindowSize(glfw::window, 1280, 720);
-			break;
-		case _1600x1200:
-			glfwSetWindowSize(glfw::window, 1600, 1200);
-			break;
-		case _1920x1080:
-			glfwSetWindowSize(glfw::window, 1920, 1080);
-			break;
+	case _1024x768:
+		glfwSetWindowSize(glfw::window, 1024, 768);
+		break;
+	case _1280x720:
+		glfwSetWindowSize(glfw::window, 1280, 720);
+		break;
+	case _1600x1200:
+		glfwSetWindowSize(glfw::window, 1600, 1200);
+		break;
+	case _1920x1080:
+		glfwSetWindowSize(glfw::window, 1920, 1080);
+		break;
 	}
 }
 
@@ -222,14 +283,6 @@ void determine_window_mode(window_mode &window_mode)
 	case windowed:
 		// Handle logic for windowed
 		break;
-	}
-}
-
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-	if (action == GLFW_PRESS)
-	{
-		latest_key_press = key;
 	}
 }
 
@@ -316,53 +369,86 @@ void settings_state::on_update(float delta_time)
 	else if (cs->get_clicked_component_name() == "keyMoveLeft")
 	{
 		glfwSetKeyCallback(glfw::window, key_callback);
-		//TODO: Don't set key if user presses escape, doesnt work for some reason right now
-		if (latest_key_press != GLFW_KEY_ESCAPE)
+		// Update prompt
+		std::shared_ptr<text_component> tc = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity("help_text")->get_component("text"));
+		tc->_data->text = "Assign key, ESC to cancel...";
+		// Force render before going into the while loop.
+		renderer::get()->render();
+		while (true)
 		{
-			glfwWaitEvents();
-			std::ofstream user_pref_file;
-			// Open file and clear
-			user_pref_file.open("res/buttons.txt", std::ofstream::out | std::ofstream::trunc);
-			if (user_pref_file.is_open())
+			// Check for events
+			glfwPollEvents();
+			if (latest_key_press != -1)
 			{
-				// Add new button and old buttons
-				user_pref_file << "Left: " << latest_key_press << "\n";
-				user_pref_file << "Right: " << input_handler::get()->glfw_button_right << "\n";
-				user_pref_file << "Front: " << input_handler::get()->glfw_button_up << "\n";
-				user_pref_file << "Back: " << input_handler::get()->glfw_button_down << "\n";
+				if (latest_key_press == GLFW_KEY_ESCAPE)
+					break;
+				std::string letter;
+				letter = (char)latest_key_press;
+				std::ofstream user_pref_file;
+				// Open file and clear
+				user_pref_file.open("res/buttons.txt", std::ofstream::out | std::ofstream::trunc);
+				if (user_pref_file.is_open())
+				{
+					// Add new button and old buttons
+					user_pref_file << "Left: " << latest_key_press << "\n";
+					user_pref_file << "Right: " << input_handler::get()->glfw_button_right << "\n";
+					user_pref_file << "Front: " << input_handler::get()->glfw_button_up << "\n";
+					user_pref_file << "Back: " << input_handler::get()->glfw_button_down << "\n";
+				}
+				// Close
+				user_pref_file.close();
+				// Re-load input keys
+				input_handler::get()->load_input_settings();
+				// Remove actuall callback
+				glfwSetKeyCallback(glfw::window, key_callback_fake);
+				break;
 			}
-			// Close
-			user_pref_file.close();
-			// Re-load input keys
-			input_handler::get()->load_input_settings();
 		}
+		cs->clear_clicked_component_name();
 	}
 	else if (cs->get_clicked_component_name() == "keyMoveRight")
 	{
 		glfwSetKeyCallback(glfw::window, key_callback);
-		//TODO: Don't set key if user presses escape, doesnt work for some reason right now
-		if (latest_key_press != GLFW_KEY_ESCAPE)
+		// Update prompt
+		std::shared_ptr<text_component> tc = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity("help_text")->get_component("text"));
+		tc->_data->text = "Assign key, ESC to cancel...";
+		// Force render before going into the while loop.
+		renderer::get()->render();
+		while (true)
 		{
-			glfwWaitEvents();
-			std::string letter;
-			letter = (char)latest_key_press;
-			std::cout <<"res/textures/" << letter << ".png" << std::endl;
-			std::ofstream user_pref_file;
-			// Open file and clear
-			user_pref_file.open("res/buttons.txt", std::ofstream::out | std::ofstream::trunc);
-			if (user_pref_file.is_open())
+			// Check for events
+			glfwPollEvents();
+
+			if (latest_key_press != -1)
 			{
-				// Add new button and old buttons
-				user_pref_file << "Left: " << input_handler::get()->glfw_button_left << "\n";
-				user_pref_file << "Right: " << latest_key_press << "\n";
-				user_pref_file << "Front: " << input_handler::get()->glfw_button_up << "\n";
-				user_pref_file << "Back: " << input_handler::get()->glfw_button_down << "\n";
+				if (latest_key_press == GLFW_KEY_ESCAPE)
+					break;
+				std::string letter;
+				letter = (char)latest_key_press;
+				//std::cout << "res/textures/" << letter << ".png" << std::endl;
+				std::ofstream user_pref_file;
+				// Open file and clear
+				user_pref_file.open("res/buttons.txt", std::ofstream::out | std::ofstream::trunc);
+				if (user_pref_file.is_open())
+				{
+					// Add new button and old buttons
+					user_pref_file << "Left: " << input_handler::get()->glfw_button_left << "\n";
+					user_pref_file << "Right: " << latest_key_press << "\n";
+					user_pref_file << "Front: " << input_handler::get()->glfw_button_up << "\n";
+					user_pref_file << "Back: " << input_handler::get()->glfw_button_down << "\n";
+				}
+				// Close
+				user_pref_file.close();
+				// Re-load input keys
+				input_handler::get()->load_input_settings();
+				// Remove actuall callback
+				glfwSetKeyCallback(glfw::window, key_callback_fake);
+				break;
 			}
-			// Close
-			user_pref_file.close();
-			// Re-load input keys
-			input_handler::get()->load_input_settings();
+
 		}
+
+		cs->clear_clicked_component_name();
 	}
 }
 

@@ -81,7 +81,6 @@ void input_handler::load_input_settings()
 		if (input._Equal("Left:"))
 		{
 			user_pref_file >> glfw_button_left;
-			std::cout << glfw_button_left << std::endl;
 		}
 		else if (input._Equal("Right:"))
 		{
