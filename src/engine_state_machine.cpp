@@ -79,17 +79,17 @@ void engine_state_machine::update(float delta_time)
 	{
 		//std::cout << "=============MENU STATE============" << std::endl;
 		std::shared_ptr<clickable_system> cs = std::static_pointer_cast<clickable_system>(engine::get()->get_subsystem("clickable_system"));
-		if (cs->get_clicked_component_name() == "buttonPlay")
+		if (cs->get_clicked_component_name() == "play_button")
 		{
 			engine_state_machine::get()->change_state("game_state", true);
 			cs->clear_clicked_component_name();
 		}
-		else if (cs->get_clicked_component_name() == "buttonSettings")
+		else if (cs->get_clicked_component_name() == "settings_button")
 		{
 			engine_state_machine::get()->change_state("settings_state", true);
 			cs->clear_clicked_component_name();
 		}
-		else if (cs->get_clicked_component_name() == "buttonExit")
+		else if (cs->get_clicked_component_name() == "exit_button")
 		{
 			// Handle exit game logic here
 			engine::get()->set_running(false);
@@ -100,12 +100,12 @@ void engine_state_machine::update(float delta_time)
 	else if (engine_state_machine::get()->get_current_state_type() == state_type::PAUSE)
 	{
 		std::shared_ptr<clickable_system> cs = std::static_pointer_cast<clickable_system>(engine::get()->get_subsystem("clickable_system"));
-		if (cs->get_clicked_component_name() == "buttonContinue")
+		if (cs->get_clicked_component_name() == "continue_button")
 		{
 			engine_state_machine::get()->change_state("game_state");
 			cs->clear_clicked_component_name();
 		}
-		else if (cs->get_clicked_component_name() == "buttonMenu")
+		else if (cs->get_clicked_component_name() == "menu_button")
 		{
 			engine_state_machine::get()->change_state("menu_state");
 			cs->clear_clicked_component_name();
@@ -114,7 +114,7 @@ void engine_state_machine::update(float delta_time)
 	else if (engine_state_machine::get()->get_current_state_type() == state_type::SETTINGS)
 	{
 		std::shared_ptr<clickable_system> cs = std::static_pointer_cast<clickable_system>(engine::get()->get_subsystem("clickable_system"));
-		if (cs->get_clicked_component_name() == "backButton")
+		if (cs->get_clicked_component_name() == "back_button")
 		{
 			engine_state_machine::get()->change_state("menu_state");
 			cs->clear_clicked_component_name();

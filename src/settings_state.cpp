@@ -52,7 +52,7 @@ void settings_state::initialise()
 	back_button_transform.scale.x = 100;
 	back_button_transform.scale.y = 50;
 	// Back button
-	auto back_button = entity_manager::get()->create_entity("backButton", state_type::SETTINGS, back_button_transform);
+	auto back_button = entity_manager::get()->create_entity("back_button", state_type::SETTINGS, back_button_transform);
 	back_button->add_component("render", renderer::get()->build_component(back_button, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/back_button.png", "rectangle", "Gouraud", simple_texture));
 	back_button->add_component("camera", camera_system::get()->build_component(back_button, camera_type::ORTHO));
 	back_button->add_component("clickable", clickable_system::get()->build_component(back_button, vec2(back_button_transform.x, -back_button_transform.y), back_button_transform.scale));
@@ -132,15 +132,15 @@ void settings_state::initialise()
 	resolution_left_arrow_transform.y = 180;
 
 	// Right arrow button for resolution
-	auto resolution_button_right = entity_manager::get()->create_entity("resolutionButtonRight", state_type::SETTINGS, resolution_right_arrow_transform);
+	auto resolution_button_right = entity_manager::get()->create_entity("resolution_arrow_right", state_type::SETTINGS, resolution_right_arrow_transform);
 	resolution_button_right->add_component("clickable", clickable_system::get()->build_component(resolution_button_right, glm::dvec2(resolution_right_arrow_transform.x, -resolution_right_arrow_transform.y), glm::dvec2(x_button_size, y_button_size)));
-	resolution_button_right->add_component("render", renderer::get()->build_component(resolution_button_right, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/arrow_right_transparent.png", "rectangle", "Gouraud", simple_texture));
+	resolution_button_right->add_component("render", renderer::get()->build_component(resolution_button_right, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/arrow_right.png", "rectangle", "Gouraud", simple_texture));
 	resolution_button_right->add_component("camera", camera_system::get()->build_component(resolution_button_right, camera_type::ORTHO));
 
 	// Left arrow button for resolution
-	auto resolution_button_left = entity_manager::get()->create_entity("resolutionButtonLeft", state_type::SETTINGS, resolution_left_arrow_transform);
+	auto resolution_button_left = entity_manager::get()->create_entity("resolution_arrow_left", state_type::SETTINGS, resolution_left_arrow_transform);
 	resolution_button_left->add_component("clickable", clickable_system::get()->build_component(resolution_button_left, glm::dvec2(resolution_left_arrow_transform.x, -resolution_left_arrow_transform.y), glm::dvec2(x_button_size, y_button_size)));
-	resolution_button_left->add_component("render", renderer::get()->build_component(resolution_button_left, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/arrow_left_transparent.png", "rectangle", "Gouraud", simple_texture));
+	resolution_button_left->add_component("render", renderer::get()->build_component(resolution_button_left, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/arrow_left.png", "rectangle", "Gouraud", simple_texture));
 	resolution_button_left->add_component("camera", camera_system::get()->build_component(resolution_button_left, camera_type::ORTHO));
 
 	// window mode right arrow trans
@@ -156,15 +156,15 @@ void settings_state::initialise()
 	window_mode_left_arrow_transform.y = 60;
 
 	// Right arrow button for window mode
-	auto window_mode_button_right = entity_manager::get()->create_entity("windowModeButtonRight", state_type::SETTINGS, window_mode_right_arrow_transform);
+	auto window_mode_button_right = entity_manager::get()->create_entity("window_mode_arrow_right", state_type::SETTINGS, window_mode_right_arrow_transform);
 	window_mode_button_right->add_component("clickable", clickable_system::get()->build_component(window_mode_button_right, glm::dvec2(window_mode_right_arrow_transform.x, -window_mode_right_arrow_transform.y), glm::dvec2(x_button_size, y_button_size)));
-	window_mode_button_right->add_component("render", renderer::get()->build_component(window_mode_button_right, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/arrow_right_transparent.png", "rectangle", "Gouraud", simple_texture));
+	window_mode_button_right->add_component("render", renderer::get()->build_component(window_mode_button_right, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/arrow_right.png", "rectangle", "Gouraud", simple_texture));
 	window_mode_button_right->add_component("camera", camera_system::get()->build_component(window_mode_button_right, camera_type::ORTHO));
 
 	// Left arrow button for window mode
-	auto window_mode_button_left = entity_manager::get()->create_entity("windowModeButtonLeft", state_type::SETTINGS, window_mode_left_arrow_transform);
+	auto window_mode_button_left = entity_manager::get()->create_entity("window_mode_arrow_left", state_type::SETTINGS, window_mode_left_arrow_transform);
 	window_mode_button_left->add_component("clickable", clickable_system::get()->build_component(window_mode_button_left, glm::dvec2(window_mode_left_arrow_transform.x, -window_mode_left_arrow_transform.y), glm::dvec2(x_button_size, y_button_size)));
-	window_mode_button_left->add_component("render", renderer::get()->build_component(window_mode_button_left, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/arrow_left_transparent.png", "rectangle", "Gouraud", simple_texture));
+	window_mode_button_left->add_component("render", renderer::get()->build_component(window_mode_button_left, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/arrow_left.png", "rectangle", "Gouraud", simple_texture));
 	window_mode_button_left->add_component("camera", camera_system::get()->build_component(window_mode_button_left, camera_type::ORTHO));
 
 	// move left trans
@@ -195,10 +195,14 @@ void settings_state::initialise()
 	key_move_left_transform.x = 90;
 	key_move_left_transform.y = -60;
 
+	std::string letter_left;
+	letter_left = (char)input_handler::get()->glfw_button_left;
+	std::string path_left = "res/textures/letters/" + letter_left + ".png";
+
 	// key move left
 	auto key_move_left = entity_manager::get()->create_entity("keyMoveLeft", state_type::SETTINGS, key_move_left_transform);
 	key_move_left->add_component("clickable", clickable_system::get()->build_component(key_move_left, glm::dvec2(key_move_left_transform.x, -key_move_left_transform.y), glm::dvec2(15, 15)));
-	key_move_left->add_component("render", renderer::get()->build_component(key_move_left, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/letters/A.png", "rectangle", "Gouraud", simple_texture));
+	key_move_left->add_component("render", renderer::get()->build_component(key_move_left, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), path_left, "rectangle", "Gouraud", simple_texture));
 	key_move_left->add_component("camera", camera_system::get()->build_component(key_move_left, camera_type::ORTHO));
 
 	// key move right trans
@@ -207,10 +211,14 @@ void settings_state::initialise()
 	key_move_right_transform.x = 90;
 	key_move_right_transform.y = -120;
 
+	std::string letter_right;
+	letter_right = (char)input_handler::get()->glfw_button_right;
+	std::string path_right = "res/textures/letters/" + letter_right + ".png";
+
 	// key move right
 	auto key_move_right = entity_manager::get()->create_entity("keyMoveRight", state_type::SETTINGS, key_move_right_transform);
 	key_move_right->add_component("clickable", clickable_system::get()->build_component(key_move_right, glm::dvec2(key_move_right_transform.x, -key_move_right_transform.y), glm::dvec2(15, 15)));
-	key_move_right->add_component("render", renderer::get()->build_component(key_move_right, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/letters/D.png", "rectangle", "Gouraud", simple_texture));
+	key_move_right->add_component("render", renderer::get()->build_component(key_move_right, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), path_right, "rectangle", "Gouraud", simple_texture));
 	key_move_right->add_component("camera", camera_system::get()->build_component(key_move_right, camera_type::ORTHO));
 
 	// Controls trans
@@ -260,15 +268,19 @@ void determine_screen_res(resolution &res)
 	{
 	case _1024x768:
 		glfwSetWindowSize(glfw::window, 1024, 768);
+		renderer::get()->change_texture(entity_manager::get()->get_entity("resolutionValue"), "res/textures/1024x768.png");
 		break;
 	case _1280x720:
 		glfwSetWindowSize(glfw::window, 1280, 720);
+		renderer::get()->change_texture(entity_manager::get()->get_entity("resolutionValue"), "res/textures/1280x720.png");
 		break;
 	case _1600x1200:
 		glfwSetWindowSize(glfw::window, 1600, 1200);
+		renderer::get()->change_texture(entity_manager::get()->get_entity("resolutionValue"), "res/textures/1600x1200.png");
 		break;
 	case _1920x1080:
 		glfwSetWindowSize(glfw::window, 1920, 1080);
+		renderer::get()->change_texture(entity_manager::get()->get_entity("resolutionValue"), "res/textures/1920x1080.png");
 		break;
 	}
 }
@@ -290,7 +302,7 @@ void settings_state::on_update(float delta_time)
 {
 	//std::cout << "********** SETTINGS DISPLAYED ****************" << std::endl;
 	std::shared_ptr<clickable_system> cs = std::static_pointer_cast<clickable_system>(engine::get()->get_subsystem("clickable_system"));
-	if (cs->get_clicked_component_name() == "resolutionButtonRight")
+	if (cs->get_clicked_component_name() == "resolution_arrow_right")
 	{
 		// Wrap around
 		switch (current_resolution)
@@ -314,7 +326,7 @@ void settings_state::on_update(float delta_time)
 		cs->clear_clicked_component_name();
 
 	}
-	else if (cs->get_clicked_component_name() == "resolutionButtonLeft")
+	else if (cs->get_clicked_component_name() == "resolution_arrow_left")
 	{
 		// Wrap around
 		switch (current_resolution)
@@ -336,10 +348,10 @@ void settings_state::on_update(float delta_time)
 
 		cs->clear_clicked_component_name();
 	}
-	else if (cs->get_clicked_component_name() == "windowModeButtonLeft")
+	else if (cs->get_clicked_component_name() == "window_mode_arrow_left")
 	{
 		// Wrap around
-		switch (current_resolution)
+		switch (current_window_mode)
 		{
 		case windowed:
 			current_window_mode = fullscreen;
@@ -351,10 +363,10 @@ void settings_state::on_update(float delta_time)
 		determine_window_mode(current_window_mode);
 		cs->clear_clicked_component_name();
 	}
-	else if (cs->get_clicked_component_name() == "windowModeButtonRight")
+	else if (cs->get_clicked_component_name() == "window_mode_arrow_right")
 	{
 		// Wrap around
-		switch (current_resolution)
+		switch (current_window_mode)
 		{
 		case windowed:
 			current_window_mode = fullscreen;
@@ -384,6 +396,12 @@ void settings_state::on_update(float delta_time)
 					break;
 				std::string letter;
 				letter = (char)latest_key_press;
+				std::cout << "res/textures/letters/" + letter + ".png" << std::endl;
+				// Update texture to new letter
+				if (latest_key_press >= 65 && latest_key_press <= 90)
+					renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/" + letter + ".png");
+				else
+					renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/question_mark.png");
 				std::ofstream user_pref_file;
 				// Open file and clear
 				user_pref_file.open("res/buttons.txt", std::ofstream::out | std::ofstream::trunc);
@@ -425,7 +443,12 @@ void settings_state::on_update(float delta_time)
 					break;
 				std::string letter;
 				letter = (char)latest_key_press;
-				//std::cout << "res/textures/" << letter << ".png" << std::endl;
+				std::cout << "res/textures/letters/" + letter + ".png" << std::endl;
+				// Update texture to new letter
+				if (latest_key_press >= 65 && latest_key_press <= 90)
+					renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/" + letter + ".png");
+				else
+					renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/question_mark.png");
 				std::ofstream user_pref_file;
 				// Open file and clear
 				user_pref_file.open("res/buttons.txt", std::ofstream::out | std::ofstream::trunc);

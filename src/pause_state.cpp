@@ -44,14 +44,14 @@ void pause_state::initialise()
 	int button_offset = 125;
 
 	// Continue button
-	auto button_continue = entity_manager::get()->create_entity("buttonContinue", state_type::PAUSE, continue_button_transform);
+	auto button_continue = entity_manager::get()->create_entity("continue_button", state_type::PAUSE, continue_button_transform);
 
 	button_continue->add_component("render", renderer::get()->build_component(button_continue, glm::vec4(0.0f, 0.0f,  0.0f, 1.0f), "res/textures/continue_button.png", "rectangle", "Gouraud", simple_texture));
 	button_continue->add_component("clickable", clickable_system::get()->build_component(button_continue, glm::dvec2(0, 0), glm::dvec2(x_button_size, y_button_size)));
 	button_continue->add_component("camera", camera_system::get()->build_component(button_continue, camera_type::ORTHO));
 
 	// Menu button
-	auto button_menu = entity_manager::get()->create_entity("buttonMenu", state_type::PAUSE, menu_button_transform);
+	auto button_menu = entity_manager::get()->create_entity("menu_button", state_type::PAUSE, menu_button_transform);
 	button_menu->add_component("render", renderer::get()->build_component(button_menu, glm::vec4(0.0f, 0.0f,  0.0f, 1.0f), "res/textures/menu_button.png", "rectangle", "Gouraud", simple_texture));
 	button_menu->add_component("clickable", clickable_system::get()->build_component(button_menu, glm::dvec2(0, 0 + button_offset), glm::dvec2(x_button_size, y_button_size)));
 	button_menu->add_component("camera", camera_system::get()->build_component(button_menu, camera_type::ORTHO));

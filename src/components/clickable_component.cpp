@@ -5,6 +5,7 @@ clickable_component::clickable_component(std::shared_ptr<entity>&e, clickable_da
 {
     _visible = false;
     _data.active = true;
+	_data.hover = false;
 }
 
 bool clickable_component::initialise()
