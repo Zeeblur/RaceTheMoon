@@ -15,11 +15,17 @@ enum window_mode
 	fullscreen,
 };
 
+enum settings_selection
+{
+	resolution_button,
+	window_mode_button
+};
+
 // Settings state
 class settings_state : public engine_state
 {
 private:
-
+	settings_selection selection;
 public:
 
 
