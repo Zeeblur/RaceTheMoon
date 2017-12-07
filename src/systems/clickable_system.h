@@ -9,7 +9,6 @@ private:
     std::vector<clickable_data> _data;
     clickable_system();
     std::string _latest_clicked_component;
-
 public:
 
     static std::shared_ptr<clickable_system> get();

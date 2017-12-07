@@ -1,6 +1,7 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include "menu_state.h"
 #include "entity_manager.h"
+#include "engine_state_machine.h"
 #include <iostream>
 void menu_state::initialise()
 {
@@ -14,7 +15,7 @@ void menu_state::initialise()
 	back_transform.z = -1;
 	auto background = entity_manager::get()->create_entity("background", state_type::MENU, back_transform);
 
-	background->add_component("render", renderer::get()->build_component(background, glm::vec4(0.0f, 0.0f,  0.0f, 1.0f), "res/textures/race_the_moon.png", "rectangle", "Gouraud", simple_texture));
+	background->add_component("render", renderer::get()->build_component(background, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/race_the_moon.png", "rectangle", "Gouraud", simple_texture));
 	background->add_component("camera", camera_system::get()->build_component(background, camera_type::ORTHO));
 
 	// Menu text transform
@@ -23,7 +24,7 @@ void menu_state::initialise()
 	menu_transform.y = y_size - 250;
 	// Menu
 	auto menu_text = entity_manager::get()->create_entity("mainMenu", state_type::MENU, menu_transform);
-	menu_text->add_component("render", renderer::get()->build_component(menu_text, glm::vec4(0.0f, 0.0f,  0.0f, 1.0f), "res/textures/play_button.png", "rectangle", "text", text));
+	menu_text->add_component("render", renderer::get()->build_component(menu_text, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/play_button.png", "rectangle", "text", text));
 	menu_text->add_component("text", text_system::get()->build_component(menu_text, "MAIN MENU"));
 
 	int x_button_size = 100;
@@ -43,13 +44,11 @@ void menu_state::initialise()
 	exit_button_transform.y = -125.0f;
 
 
-
-
 	// Y offset between buttons
 	int button_offset = 125;
 	// Play button
 	auto button_play = entity_manager::get()->create_entity("play_button", state_type::MENU, play_button_transform);
-	button_play->add_component("render", renderer::get()->build_component(button_play, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/play_button.png", "rectangle", "Gouraud", simple_texture));
+	button_play->add_component("render", renderer::get()->build_component(button_play, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/play_button_selected.png", "rectangle", "Gouraud", simple_texture));
 	button_play->add_component("clickable", clickable_system::get()->build_component(button_play, glm::dvec2(0, 0 - button_offset), glm::dvec2(x_button_size, y_button_size)));
 	button_play->add_component("camera", camera_system::get()->build_component(button_play, camera_type::ORTHO));
 
@@ -61,9 +60,12 @@ void menu_state::initialise()
 
 	// Exit button
 	auto button_exit = entity_manager::get()->create_entity("exit_button", state_type::MENU, exit_button_transform);
-	button_exit->add_component("render", renderer::get()->build_component(button_exit, glm::vec4(0.0f, 0.0f,  0.0f, 1.0f), "res/textures/exit_button.png", "rectangle", "Gouraud", simple_texture));
+	button_exit->add_component("render", renderer::get()->build_component(button_exit, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/exit_button.png", "rectangle", "Gouraud", simple_texture));
 	button_exit->add_component("clickable", clickable_system::get()->build_component(button_exit, glm::dvec2(0, 0 + button_offset), glm::dvec2(x_button_size, y_button_size)));
 	button_exit->add_component("camera", camera_system::get()->build_component(button_exit, camera_type::ORTHO));
+
+	// Default to play button
+	selection = menu_selection::play_button;
 }
 
 void menu_state::on_reset()
@@ -73,40 +75,134 @@ void menu_state::on_reset()
 
 void menu_state::on_enter()
 {
-    // Switch off entities, physics, renderer
-    auto m = engine::get()->get_subsystem("entity_manager");
-    // TODO: Should entity manager be enabled?
-    engine::get()->get_subsystem("entity_manager")->set_active(true);
-    engine::get()->get_subsystem("entity_manager")->set_visible(true);
-    engine::get()->get_subsystem("physics_system")->set_active(false);
-    engine::get()->get_subsystem("clickable_system")->set_active(true);
-    engine::get()->get_subsystem("renderer")->set_visible(true);
+	// Switch off entities, physics, renderer
+	auto m = engine::get()->get_subsystem("entity_manager");
+	// TODO: Should entity manager be enabled?
+	engine::get()->get_subsystem("entity_manager")->set_active(true);
+	engine::get()->get_subsystem("entity_manager")->set_visible(true);
+	engine::get()->get_subsystem("physics_system")->set_active(false);
+	engine::get()->get_subsystem("clickable_system")->set_active(true);
+	engine::get()->get_subsystem("renderer")->set_visible(true);
 
-    glfwSetInputMode(glfw::window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	glfwSetInputMode(glfw::window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
 	audio_system::get()->stop_music();
 	audio_system::get()->play_music(menu);
 
-    std::cout << "Entered menu state, press ENTER to go to game state" << std::endl;
+	std::cout << "Entered menu state, press ENTER to go to game state" << std::endl;
 }
 
 void menu_state::on_update(float delta_time)
 {
-	//std::shared_ptr<clickable_component> cc = std::dynamic_pointer_cast<clickable_component>(entity_manager::get()->get_entity("buttonPlay")->get_component("clickable"));
-	//if (cc.get()->_data.hover)
-	//{
-	//	renderer::get()->change_texture(entity_manager::get()->get_entity("play_button"), "res/textures/play_button_selected.png");
-	//	//std::cout << "HOVER" << std::endl;
-	//}
-	//else
-	//{
-	//	renderer::get()->change_texture(entity_manager::get()->get_entity("play_button"), "res/textures/play_button.png");
-	//	//std::cout << "NOT HOVER" << std::endl;
-	//}
-	
+	int present = glfwJoystickPresent(GLFW_JOYSTICK_1);
+
+	int count;
+	const unsigned char* axes = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
+	//std::cout << axes[10] << std::endl;
+	static char up_old_axis = GLFW_RELEASE;
+
+	// Handle input for up arrow
+	static int up_old_state = GLFW_RELEASE;
+	int up_state = glfwGetKey(glfw::window, GLFW_KEY_UP);
+
+	if ((up_state == GLFW_RELEASE && up_old_state == GLFW_PRESS) || (present && axes[10] == GLFW_RELEASE && up_old_axis == GLFW_PRESS))
+	{
+		switch (selection)
+		{
+		case play_button:
+			selection = exit_button;
+			// Set selected texture
+			renderer::get()->change_texture(entity_manager::get()->get_entity("exit_button"), "res/textures/exit_button_selected.png");
+			// Set normal texture for other two states
+			renderer::get()->change_texture(entity_manager::get()->get_entity("settings_button"), "res/textures/settings_button.png");
+			renderer::get()->change_texture(entity_manager::get()->get_entity("play_button"), "res/textures/play_button.png");
+			break;
+		case settings_button:
+			selection = play_button;
+			// Set selected texture
+			renderer::get()->change_texture(entity_manager::get()->get_entity("play_button"), "res/textures/play_button_selected.png");
+			// Set normal texture for other two states
+			renderer::get()->change_texture(entity_manager::get()->get_entity("settings_button"), "res/textures/settings_button.png");
+			renderer::get()->change_texture(entity_manager::get()->get_entity("exit_button"), "res/textures/exit_button.png");
+			break;
+		case exit_button:
+			selection = settings_button;
+			// Set selected texture
+			renderer::get()->change_texture(entity_manager::get()->get_entity("settings_button"), "res/textures/settings_button_selected.png");
+			// Set normal texture for other two states
+			renderer::get()->change_texture(entity_manager::get()->get_entity("play_button"), "res/textures/play_button.png");
+			renderer::get()->change_texture(entity_manager::get()->get_entity("exit_button"), "res/textures/exit_button.png");
+			break;
+		}
+		std::cout << selection << std::endl;
+	}
+	up_old_state = up_state;
+	up_old_axis = axes[10];
+
+	static char down_old_axis = GLFW_RELEASE;
+	// Handle input for down arrow
+	static int down_old_state = GLFW_RELEASE;
+	int down_state = glfwGetKey(glfw::window, GLFW_KEY_DOWN);
+
+	if ((down_state == GLFW_RELEASE && down_old_state == GLFW_PRESS) || (present && axes[12] == GLFW_RELEASE && down_old_axis == GLFW_PRESS))
+	{
+
+		switch (selection)
+		{
+		case play_button:
+			selection = settings_button;
+			// Set selected texture
+			renderer::get()->change_texture(entity_manager::get()->get_entity("settings_button"), "res/textures/settings_button_selected.png");
+			// Set normal texture for other two states
+			renderer::get()->change_texture(entity_manager::get()->get_entity("play_button"), "res/textures/play_button.png");
+			renderer::get()->change_texture(entity_manager::get()->get_entity("exit_button"), "res/textures/exit_button.png");
+			break;
+		case settings_button:
+			selection = exit_button;
+			// Set selected texture
+			renderer::get()->change_texture(entity_manager::get()->get_entity("exit_button"), "res/textures/exit_button_selected.png");
+			// Set normal texture for other two states
+			renderer::get()->change_texture(entity_manager::get()->get_entity("settings_button"), "res/textures/settings_button.png");
+			renderer::get()->change_texture(entity_manager::get()->get_entity("play_button"), "res/textures/play_button.png");
+			break;
+		case exit_button:
+			selection = play_button;
+			// Set selected texture
+			renderer::get()->change_texture(entity_manager::get()->get_entity("play_button"), "res/textures/play_button_selected.png");
+			// Set normal texture for other two states
+			renderer::get()->change_texture(entity_manager::get()->get_entity("settings_button"), "res/textures/settings_button.png");
+			renderer::get()->change_texture(entity_manager::get()->get_entity("exit_button"), "res/textures/exit_button.png");
+			break;
+		}
+		std::cout << selection << std::endl;
+	}
+	down_old_state = down_state;
+	down_old_axis = axes[12];
+
+	static char enter_joystick_old_state = GLFW_RELEASE;
+	static int enter_old_state = GLFW_RELEASE;
+	int enter_state = glfwGetKey(glfw::window, GLFW_KEY_ENTER);
+	if (enter_state == GLFW_RELEASE && enter_old_state == GLFW_PRESS || (present && axes[0] == GLFW_RELEASE && enter_joystick_old_state == GLFW_PRESS))
+	{
+		switch (selection)
+		{
+		case play_button:
+			engine_state_machine::get()->change_state("game_state", true);
+			break;
+		case settings_button:
+			engine_state_machine::get()->change_state("settings_state", true);
+			break;
+		case exit_button:
+			// Handle exit game logic here
+			engine::get()->set_running(false);
+			break;
+		}
+	}
+	enter_old_state = enter_state;
+	enter_joystick_old_state = axes[0];
 }
 
 void menu_state::on_exit()
 {
-    std::cout << "Exiting menu state" << std::endl;
+	std::cout << "Exiting menu state" << std::endl;
 }

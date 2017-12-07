@@ -101,19 +101,22 @@ void clickable_system::update(float delta_time)
 				}
 				else
 				{
-					d.hover = false;
-					std::shared_ptr<clickable_component> cc = std::dynamic_pointer_cast<clickable_component>(entity_manager::get()->get_entity(d.parent_name)->get_component("clickable"));
+					if (d.hover)
+					{
+						d.hover = false;
+						std::shared_ptr<clickable_component> cc = std::dynamic_pointer_cast<clickable_component>(entity_manager::get()->get_entity(d.parent_name)->get_component("clickable"));
 
-					if (d.parent_name.find("arrow_left") != std::string::npos)
-					{
-						renderer::get()->change_texture(entity_manager::get()->get_entity(d.parent_name), "res/textures/arrow_left.png");
+						if (d.parent_name.find("arrow_left") != std::string::npos)
+						{
+							renderer::get()->change_texture(entity_manager::get()->get_entity(d.parent_name), "res/textures/arrow_left.png");
+						}
+						else if (d.parent_name.find("arrow_right") != std::string::npos)
+						{
+							renderer::get()->change_texture(entity_manager::get()->get_entity(d.parent_name), "res/textures/arrow_right.png");
+						}
+						else
+							renderer::get()->change_texture(entity_manager::get()->get_entity(d.parent_name), "res/textures/" + d.parent_name + ".png");
 					}
-					else if (d.parent_name.find("arrow_right") != std::string::npos)
-					{
-						renderer::get()->change_texture(entity_manager::get()->get_entity(d.parent_name), "res/textures/arrow_right.png");
-					}
-					else
-						renderer::get()->change_texture(entity_manager::get()->get_entity(d.parent_name), "res/textures/" + d.parent_name + ".png");
 				}
 			}
         }
