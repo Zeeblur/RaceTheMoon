@@ -50,7 +50,7 @@ private:
 	// We'll also keep a reference to the parent entity
 	std::shared_ptr<entity> _parent;
 public:
-	collider_component(std::shared_ptr<entity> &e, std::shared_ptr<collider_data> &data);
+	collider_component(std::shared_ptr<entity> &e, std::shared_ptr<collider_data> data);
 
 	bool initialise() override final;
 

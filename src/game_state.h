@@ -6,8 +6,6 @@ class game_state : public engine_state
 {
 public:
 	void initialise();
-    
-    void bad_map(int iter, int iter2);
 
 	void on_reset();
 

@@ -444,25 +444,17 @@ namespace gl
 
 		};
 
-		//      // Colours
-			  //std::vector<glm::vec4> colours;
+	    // Colours
+		std::vector<glm::vec4> colours;
 
-			  //for (size_t i = 0; i < 6; i++)
-			  //{
-			  //	colours.push_back(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-			  //}
-
-			  //// Calculate the minimal and maximal
-	  //        mesh->min = mesh->positions[0];
-	  //        mesh->max = mesh->positions[0];
-	  //        for (auto &v : mesh->positions) {
-	  //        	mesh->min = glm::min(mesh->min, v);
-	  //        	mesh->max = glm::max(mesh->max, v);
-	  //        }
+		for (size_t i = 0; i < 6; i++)
+		{
+			colours.push_back(glm::vec4(0.80f, 0.8f, 0.8f, 1.0f));
+		}
 
 		mesh->positions = positions;
 		mesh->tex_coords = tex_coords;
-		//mesh->colours = colours;
+		mesh->colours = colours;
 
 		return mesh;
 	}
@@ -627,7 +619,7 @@ namespace gl
 			// Normal is one of the six defined.  Divide index by 4 to get the value
 			normals.push_back(box_normals[i / 6]);
 			// Set the colour to be Red
-			colours.push_back(glm::vec4(0.7f, 0.7f, 0.7f, 1.0f));
+			colours.push_back(glm::vec4(0.8f, 0.8f, 0.8f, 1.0f));
 		}
 		// Set minimal and maximal
 		mesh->min = minimal;
@@ -751,7 +743,7 @@ namespace gl
 
 		// Add colour data
 		for (auto &v : positions)
-			colours.push_back(glm::vec4(0.7f, 0.7f, 0.7f, 1.0f));
+			colours.push_back(glm::vec4(0.8f, 0.8f, 0.8f, 1.0f));
 
 
 		mesh->positions = positions;

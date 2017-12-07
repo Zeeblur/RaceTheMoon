@@ -45,7 +45,7 @@ collider_data::collider_data(transform_data trans, int behaviour)
 	//this->collider = std::move(col);
 }
 
-collider_component::collider_component(std::shared_ptr<entity> &e, std::shared_ptr<collider_data> &data)
+collider_component::collider_component(std::shared_ptr<entity> &e, std::shared_ptr<collider_data> data)
 	: _parent(e), _data(data)
 {
 	_visible = false;
@@ -90,6 +90,7 @@ void collider_component::render()
 
 void collider_component::unload_content()
 {
+	_data.reset();
 }
 
 void collider_component::shutdown()
