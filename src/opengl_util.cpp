@@ -657,6 +657,8 @@ namespace gl
 	{
 		// Type of geometry generated will be triangles
 		mesh_geom *mesh = new mesh_geom();
+
+        mesh->colliderType = 0;
 		//mesh->set_type(GL_TRIANGLES);
 		// Declare required buffers - positions, normals, texture coordinates and colour
 		std::vector<glm::vec3> positions;

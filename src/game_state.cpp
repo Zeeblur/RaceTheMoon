@@ -23,9 +23,17 @@ void game_state::initialise()
 	p->add_component("render", renderer::get()->build_component(p, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), "res/textures/floor.jpg", "plane", "Gouraud", phongDistance));
 
     auto levelGenerator = level_gen::get();
-	
-	// initial setup 4 puzzles
 
+    // Power-up
+    transform_data powerTrans;
+    powerTrans.scale = glm::vec3(8.0f, 6.0f, 8.0f);
+    powerTrans.y = 6.0f;
+    powerTrans.z = -40.0f;
+    auto pu1 = entity_manager::get()->create_entity("PowerUp", this->type, powerTrans);
+    pu1->add_component("physics", physics_system::get()->build_component(pu1));
+    pu1->add_component("ai", ai_system::get()->build_component(pu1, UPTHENDOWN, 6.0f, 8.0f));
+    pu1->add_component("render", renderer::get()->build_component(pu1, glm::vec4(1.0f), "res/textures/concrete.jpg", "sphere", "Gouraud", phong));
+    pu1->add_component("collider", physics_system::get()->build_collider_component(pu1, colType::POWER));
 
     // Adding moon sphere
     transform_data moonTrans;
@@ -51,7 +59,7 @@ void game_state::initialise()
 
 
 	transform_data batTrans;
-	batTrans.y = 1.0f;
+    batTrans.y = 1.0f;
 	batTrans.scale = glm::vec3(0.5f, 0.5f, 0.5f);
 	batTrans.rotation = glm::angleAxis(90.0f, glm::vec3(1.0f, 0.0f, 0.0f)) * glm::angleAxis(radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
@@ -61,7 +69,7 @@ void game_state::initialise()
 	e->add_component("input", input_handler::get()->build_component(e));
 	e->add_component("render", renderer::get()->build_component(e, glm::vec4(0.5f, 0.2f, 0.05f, 1.0f), "res/textures/bat.jpg", "res/models/bat.obj", "Gouraud", phong));
 	e->add_component("camera", camera_system::get()->build_component(e, camera_type::CHASE));
-	e->add_component("collider", physics_system::get()->build_collider_component(e));
+	e->add_component("collider", physics_system::get()->build_collider_component(e, colType::PLAYER));
     e->add_component("score", score_system::get()->build_component(e));
 
 

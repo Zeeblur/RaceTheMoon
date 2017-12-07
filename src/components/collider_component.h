@@ -36,7 +36,9 @@ struct collider_data
     colType behaviour_;
 	bool active = false;
 	std::shared_ptr<collider_base> collider;
-	collider_data(transform_data trans, int behaviour = 0);
+    bool shield = false;
+    std::string name_ = "";
+	collider_data(transform_data trans, int behaviour = 0, std::string name_ = "");
     ~collider_data() = default;
 };
 
