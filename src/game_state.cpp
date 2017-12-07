@@ -22,18 +22,29 @@ void game_state::initialise()
 	p->add_component("physics", physics_system::get()->build_component(p));
 	p->add_component("render", renderer::get()->build_component(p, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), "res/textures/floor.jpg", "plane", "Gouraud", phongDistance));
 
-    auto levelGenerator = level_gen::get();
+    //auto levelGenerator = level_gen::get();
 
-    // Power-up
-    transform_data powerTrans;
-    powerTrans.scale = glm::vec3(8.0f, 6.0f, 8.0f);
-    powerTrans.y = 6.0f;
-    powerTrans.z = -40.0f;
-    auto pu1 = entity_manager::get()->create_entity("PowerUp", this->type, powerTrans);
-    pu1->add_component("physics", physics_system::get()->build_component(pu1));
-    pu1->add_component("ai", ai_system::get()->build_component(pu1, UPTHENDOWN, 6.0f, 8.0f));
-    pu1->add_component("render", renderer::get()->build_component(pu1, glm::vec4(1.0f), "res/textures/concrete.jpg", "sphere", "Gouraud", phong));
-    pu1->add_component("collider", physics_system::get()->build_collider_component(pu1, colType::POWER));
+    // Shield Power-up
+    transform_data shieldTrans;
+    shieldTrans.scale = glm::vec3(8.0f, 6.0f, 8.0f);
+    shieldTrans.y = 6.0f;
+    shieldTrans.z = -40.0f;
+    auto spu = entity_manager::get()->create_entity("ShieldPowerUp", this->type, shieldTrans);
+    spu->add_component("physics", physics_system::get()->build_component(spu));
+    spu->add_component("ai", ai_system::get()->build_component(spu, UPTHENDOWN, 6.0f, 8.0f));
+    spu->add_component("render", renderer::get()->build_component(spu, glm::vec4(1.0f), "res/textures/score_power_up.jpg", "sphere", "Gouraud", phong));
+    spu->add_component("collider", physics_system::get()->build_collider_component(spu, colType::SHIELD));
+
+    // Points Power-up
+    transform_data pointsTrans;
+    pointsTrans.scale = glm::vec3(8.0f, 6.0f, 8.0f);
+    pointsTrans.y = 6.0f;
+    pointsTrans.z = -40.0f;
+    auto ppu = entity_manager::get()->create_entity("PowerUp", this->type, pointsTrans);
+    ppu->add_component("physics", physics_system::get()->build_component(ppu));
+    ppu->add_component("ai", ai_system::get()->build_component(ppu, UPTHENDOWN, 6.0f, 8.0f));
+    ppu->add_component("render", renderer::get()->build_component(ppu, glm::vec4(1.0f), "res/textures/score_power_up.jpg", "sphere", "Gouraud", phong));
+    ppu->add_component("collider", physics_system::get()->build_collider_component(ppu, colType::POINTS));
 
     // Adding moon sphere
     transform_data moonTrans;

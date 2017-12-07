@@ -27,7 +27,8 @@ struct sphere : public collider_base
 enum colType
 {
     DAMAGE,
-    POWER,
+    SHIELD,
+    POINTS,
     PLAYER
 };
 

@@ -47,4 +47,6 @@ public:
     void hurt();
 
     void addScore();
+
+    void addPointsPowerUp();
 };

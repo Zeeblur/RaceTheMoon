@@ -59,6 +59,14 @@ void score_system::addScore()
 	}
 }
 
+void score_system::addPointsPowerUp()
+{
+    for (auto &d : _data)
+    {
+        d->score + 100;
+    }
+}
+
 void score_system::update(float delta_time)
 {
 	totalTime += (delta_time);
