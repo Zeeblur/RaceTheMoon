@@ -71,4 +71,6 @@ public:
     virtual void shutdown() = 0;
 
     virtual void hurt(){};
+
+    virtual void addPointsPowerUp(){};
 };

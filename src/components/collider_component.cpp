@@ -1,6 +1,6 @@
 #include "collider_component.h"
 
-collider_data::collider_data(transform_data trans, int behaviour)
+collider_data::collider_data(transform_data trans, int behaviour, std::string name)
 {
 
     behaviour_ = (colType)behaviour;
@@ -40,6 +40,8 @@ collider_data::collider_data(transform_data trans, int behaviour)
 	this->collider->centerPoint.x = trans.x;
 	this->collider->centerPoint.y = trans.y;
 	this->collider->centerPoint.z = trans.z;
+
+    name_ = name;
 
 
 	//this->collider = std::move(col);

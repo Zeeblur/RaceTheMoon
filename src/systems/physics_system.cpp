@@ -8,6 +8,9 @@
 
 using namespace glm;
 
+bool hasShield = false;
+float timeOfShield = 0.0f;
+
 physics_system::physics_system()
 {
     _visible = false;
@@ -29,23 +32,37 @@ std::shared_ptr<physics_component> physics_system::build_component(std::shared_p
 	return std::make_shared<physics_component>(e, d);
 }
 
-std::shared_ptr<collider_component> physics_system::build_collider_component(std::shared_ptr<entity> e)
+std::shared_ptr<collider_component> physics_system::build_collider_component(std::shared_ptr<entity> e, colType c)
 {
     auto ree = e->get_trans();
 
-    if (e->get_name() == "Bat")
+    if (c == colType::PLAYER)
     {
 
-        std::shared_ptr<collider_data> cd = std::make_shared<collider_data>(collider_data(e->get_trans(), colType::PLAYER));
+        std::shared_ptr<collider_data> cd = std::make_shared<collider_data>(e->get_trans(), colType::PLAYER, e->get_name());
 
         _bat_collider = std::ref(cd);
         return std::make_shared<collider_component>(e, _bat_collider);
     }
-    else
+    else if (c == colType::DAMAGE)
     {
-        auto cd = std::make_shared<collider_data>(e->get_trans(), colType::DAMAGE);
+        auto cd = std::make_shared<collider_data>(e->get_trans(), colType::DAMAGE, e->get_name());
 
-		
+        _collider_data.push_back(cd);
+        return std::make_shared<collider_component>(e, std::move(cd));
+    }
+
+    else if (c == colType::SHIELD)
+    {
+        auto cd = std::make_shared<collider_data>(e->get_trans(), colType::SHIELD, e->get_name());
+
+        _collider_data.push_back(cd);
+        return std::make_shared<collider_component>(e, std::move(cd));
+    }
+    else if (c == colType::POINTS)
+    {
+        auto cd = std::make_shared<collider_data>(e->get_trans(), colType::POINTS, e->get_name());
+
         _collider_data.push_back(cd);
         return std::make_shared<collider_component>(e, std::move(cd));
     }
@@ -164,9 +181,23 @@ void collision(void* col1, void* batCol)
 
     bool col = is_colliding(_obstacle->collider.get(), _bat_collider->collider.get());
 
-    if (col)
+    if (col && _bat_collider->shield == false && _obstacle->behaviour_ == colType::DAMAGE)
     {
         engine::get()->get_subsystem("score_system")->hurt();
+    }
+    else if (col && _bat_collider->shield == true && _obstacle->behaviour_ == colType::DAMAGE)
+    {
+        timeOfShield++;
+    }
+    else if (col && _obstacle->behaviour_ == colType::SHIELD)
+    {
+        entity_manager::get()->delete_entity(_obstacle->name_);
+        _bat_collider->shield = true;
+    }
+    else if (col && _obstacle->behaviour_ == colType::POINTS)
+    {
+        entity_manager::get()->delete_entity(_obstacle->name_);
+        engine::get()->get_subsystem("score_system")->addPointsPowerUp();
     }
 }
 
@@ -181,12 +212,14 @@ void physics_system::update(float delta_time)
             thread_pool::get()->add_job(thread_pool::get()->makeTask(moveTask, &d, &delta_time));
         }
     }
-
     for (auto &c : _collider_data)
     {
-		if (!c.expired())
-			thread_pool::get()->add_job(thread_pool::get()->makeTask(collision, &c, &_bat_collider));
+        if (!c.expired())
+            thread_pool::get()->add_job(thread_pool::get()->makeTask(collision, &c, &_bat_collider));
     }
+
+    if (timeOfShield > 50.0f)
+        _bat_collider->shield = false;
 
 }
 
