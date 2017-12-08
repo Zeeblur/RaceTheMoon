@@ -136,8 +136,7 @@ void menu_state::on_update(float delta_time)
 		}
 		std::cout << selection << std::endl;
 	}
-	up_old_state = up_state;
-	up_old_axis = axes[10];
+	
 
 	static char down_old_axis = GLFW_RELEASE;
 	// Handle input for down arrow
@@ -176,8 +175,7 @@ void menu_state::on_update(float delta_time)
 		}
 		std::cout << selection << std::endl;
 	}
-	down_old_state = down_state;
-	down_old_axis = axes[12];
+
 
 	static char enter_joystick_old_state = GLFW_RELEASE;
 	static int enter_old_state = GLFW_RELEASE;
@@ -198,8 +196,17 @@ void menu_state::on_update(float delta_time)
 			break;
 		}
 	}
+	up_old_state = up_state;
+	down_old_state = down_state;
 	enter_old_state = enter_state;
-	enter_joystick_old_state = axes[0];
+
+	if (present)
+	{
+		up_old_axis = axes[10];
+		down_old_axis = axes[12];
+		enter_joystick_old_state = axes[0];
+	}
+	
 }
 
 void menu_state::on_exit()
