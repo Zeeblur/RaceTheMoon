@@ -20,7 +20,7 @@ private:
     std::shared_ptr<collider_data> _bat_collider;
 
     // Shield bool for shieldpowerup, used to turn off bat collisions.
-    //bool _hasShield = true;
+    bool shield = false;
 
 
     physics_system();
@@ -49,10 +49,6 @@ public:
 
     std::shared_ptr<collider_component> build_collider_component(std::shared_ptr<entity> e, colType c);
 
-   // bool get_shield_bool();
-
-   // void set_shield_bool(bool shield);
-
     bool initialise() override final;
 
     bool load_content() override final;
@@ -70,3 +66,5 @@ public:
 
     float maxSpeed = 2.0f * moveScale;
 };
+
+static bool _hasShield;

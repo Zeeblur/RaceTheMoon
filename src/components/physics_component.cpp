@@ -4,7 +4,7 @@
 
 #include "physics_component.h"
 
-physics_data::physics_data(transform_data trans) : x(trans.x), y(trans.y), z(trans.z), rotation(trans.rotation), _orig_trans(trans)
+physics_data::physics_data(transform_data trans, std::string name_) : x(trans.x), y(trans.y), z(trans.z), rotation(trans.rotation), _orig_trans(trans), name_(name_)
 {}
 
 void physics_data::reset_data()

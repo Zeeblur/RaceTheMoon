@@ -29,8 +29,11 @@ enum colType
     DAMAGE,
     SHIELD,
     POINTS,
+    MINIBAT,
+    SPEED,
     PLAYER
 };
+
 
 struct collider_data
 {
@@ -38,6 +41,11 @@ struct collider_data
 	bool active = false;
 	std::shared_ptr<collider_base> collider;
     bool shield = false;
+    float timeOfShield = 0.0f;
+    bool shrunk = false;
+    float shrunkTimer = 0.0f;
+    bool speed = false;
+    float speedTimer = 0.0f;
     std::string name_ = "";
 	collider_data(transform_data trans, int behaviour = 0, std::string name_ = "");
     ~collider_data() = default;

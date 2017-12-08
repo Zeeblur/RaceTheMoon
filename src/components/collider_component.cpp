@@ -14,6 +14,8 @@ collider_data::collider_data(transform_data trans, int behaviour, std::string na
             auto maxScale = glm::max(trans.scale.x, trans.scale.y);
             maxScale = glm::max(maxScale, trans.scale.z);
             c->radius *= maxScale;
+            // hardocde fix for collision size of bat, we cool zoe? - beej
+            c->radius *= 0.75;
 
 			this->collider.reset(c);
 
