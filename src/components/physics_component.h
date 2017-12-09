@@ -13,6 +13,7 @@ struct physics_data
 {
 	transform_data _orig_trans;
     bool active = false;
+    std::string name_ = "";
     float x = 0.0f;
     float y = 0.0f;
     float z = 0.0f;
@@ -20,7 +21,7 @@ struct physics_data
 	glm::quat rotateby = glm::quat();
     glm::vec3 currentVelocity = glm::vec3(0.0f, 0.0f, 0.0f);
     bool moveRequest = false;
-	physics_data(transform_data trans);
+    physics_data(transform_data trans, std::string name_ = "");
 	void reset_data();
 };
 

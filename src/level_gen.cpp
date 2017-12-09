@@ -190,6 +190,48 @@ void level_gen::addWaterfallPuzzle(int blockIdx)
 
 	levelGenInstance->puzzleBlocks[blockIdx].push_back((w8));
 
+    // Points Power-up 1
+    transform_data points1Trans;
+    points1Trans.scale = glm::vec3(8.0f, 6.0f, 8.0f);
+    points1Trans.x = -150.0f;
+    points1Trans.y = 6.0f;
+    points1Trans.z = blockIdx + 60.0f;
+    auto ppu1 = entity_manager::get()->create_entity("PointsPowerUp1" + std::to_string(blockIdx), state_type::GAME, points1Trans);
+    ppu1->add_component("physics", physics_system::get()->build_component(ppu1));
+    ppu1->add_component("ai", ai_system::get()->build_component(ppu1, UPTHENDOWN, 6.0f, 8.0f));
+    ppu1->add_component("render", renderer::get()->build_component(ppu1, glm::vec4(1.0f), "res/textures/score_power_up.jpg", "sphere", "Gouraud", phong));
+    ppu1->add_component("collider", physics_system::get()->build_collider_component(ppu1, colType::POINTS));
+
+    levelGenInstance->puzzleBlocks[blockIdx].push_back((ppu1));
+
+    // Points Power-up 2
+    transform_data points2Trans;
+    points2Trans.scale = glm::vec3(8.0f, 6.0f, 8.0f);
+    points2Trans.x = -140.0f;
+    points2Trans.y = 6.0f;
+    points2Trans.z = blockIdx + 80.0f;
+    auto ppu2 = entity_manager::get()->create_entity("PointsPowerUp2" + std::to_string(blockIdx), state_type::GAME, points2Trans);
+    ppu2->add_component("physics", physics_system::get()->build_component(ppu2));
+    ppu2->add_component("ai", ai_system::get()->build_component(ppu2, UPTHENDOWN, 6.0f, 8.0f));
+    ppu2->add_component("render", renderer::get()->build_component(ppu2, glm::vec4(1.0f), "res/textures/score_power_up.jpg", "sphere", "Gouraud", phong));
+    ppu2->add_component("collider", physics_system::get()->build_collider_component(ppu2, colType::POINTS));
+
+    levelGenInstance->puzzleBlocks[blockIdx].push_back((ppu2));
+
+    // Speed Power-up
+    transform_data speedTrans;
+    speedTrans.scale = glm::vec3(8.0f, 6.0f, 8.0f);
+    speedTrans.x = -80.0f;
+    speedTrans.y = 6.0f;
+    speedTrans.z = blockIdx + 150.0f;
+    auto sppu = entity_manager::get()->create_entity("SpeedPowerUp" + std::to_string(blockIdx), state_type::GAME, speedTrans);
+    sppu->add_component("physics", physics_system::get()->build_component(sppu));
+    sppu->add_component("ai", ai_system::get()->build_component(sppu, UPTHENDOWN, 6.0f, 8.0f));
+    sppu->add_component("render", renderer::get()->build_component(sppu, glm::vec4(1.0f), "res/textures/speed_power_up.jpg", "sphere", "Gouraud", phong));
+    sppu->add_component("collider", physics_system::get()->build_collider_component(sppu, colType::SPEED));
+
+    levelGenInstance->puzzleBlocks[blockIdx].push_back((sppu));
+
     //Right wall piece
     transform_data waterfallRightWallTrans;
     waterfallRightWallTrans.scale = glm::vec3(10.0f, 20.0f, 400.0f);
@@ -220,6 +262,20 @@ void level_gen::addCrusher(int blockIdx)
     cL->add_component("collider", physics_system::get()->build_collider_component(cL, colType::DAMAGE));
 
 	levelGenInstance->puzzleBlocks[blockIdx].push_back((cL));
+
+    // Shield Power-up
+    transform_data shieldTrans;
+    shieldTrans.scale = glm::vec3(8.0f, 6.0f, 8.0f);
+    shieldTrans.x = -100.0f;
+    shieldTrans.y = 6.0f;
+    shieldTrans.z = blockIdx + 140.0f;
+    auto spu = entity_manager::get()->create_entity("ShieldPowerUp" + std::to_string(blockIdx), state_type::GAME, shieldTrans);
+    spu->add_component("physics", physics_system::get()->build_component(spu));
+    spu->add_component("ai", ai_system::get()->build_component(spu, UPTHENDOWN, 6.0f, 8.0f));
+    spu->add_component("render", renderer::get()->build_component(spu, glm::vec4(1.0f), "res/textures/shield_power_up.jpg", "sphere", "Gouraud", phong));
+    spu->add_component("collider", physics_system::get()->build_collider_component(spu, colType::SHIELD));
+
+    levelGenInstance->puzzleBlocks[blockIdx].push_back((spu));
 
     // Adding crusher left 1
     transform_data crusherL1Ttrans;
@@ -333,6 +389,48 @@ void level_gen::addCrusher(int blockIdx)
 
 	levelGenInstance->puzzleBlocks[blockIdx].push_back((cR4));
 
+    // Points Power-up 1
+    transform_data points1Trans;
+    points1Trans.scale = glm::vec3(8.0f, 6.0f, 8.0f);
+    points1Trans.x = 90.0f;
+    points1Trans.y = 6.0f;
+    points1Trans.z = blockIdx -40.0f;
+    auto ppu1 = entity_manager::get()->create_entity("PointsPowerUp1" + std::to_string(blockIdx), state_type::GAME, points1Trans);
+    ppu1->add_component("physics", physics_system::get()->build_component(ppu1));
+    ppu1->add_component("ai", ai_system::get()->build_component(ppu1, UPTHENDOWN, 6.0f, 8.0f));
+    ppu1->add_component("render", renderer::get()->build_component(ppu1, glm::vec4(1.0f), "res/textures/score_power_up.jpg", "sphere", "Gouraud", phong));
+    ppu1->add_component("collider", physics_system::get()->build_collider_component(ppu1, colType::POINTS));
+
+    levelGenInstance->puzzleBlocks[blockIdx].push_back((ppu1));
+
+    // Points Power-up 2
+    transform_data points2Trans;
+    points2Trans.scale = glm::vec3(8.0f, 6.0f, 8.0f);
+    points2Trans.x = 140.0f;
+    points2Trans.y = 6.0f;
+    points2Trans.z = blockIdx -100.0f;
+    auto ppu2 = entity_manager::get()->create_entity("PointsPowerUp2" + std::to_string(blockIdx), state_type::GAME, points2Trans);
+    ppu2->add_component("physics", physics_system::get()->build_component(ppu2));
+    ppu2->add_component("ai", ai_system::get()->build_component(ppu2, UPTHENDOWN, 6.0f, 8.0f));
+    ppu2->add_component("render", renderer::get()->build_component(ppu2, glm::vec4(1.0f), "res/textures/score_power_up.jpg", "sphere", "Gouraud", phong));
+    ppu2->add_component("collider", physics_system::get()->build_collider_component(ppu2, colType::POINTS));
+
+    levelGenInstance->puzzleBlocks[blockIdx].push_back((ppu2));
+
+    // Points Power-up 3
+    transform_data points3Trans;
+    points3Trans.scale = glm::vec3(8.0f, 6.0f, 8.0f);
+    points3Trans.x = 110.0f;
+    points3Trans.y = 6.0f;
+    points3Trans.z = blockIdx - 120.0f;
+    auto ppu3 = entity_manager::get()->create_entity("PointsPowerUp3" + std::to_string(blockIdx), state_type::GAME, points3Trans);
+    ppu3->add_component("physics", physics_system::get()->build_component(ppu3));
+    ppu3->add_component("ai", ai_system::get()->build_component(ppu3, UPTHENDOWN, 6.0f, 8.0f));
+    ppu3->add_component("render", renderer::get()->build_component(ppu3, glm::vec4(1.0f), "res/textures/score_power_up.jpg", "sphere", "Gouraud", phong));
+    ppu3->add_component("collider", physics_system::get()->build_collider_component(ppu3, colType::POINTS));
+
+    levelGenInstance->puzzleBlocks[blockIdx].push_back((ppu3));
+
     //Right wall piece
     transform_data crusherRightWallTrans;
     crusherRightWallTrans.scale = glm::vec3(10.0f, 20.0f, 400.0f);
@@ -363,6 +461,20 @@ void level_gen::addSnakeBalls(int blockIdx)
 	sL->add_component("collider", physics_system::get()->build_collider_component(sL, colType::DAMAGE));
 
 	levelGenInstance->puzzleBlocks[blockIdx].push_back((sL));
+
+    // Minibat Power-up
+    transform_data minibatTrans;
+    minibatTrans.scale = glm::vec3(8.0f, 6.0f, 8.0f);
+    minibatTrans.x = 50.0f;
+    minibatTrans.y = 6.0f;
+    minibatTrans.z = blockIdx + 200.0f;
+    auto mpu = entity_manager::get()->create_entity("MinibatPowerUp" + std::to_string(blockIdx), state_type::GAME, minibatTrans);
+    mpu->add_component("physics", physics_system::get()->build_component(mpu));
+    mpu->add_component("ai", ai_system::get()->build_component(mpu, UPTHENDOWN, 6.0f, 8.0f));
+    mpu->add_component("render", renderer::get()->build_component(mpu, glm::vec4(1.0f), "res/textures/minibat_power_up.jpg", "sphere", "Gouraud", phong));
+    mpu->add_component("collider", physics_system::get()->build_collider_component(mpu, colType::MINIBAT));
+
+    levelGenInstance->puzzleBlocks[blockIdx].push_back((mpu));
 
 	// Ball 1
 	transform_data snakeBall1;
@@ -476,6 +588,46 @@ void level_gen::addSnakeBalls(int blockIdx)
 	sB8->add_component("collider", physics_system::get()->build_collider_component(sB8, colType::DAMAGE));
 
 	levelGenInstance->puzzleBlocks[blockIdx].push_back((sB8));
+
+    // Points Power-up 1
+    transform_data points1Trans;
+    points1Trans.scale = glm::vec3(8.0f, 6.0f, 8.0f);
+    points1Trans.x = -200.0f;
+    points1Trans.y = 6.0f;
+    points1Trans.z = blockIdx + 40.0f;
+    auto ppu1 = entity_manager::get()->create_entity("PointsPowerUp1" + std::to_string(blockIdx), state_type::GAME, points1Trans);
+    ppu1->add_component("physics", physics_system::get()->build_component(ppu1));
+    ppu1->add_component("ai", ai_system::get()->build_component(ppu1, UPTHENDOWN, 6.0f, 8.0f));
+    ppu1->add_component("render", renderer::get()->build_component(ppu1, glm::vec4(1.0f), "res/textures/score_power_up.jpg", "sphere", "Gouraud", phong));
+    ppu1->add_component("collider", physics_system::get()->build_collider_component(ppu1, colType::POINTS));
+
+    levelGenInstance->puzzleBlocks[blockIdx].push_back((ppu1));
+
+    // Points Power-up 2
+    transform_data points2Trans;
+    points2Trans.scale = glm::vec3(8.0f, 6.0f, 8.0f);
+    points2Trans.x = -10.0f;
+    points2Trans.y = 6.0f;
+    points2Trans.z = blockIdx + 150.0f;
+    auto ppu2 = entity_manager::get()->create_entity("PointsPowerUp2" + std::to_string(blockIdx), state_type::GAME, points2Trans);
+    ppu2->add_component("physics", physics_system::get()->build_component(ppu2));
+    ppu2->add_component("ai", ai_system::get()->build_component(ppu2, UPTHENDOWN, 6.0f, 8.0f));
+    ppu2->add_component("render", renderer::get()->build_component(ppu2, glm::vec4(1.0f), "res/textures/score_power_up.jpg", "sphere", "Gouraud", phong));
+    ppu2->add_component("collider", physics_system::get()->build_collider_component(ppu2, colType::POINTS));
+
+    levelGenInstance->puzzleBlocks[blockIdx].push_back((ppu2));
+
+    // Points Power-up 3
+    transform_data points3Trans;
+    points3Trans.scale = glm::vec3(8.0f, 6.0f, 8.0f);
+    points3Trans.x = 20.0f;
+    points3Trans.y = 6.0f;
+    points3Trans.z = blockIdx + 50.0f;
+    auto ppu3 = entity_manager::get()->create_entity("PointsPowerUp3" + std::to_string(blockIdx), state_type::GAME, points3Trans);
+    ppu3->add_component("physics", physics_system::get()->build_component(ppu3));
+    ppu3->add_component("ai", ai_system::get()->build_component(ppu3, UPTHENDOWN, 6.0f, 8.0f));
+    ppu3->add_component("render", renderer::get()->build_component(ppu3, glm::vec4(1.0f), "res/textures/score_power_up.jpg", "sphere", "Gouraud", phong));
+    ppu3->add_component("collider", physics_system::get()->build_collider_component(ppu3, colType::POINTS));
 
 	//Right wall piece
 	transform_data snakeRightWall;

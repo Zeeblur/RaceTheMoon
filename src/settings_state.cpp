@@ -300,6 +300,100 @@ void determine_window_mode(window_mode &window_mode)
 	}
 }
 
+void handle_remap_key_left()
+{
+	glfwSetKeyCallback(glfw::window, key_callback);
+	// Update prompt
+	std::shared_ptr<text_component> tc = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity("help_text")->get_component("text"));
+	tc->_data->text = "Assign key, ESC to cancel...";
+	// Force render before going into the while loop.
+	renderer::get()->render();
+	while (true)
+	{
+		// Check for events
+		glfwPollEvents();
+		if (latest_key_press != -1)
+		{
+			if (latest_key_press == GLFW_KEY_ESCAPE)
+				break;
+			std::string letter;
+			letter = (char)latest_key_press;
+			std::cout << "res/textures/letters/" + letter + ".png" << std::endl;
+			// Update texture to new letter
+			if (latest_key_press >= 65 && latest_key_press <= 90)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/" + letter + ".png");
+			else
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/question_mark.png");
+			std::ofstream user_pref_file;
+			// Open file and clear
+			user_pref_file.open("res/buttons.txt", std::ofstream::out | std::ofstream::trunc);
+			if (user_pref_file.is_open())
+			{
+				// Add new button and old buttons
+				user_pref_file << "Left: " << latest_key_press << "\n";
+				user_pref_file << "Right: " << input_handler::get()->glfw_button_right << "\n";
+				user_pref_file << "Front: " << input_handler::get()->glfw_button_up << "\n";
+				user_pref_file << "Back: " << input_handler::get()->glfw_button_down << "\n";
+			}
+			// Close
+			user_pref_file.close();
+			// Re-load input keys
+			input_handler::get()->load_input_settings();
+			// Remove actuall callback
+			glfwSetKeyCallback(glfw::window, key_callback_fake);
+			break;
+		}
+	}
+}
+
+void handle_remap_key_right()
+{
+	glfwSetKeyCallback(glfw::window, key_callback);
+	// Update prompt
+	std::shared_ptr<text_component> tc = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity("help_text")->get_component("text"));
+	tc->_data->text = "Assign key, ESC to cancel...";
+	// Force render before going into the while loop.
+	renderer::get()->render();
+	while (true)
+	{
+		// Check for events
+		glfwPollEvents();
+
+		if (latest_key_press != -1)
+		{
+			if (latest_key_press == GLFW_KEY_ESCAPE)
+				break;
+			std::string letter;
+			letter = (char)latest_key_press;
+			std::cout << "res/textures/letters/" + letter + ".png" << std::endl;
+			// Update texture to new letter
+			if (latest_key_press >= 65 && latest_key_press <= 90)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/" + letter + ".png");
+			else
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/question_mark.png");
+			std::ofstream user_pref_file;
+			// Open file and clear
+			user_pref_file.open("res/buttons.txt", std::ofstream::out | std::ofstream::trunc);
+			if (user_pref_file.is_open())
+			{
+				// Add new button and old buttons
+				user_pref_file << "Left: " << input_handler::get()->glfw_button_left << "\n";
+				user_pref_file << "Right: " << latest_key_press << "\n";
+				user_pref_file << "Front: " << input_handler::get()->glfw_button_up << "\n";
+				user_pref_file << "Back: " << input_handler::get()->glfw_button_down << "\n";
+			}
+			// Close
+			user_pref_file.close();
+			// Re-load input keys
+			input_handler::get()->load_input_settings();
+			// Remove actuall callback
+			glfwSetKeyCallback(glfw::window, key_callback_fake);
+			break;
+		}
+
+	}
+}
+
 void settings_state::on_update(float delta_time)
 {
 	int present = glfwJoystickPresent(GLFW_JOYSTICK_1);
@@ -339,7 +433,7 @@ void settings_state::on_update(float delta_time)
 			if (input_handler::get()->glfw_button_right >= 65 && input_handler::get()->glfw_button_right <= 90)
 				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/" + letter_left + ".png");
 			else
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/question_mark.png");
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/question_mark.png");
 			break;
 		case move_right_button:
 			selection = move_left_button;
@@ -473,6 +567,7 @@ void settings_state::on_update(float delta_time)
 				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/" + letter_right + ".png");
 			else
 				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/question_mark.png");
+			break;
 		case move_left_button:
 			selection = move_right_button;
 			// Update texture to new letter
@@ -545,6 +640,12 @@ void settings_state::on_update(float delta_time)
 		{
 		case back_button:
 			engine_state_machine::get()->change_state("menu_state", true);
+			break;
+		case move_left_button:
+			handle_remap_key_left();
+			break;
+		case move_right_button:
+			handle_remap_key_right();
 			break;
 		}
 	}
@@ -638,107 +739,22 @@ void settings_state::on_update(float delta_time)
 	}
 	else if (cs->get_clicked_component_name() == "keyMoveLeft")
 	{
-		glfwSetKeyCallback(glfw::window, key_callback);
-		// Update prompt
-		std::shared_ptr<text_component> tc = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity("help_text")->get_component("text"));
-		tc->_data->text = "Assign key, ESC to cancel...";
-		// Force render before going into the while loop.
-		renderer::get()->render();
-		while (true)
-		{
-			// Check for events
-			glfwPollEvents();
-			if (latest_key_press != -1)
-			{
-				if (latest_key_press == GLFW_KEY_ESCAPE)
-					break;
-				left_move_key = latest_key_press;
-				std::string letter;
-				letter = (char)latest_key_press;
-				std::cout << "res/textures/letters/" + letter + ".png" << std::endl;
-				// Update texture to new letter
-				if (latest_key_press >= 65 && latest_key_press <= 90)
-					renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/" + letter + ".png");
-				else
-					renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/question_mark.png");
-				std::ofstream user_pref_file;
-				// Open file and clear
-				user_pref_file.open("res/buttons.txt", std::ofstream::out | std::ofstream::trunc);
-				if (user_pref_file.is_open())
-				{
-					// Add new button and old buttons
-					user_pref_file << "Left: " << latest_key_press << "\n";
-					user_pref_file << "Right: " << input_handler::get()->glfw_button_right << "\n";
-					user_pref_file << "Front: " << input_handler::get()->glfw_button_up << "\n";
-					user_pref_file << "Back: " << input_handler::get()->glfw_button_down << "\n";
-				}
-				// Close
-				user_pref_file.close();
-				// Re-load input keys
-				input_handler::get()->load_input_settings();
-				// Remove actuall callback
-				glfwSetKeyCallback(glfw::window, key_callback_fake);
-				break;
-			}
-		}
+		handle_remap_key_left();
 		cs->clear_clicked_component_name();
 	}
 	else if (cs->get_clicked_component_name() == "keyMoveRight")
 	{
-		glfwSetKeyCallback(glfw::window, key_callback);
-		// Update prompt
-		std::shared_ptr<text_component> tc = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity("help_text")->get_component("text"));
-		tc->_data->text = "Assign key, ESC to cancel...";
-		// Force render before going into the while loop.
-		renderer::get()->render();
-		while (true)
-		{
-			// Check for events
-			glfwPollEvents();
-
-			if (latest_key_press != -1)
-			{
-				if (latest_key_press == GLFW_KEY_ESCAPE)
-					break;
-				right_move_key = latest_key_press;
-				std::string letter;
-				letter = (char)latest_key_press;
-				std::cout << "res/textures/letters/" + letter + ".png" << std::endl;
-				// Update texture to new letter
-				if (latest_key_press >= 65 && latest_key_press <= 90)
-					renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/" + letter + ".png");
-				else
-					renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/question_mark.png");
-				std::ofstream user_pref_file;
-				// Open file and clear
-				user_pref_file.open("res/buttons.txt", std::ofstream::out | std::ofstream::trunc);
-				if (user_pref_file.is_open())
-				{
-					// Add new button and old buttons
-					user_pref_file << "Left: " << input_handler::get()->glfw_button_left << "\n";
-					user_pref_file << "Right: " << latest_key_press << "\n";
-					user_pref_file << "Front: " << input_handler::get()->glfw_button_up << "\n";
-					user_pref_file << "Back: " << input_handler::get()->glfw_button_down << "\n";
-				}
-				// Close
-				user_pref_file.close();
-				// Re-load input keys
-				input_handler::get()->load_input_settings();
-				// Remove actuall callback
-				glfwSetKeyCallback(glfw::window, key_callback_fake);
-				break;
-			}
-
-		}
+		handle_remap_key_right();
 		cs->clear_clicked_component_name();
 	}
+	// Reset key states
 	left_old_state = left_state;
 	right_old_state = right_state;
 
 	up_old_state = up_state;
 	down_old_state = down_state;
 	enter_old_state = enter_state;
-
+	// Reset controller button states
 	if (present)
 	{
 		up_old_axis = axes[10];

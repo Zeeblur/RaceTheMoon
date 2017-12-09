@@ -63,7 +63,7 @@ void score_system::addPointsPowerUp()
 {
     for (auto &d : _data)
     {
-        d->score + 100;
+        d->score += 100;
     }
 }
 
