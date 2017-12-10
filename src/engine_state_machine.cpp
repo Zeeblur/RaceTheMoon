@@ -120,6 +120,15 @@ void engine_state_machine::update(float delta_time)
 			cs->clear_clicked_component_name();
 		}
 	}
+	else if (engine_state_machine::get()->get_current_state_type() == state_type::GAME_OVER)
+	{
+		std::shared_ptr<clickable_system> cs = std::static_pointer_cast<clickable_system>(engine::get()->get_subsystem("clickable_system"));
+		if (cs->get_clicked_component_name() == "menu_button2")
+		{
+			engine_state_machine::get()->change_state("menu_state");
+			cs->clear_clicked_component_name();
+		}
+	}
 	static int escape_old_state = GLFW_RELEASE;
 	int escape_state = glfwGetKey(glfw::window, GLFW_KEY_ESCAPE);
 

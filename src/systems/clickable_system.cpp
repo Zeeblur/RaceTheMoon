@@ -81,41 +81,45 @@ void clickable_system::update(float delta_time)
             }
 			if (d.parent_name != "keyMoveLeft" && d.parent_name != "keyMoveRight")
 			{
-				// Hover event
-				if (x_pos >= x_min && x_pos <= x_max && y_pos >= y_min && y_pos <= y_max &&
-					engine_state_machine::get()->get_current_state_type() == entity_manager::get()->get_entity(d.parent_name)->state)
+				// Check if the entity has been deleted
+				if (entity_manager::get()->get_entity(d.parent_name))
 				{
-					d.hover = true;
-					std::shared_ptr<clickable_component> cc = std::dynamic_pointer_cast<clickable_component>(entity_manager::get()->get_entity(d.parent_name)->get_component("clickable"));
-					
-					if (d.parent_name.find("arrow_left") != std::string::npos) 
+					// Hover event
+					if (x_pos >= x_min && x_pos <= x_max && y_pos >= y_min && y_pos <= y_max &&
+						engine_state_machine::get()->get_current_state_type() == entity_manager::get()->get_entity(d.parent_name)->state)
 					{
-						renderer::get()->change_texture(entity_manager::get()->get_entity(d.parent_name), "res/textures/arrow_left_selected.png");
-					}
-					else if (d.parent_name.find("arrow_right") != std::string::npos)
-					{
-						renderer::get()->change_texture(entity_manager::get()->get_entity(d.parent_name), "res/textures/arrow_right_selected.png");
-					}
-					else
-						renderer::get()->change_texture(entity_manager::get()->get_entity(d.parent_name), "res/textures/" + d.parent_name + "_selected.png");
-				}
-				else
-				{
-					if (d.hover)
-					{
-						d.hover = false;
+						d.hover = true;
 						std::shared_ptr<clickable_component> cc = std::dynamic_pointer_cast<clickable_component>(entity_manager::get()->get_entity(d.parent_name)->get_component("clickable"));
 
 						if (d.parent_name.find("arrow_left") != std::string::npos)
 						{
-							renderer::get()->change_texture(entity_manager::get()->get_entity(d.parent_name), "res/textures/arrow_left.png");
+							renderer::get()->change_texture(entity_manager::get()->get_entity(d.parent_name), "res/textures/arrow_left_selected.png");
 						}
 						else if (d.parent_name.find("arrow_right") != std::string::npos)
 						{
-							renderer::get()->change_texture(entity_manager::get()->get_entity(d.parent_name), "res/textures/arrow_right.png");
+							renderer::get()->change_texture(entity_manager::get()->get_entity(d.parent_name), "res/textures/arrow_right_selected.png");
 						}
 						else
-							renderer::get()->change_texture(entity_manager::get()->get_entity(d.parent_name), "res/textures/" + d.parent_name + ".png");
+							renderer::get()->change_texture(entity_manager::get()->get_entity(d.parent_name), "res/textures/" + d.parent_name + "_selected.png");
+					}
+					else
+					{
+						if (d.hover)
+						{
+							d.hover = false;
+							std::shared_ptr<clickable_component> cc = std::dynamic_pointer_cast<clickable_component>(entity_manager::get()->get_entity(d.parent_name)->get_component("clickable"));
+
+							if (d.parent_name.find("arrow_left") != std::string::npos)
+							{
+								renderer::get()->change_texture(entity_manager::get()->get_entity(d.parent_name), "res/textures/arrow_left.png");
+							}
+							else if (d.parent_name.find("arrow_right") != std::string::npos)
+							{
+								renderer::get()->change_texture(entity_manager::get()->get_entity(d.parent_name), "res/textures/arrow_right.png");
+							}
+							else
+								renderer::get()->change_texture(entity_manager::get()->get_entity(d.parent_name), "res/textures/" + d.parent_name + ".png");
+						}
 					}
 				}
 			}

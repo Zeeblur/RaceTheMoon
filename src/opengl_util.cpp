@@ -1028,8 +1028,14 @@ namespace gl
 		// Not best implementation, but works 
 		if (rd->effect->name == "text")
 		{
-			std::shared_ptr<text_component> tc = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity(rd->parent_name)->get_component("text"));
-			printText2D(tc.get()->_data->text.c_str(), rd->position.x, rd->position.y, 24);
+			if ((entity_manager::get()->get_entity(rd->parent_name)))
+			{
+				std::shared_ptr<text_component> tc = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity(rd->parent_name)->get_component("text"));
+				if(rd->position.z == 0)
+					printText2D(tc.get()->_data->text.c_str(), rd->position.x, rd->position.y, 24);
+				else
+					printText2D(tc.get()->_data->text.c_str(), rd->position.x, rd->position.y, rd->position.z);
+			}
 		}
 		auto e4 = glGetError();
 		// Check for any OpenGL errors
