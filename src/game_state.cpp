@@ -69,6 +69,13 @@ void game_state::initialise()
 	test->add_component("render", renderer::get()->build_component(test, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), "res/textures/exit_button.png", "rectangle", "text", text));
 	test->add_component("text", text_system::get()->build_component(test, "Score: 0"));
 
+	transform_data health_transform;
+	health_transform.x = 10;
+	health_transform.y = 40;
+	auto health = entity_manager::get()->create_entity("health", state_type::GAME, health_transform);
+	health->add_component("render", renderer::get()->build_component(health, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), "res/textures/exit_button.png", "rectangle", "text", text));
+	health->add_component("text", text_system::get()->build_component(health, "HP: 0"));
+
 	initText2D("res/textures/myriad.png");
 
 }
@@ -120,6 +127,12 @@ void game_state::on_update(float delta_time)
 	stream << std::fixed << std::setprecision(2) << "Score: "<< score_system::get()->_data[0]->score;
 	std::string s = stream.str();
 	tc->_data->text = s;
+
+	std::shared_ptr<text_component> tc2 = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity("health")->get_component("text"));
+	std::stringstream stream2;
+	stream2 << std::fixed << std::setprecision(2) << "Health: " << score_system::get()->_data[0]->health;
+	std::string s2 = stream2.str();
+	tc2->_data->text = s2;
 }
 
 void game_state::on_exit()

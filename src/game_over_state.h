@@ -23,3 +23,4 @@ public:
 };
 static std::vector<char> name;
 static int current_score = 0;
+static bool my_sql_error = false;

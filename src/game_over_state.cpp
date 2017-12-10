@@ -13,29 +13,33 @@ void show_error(MYSQL *mysql)
 		mysql_sqlstate(mysql),
 		mysql_error(mysql));
 	mysql_close(mysql);
-	exit(-1);
+	my_sql_error = true;
+	//exit(-1);
 }
 
 void character_callback(GLFWwindow* window, unsigned int codepoint)
 {
-	std::cout << (char)codepoint << std::endl;
-	// add character
-	name.push_back((char)codepoint);
-
-	std::shared_ptr<text_component> your_name = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity("your_name")->get_component("text"));
-	std::string player_name = " ";
-
-	// print name
-	for (size_t i = 0; i < name.size(); i++)
+	if (!my_sql_error)
 	{
-		std::cout << name[i];
-		player_name += (char)name[i];
+		std::cout << (char)codepoint << std::endl;
+		// add character
+		name.push_back((char)codepoint);
+
+		std::shared_ptr<text_component> your_name = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity("your_name")->get_component("text"));
+		std::string player_name = " ";
+
+		// print name
+		for (size_t i = 0; i < name.size(); i++)
+		{
+			std::cout << name[i];
+			player_name += (char)name[i];
+		}
+		if (name.size() > 0)
+			your_name->_data->text = player_name;
+		else
+			your_name->_data->text = " ";
+		std::cout << std::endl;
 	}
-	if (name.size() > 0)
-		your_name->_data->text = player_name;
-	else
-		your_name->_data->text = " ";
-	std::cout << std::endl;
 }
 
 void dummy_character_callback(GLFWwindow* window, unsigned int codepoint)
@@ -50,44 +54,46 @@ void dummy_key_callback(GLFWwindow* window, int key, int scancode, int action, i
 
 void submit_score()
 {
-	printf("MySQL client version: %s\n", mysql_get_client_info());
-
-	MYSQL *con = mysql_init(NULL);
-
-	if (con == NULL)
+	if (!my_sql_error)
 	{
-		show_error(con);
-	}
-	// Establish connection
-	if (mysql_real_connect(con, "db63.grserver.gr", "manos_rtm", "o0gN9$u8",
-		"manos_race_the_moon", 3306, NULL, 0) == NULL)
-	{
-		show_error(con);
-	}
-	std::string player_name = "";
+		printf("MySQL client version: %s\n", mysql_get_client_info());
 
-	// print name
-	for (size_t i = 0; i < name.size(); i++)
-	{
-		std::cout << name[i];
-		player_name += name[i];
-	}
-	// Prone to SQL injection
-	std::string statement = "INSERT INTO high_scores VALUES(";
-	statement += "'";
-	statement += player_name;
-	statement += "',";
-	statement += std::to_string(current_score);
-	statement += ")";
-	std::cout << statement << std::endl;
-	// Insert value
-	if (mysql_query(con, statement.c_str())) {
-		fprintf(stderr, "%s\n", mysql_error(con));
+		MYSQL *con = mysql_init(NULL);
+
+		if (con == NULL)
+		{
+			show_error(con);
+		}
+		// Establish connection
+		if (mysql_real_connect(con, "db63.grserver.gr", "manos_rtm", "o0gN9$u8",
+			"manos_race_the_moon", 3306, NULL, 0) == NULL)
+		{
+			show_error(con);
+		}
+		std::string player_name = "";
+
+		// print name
+		for (size_t i = 0; i < name.size(); i++)
+		{
+			std::cout << name[i];
+			player_name += name[i];
+		}
+		// Prone to SQL injection
+		std::string statement = "INSERT INTO high_scores VALUES(";
+		statement += "'";
+		statement += player_name;
+		statement += "',";
+		statement += std::to_string(current_score);
+		statement += ")";
+		std::cout << statement << std::endl;
+		// Insert value
+		if (mysql_query(con, statement.c_str())) {
+			fprintf(stderr, "%s\n", mysql_error(con));
+			mysql_close(con);
+		}
+		// Close connection
 		mysql_close(con);
 	}
-	// Close connection
-	mysql_close(con);
-
 	engine_state_machine::get()->change_state("menu_state");
 }
 
@@ -149,164 +155,191 @@ void game_over_state::initialise()
 	printf("MySQL client version: %s\n", mysql_get_client_info());
 
 	MYSQL *con = mysql_init(NULL);
-	try
+
+
+	if (con == NULL)
 	{
-
-		if (con == NULL)
-		{
-			show_error(con);
-		}
-
+		show_error(con);
+	}
+	if (!my_sql_error)
+	{
 		if (mysql_real_connect(con, "db63.grserver.gr", "manos_rtm", "o0gN9$u8",
 			"manos_race_the_moon", 3306, NULL, 0) == NULL)
 		{
 			show_error(con);
 		}
-
-		if (mysql_query(con, "SELECT * FROM high_scores ORDER BY score DESC LIMIT 8"))
+		if (!my_sql_error)
 		{
-			show_error(con);
-		}
-
-		MYSQL_RES *result = mysql_store_result(con);
-
-		if (result == NULL)
-		{
-			show_error(con);
-		}
-
-		int num_fields = mysql_num_fields(result);
-
-		MYSQL_ROW row;
-
-		while ((row = mysql_fetch_row(result)))
-		{
-			for (int i = 0; i < num_fields; i++)
+			if (mysql_query(con, "SELECT * FROM high_scores ORDER BY score DESC LIMIT 8"))
 			{
-				printf("%s ", row[i] ? row[i] : "NULL");
-				high_scores.push_back(row[i]);
+				show_error(con);
 			}
-			printf("\n");
 		}
-
-		mysql_free_result(result);
-		mysql_close(con);
-
-		for (size_t i = 0; i < high_scores.size(); i++)
+		MYSQL_RES *result;
+		if (!my_sql_error)
 		{
-			std::cout << "high score count: " << high_scores.size() << std::endl;
+			result = mysql_store_result(con);
+		}
+		if (!my_sql_error)
+		{
+			if (result == NULL)
+			{
+				show_error(con);
+			}
+		}
+		int num_fields;
+		if (!my_sql_error)
+		{
+			num_fields = mysql_num_fields(result);
+		}
+		MYSQL_ROW row;
+		if (!my_sql_error)
+		{
+			while ((row = mysql_fetch_row(result)))
+			{
+				for (int i = 0; i < num_fields; i++)
+				{
+					printf("%s ", row[i] ? row[i] : "NULL");
+					high_scores.push_back(row[i]);
+				}
+				printf("\n");
+			}
+		}
+		if (!my_sql_error)
+		{
+			mysql_free_result(result);
+			mysql_close(con);
+		}
+		if (!my_sql_error)
+		{
+			for (size_t i = 0; i < high_scores.size(); i++)
+			{
+				std::cout << "high score count: " << high_scores.size() << std::endl;
+				transform_data text_transform;
+				text_transform.x = x_size / 2 - 150;
+				if (i % 2 == 0)
+					text_transform.y = y_size - 300 - i * 25;
+				else
+					text_transform.y = y_size - 300 - i * 25 + 5;
+				auto test = entity_manager::get()->create_entity("score" + std::to_string(i), state_type::GAME_OVER, text_transform);
+				test->add_component("render", renderer::get()->build_component(test, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), "res/textures/exit_button.png", "rectangle", "text", text));
+				test->add_component("text", text_system::get()->build_component(test, high_scores[i]));
+			}
+
+
+			transform_data your_score_prompt_transform;
+			your_score_prompt_transform.x = x_size / 2 - 400;
+			your_score_prompt_transform.y = 40;
+			auto your_score_prompt = entity_manager::get()->create_entity("your_score_prompt", state_type::GAME_OVER, your_score_prompt_transform);
+			your_score_prompt->add_component("render", renderer::get()->build_component(your_score_prompt, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), "res/textures/exit_button.png", "rectangle", "text", text));
+			your_score_prompt->add_component("text", text_system::get()->build_component(your_score_prompt, "Your score: " + std::to_string(current_score)));
+
+			transform_data your_name_prompt_transform;
+			your_name_prompt_transform.x = x_size / 2 - 400;
+			your_name_prompt_transform.y = 10;
+			auto your_name_prompt = entity_manager::get()->create_entity("your_name_prompt", state_type::GAME_OVER, your_name_prompt_transform);
+			your_name_prompt->add_component("render", renderer::get()->build_component(your_name_prompt, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), "res/textures/exit_button.png", "rectangle", "text", text));
+			your_name_prompt->add_component("text", text_system::get()->build_component(your_name_prompt, "Your name:"));
+
 			transform_data text_transform;
 			text_transform.x = x_size / 2 - 150;
-			if (i % 2 == 0)
-				text_transform.y = y_size - 300 - i * 25;
-			else
-				text_transform.y = y_size - 300 - i * 25 + 5;
-			auto test = entity_manager::get()->create_entity("score" + std::to_string(i), state_type::GAME_OVER, text_transform);
+			text_transform.y = 10;
+			auto test = entity_manager::get()->create_entity("your_name", state_type::GAME_OVER, text_transform);
 			test->add_component("render", renderer::get()->build_component(test, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), "res/textures/exit_button.png", "rectangle", "text", text));
-			test->add_component("text", text_system::get()->build_component(test, high_scores[i]));
+			test->add_component("text", text_system::get()->build_component(test, " "));
+
+			transform_data help_text_transform;
+			help_text_transform.x = x_size / 2 - 500;
+			help_text_transform.y = 60;
+			help_text_transform.z = 16;
+			auto help_text = entity_manager::get()->create_entity("help_text_game_over", state_type::GAME_OVER, help_text_transform);
+			help_text->add_component("render", renderer::get()->build_component(help_text, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), "res/textures/exit_button.png", "rectangle", "text", text));
+			help_text->add_component("text", text_system::get()->build_component(help_text, "Type your name and press enter to submit..."));
 		}
-
-
-		transform_data your_score_prompt_transform;
-		your_score_prompt_transform.x = x_size / 2 - 400;
-		your_score_prompt_transform.y = 40;
-		auto your_score_prompt = entity_manager::get()->create_entity("your_score_prompt", state_type::GAME_OVER, your_score_prompt_transform);
-		your_score_prompt->add_component("render", renderer::get()->build_component(your_score_prompt, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), "res/textures/exit_button.png", "rectangle", "text", text));
-		your_score_prompt->add_component("text", text_system::get()->build_component(your_score_prompt, "Your score: " + std::to_string(current_score)));
-
-		transform_data your_name_prompt_transform;
-		your_name_prompt_transform.x = x_size / 2 - 400;
-		your_name_prompt_transform.y = 10;
-		auto your_name_prompt = entity_manager::get()->create_entity("your_name_prompt", state_type::GAME_OVER, your_name_prompt_transform);
-		your_name_prompt->add_component("render", renderer::get()->build_component(your_name_prompt, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), "res/textures/exit_button.png", "rectangle", "text", text));
-		your_name_prompt->add_component("text", text_system::get()->build_component(your_name_prompt, "Your name:"));
-
-		transform_data text_transform;
-		text_transform.x = x_size / 2 - 150;
-		text_transform.y = 10;
-		auto test = entity_manager::get()->create_entity("your_name", state_type::GAME_OVER, text_transform);
-		test->add_component("render", renderer::get()->build_component(test, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), "res/textures/exit_button.png", "rectangle", "text", text));
-		test->add_component("text", text_system::get()->build_component(test, " "));
-
-		transform_data help_text_transform;
-		help_text_transform.x = x_size / 2 - 500;
-		help_text_transform.y = 60;
-		help_text_transform.z = 16;
-		auto help_text = entity_manager::get()->create_entity("help_text_game_over", state_type::GAME_OVER, help_text_transform);
-		help_text->add_component("render", renderer::get()->build_component(help_text, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), "res/textures/exit_button.png", "rectangle", "text", text));
-		help_text->add_component("text", text_system::get()->build_component(help_text, "Type your name and press enter to submit..."));
+		else
+		{
+			transform_data no_connection_transform;
+			no_connection_transform.x = x_size / 2 - 450;
+			no_connection_transform.y = y_size / 2;
+			no_connection_transform.z = 16;
+			auto no_connection = entity_manager::get()->create_entity("no_connection", state_type::GAME_OVER, no_connection_transform);
+			no_connection->add_component("render", renderer::get()->build_component(no_connection, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), "res/textures/exit_button.png", "rectangle", "text", text));
+			no_connection->add_component("text", text_system::get()->build_component(no_connection, "Could not connect to high score database."));
+		}
 	}
-	catch(exception e)
-	{
-		std::cout << "caught excep" << std::endl;
-	}
+
 }
 
 void game_over_state::display_high_scores()
 {
-	// Update score
-	std::shared_ptr<text_component> your_score = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity("your_score_prompt")->get_component("text"));
-	your_score->_data->text = "Your score: " + std::to_string(current_score);
-
-	MYSQL *con = mysql_init(NULL);
-	try
+	if (!my_sql_error)
 	{
+		// Update score
+		std::shared_ptr<text_component> your_score = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity("your_score_prompt")->get_component("text"));
+		your_score->_data->text = "Your score: " + std::to_string(current_score);
+
+		MYSQL *con = mysql_init(NULL);
 
 		if (con == NULL)
 		{
 			show_error(con);
 		}
-
-		if (mysql_real_connect(con, "db63.grserver.gr", "manos_rtm", "o0gN9$u8",
-			"manos_race_the_moon", 3306, NULL, 0) == NULL)
+		if (!my_sql_error)
 		{
-			show_error(con);
-		}
 
-		if (mysql_query(con, "SELECT * FROM high_scores ORDER BY score DESC LIMIT 8"))
-		{
-			show_error(con);
-		}
-
-		MYSQL_RES *result = mysql_store_result(con);
-
-		if (result == NULL)
-		{
-			show_error(con);
-		}
-
-		int num_fields = mysql_num_fields(result);
-
-		MYSQL_ROW row;
-
-		while ((row = mysql_fetch_row(result)))
-		{
-			for (int i = 0; i < num_fields; i++)
+			if (mysql_real_connect(con, "db63.grserver.gr", "manos_rtm", "o0gN9$u8",
+				"manos_race_the_moon", 3306, NULL, 0) == NULL)
 			{
-				printf("%s ", row[i] ? row[i] : "NULL");
-				high_scores.push_back(row[i]);
+				show_error(con);
 			}
-			printf("\n");
-		}
-
-		mysql_free_result(result);
-		mysql_close(con);
-
-		for (size_t i = 0; i < high_scores.size(); i++)
-		{
-			if (entity_manager::get()->get_entity("score" + std::to_string(i)))
+			if (!my_sql_error)
 			{
-				std::shared_ptr<text_component> score = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity("score" + std::to_string(i))->get_component("text"));
-				score->_data->text =high_scores[i] + " ";
+				if (mysql_query(con, "SELECT * FROM high_scores ORDER BY score DESC LIMIT 8"))
+				{
+					show_error(con);
+				}
+			}
+			MYSQL_RES *result = mysql_store_result(con);
+			if (!my_sql_error)
+			{
+				if (result == NULL)
+				{
+					show_error(con);
+				}
+			}
+			int num_fields = mysql_num_fields(result);
+
+			MYSQL_ROW row;
+			if (!my_sql_error)
+			{
+				while ((row = mysql_fetch_row(result)))
+				{
+					for (int i = 0; i < num_fields; i++)
+					{
+						printf("%s ", row[i] ? row[i] : "NULL");
+						high_scores.push_back(row[i]);
+					}
+					printf("\n");
+				}
+			}
+			if (!my_sql_error)
+			{
+				mysql_free_result(result);
+				mysql_close(con);
+			}
+			if (!my_sql_error)
+			{
+				for (size_t i = 0; i < high_scores.size(); i++)
+				{
+					if (entity_manager::get()->get_entity("score" + std::to_string(i)))
+					{
+						std::shared_ptr<text_component> score = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity("score" + std::to_string(i))->get_component("text"));
+						score->_data->text = high_scores[i] + " ";
+					}
+				}
 			}
 		}
-
 	}
-	catch (exception e)
-	{
-		std::cout << "caught excep" << std::endl;
-	}
-
 	//entity_manager::get()->delete_entity("menu_button2");
 	//entity_manager::get()->delete_entity("submit_score_button");
 	//entity_manager::get()->delete_entity("game_over");
@@ -314,7 +347,7 @@ void game_over_state::display_high_scores()
 	//entity_manager::get()->get_entity("submit_score_button")->get_trans().z = -20;
 	//entity_manager::get()->get_entity("game_over")->get_trans().z = -20;
 
-	
+
 }
 
 void game_over_state::on_reset()
