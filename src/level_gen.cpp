@@ -72,8 +72,8 @@ void level_gen::unload_content()
             }
         }
         currentBlock = -400;
-        initialise();*/
-    }
+        initialise();
+    }*/
 }
 void level_gen::shutdown() {}
 
