@@ -201,12 +201,23 @@ void collision(void* col1, void* batCol)
     auto &_obstacle = *static_cast<shared_ptr<collider_data>*>(col1);
     auto &_bat_collider = *static_cast<shared_ptr<collider_data>*>(batCol);
 
+    std::shared_ptr<physics_system> ps = physics_system::get();
+    auto data = ps->_data;
+    //float delta_time = *static_cast<float*> (arg2);
+
     // Is player bat colliding with something
     bool col = is_colliding(_obstacle->collider.get(), _bat_collider->collider.get());
 
     // Obstacle collision without shield
     if (col && _bat_collider->shield == false && _obstacle->behaviour_ == colType::DAMAGE)
     {
+        for (auto &d : data)
+        {
+            if (d->name_ == "Bat")
+            {
+                d->currentVelocity -= d->currentVelocity;
+            }
+        }
         engine::get()->get_subsystem("score_system")->hurt();
     }
     // Obstacle collision with shield
@@ -237,6 +248,7 @@ void collision(void* col1, void* batCol)
     else if (col && _obstacle->behaviour_ == colType::SPEED)
     {
         entity_manager::get()->delete_entity(_obstacle->name_);
+        _bat_collider->speedTimer = 0.0f;
         _bat_collider->speed = true;
     }
 }
@@ -278,7 +290,10 @@ void physics_system::update(float delta_time)
         _bat_collider->speedTimer += delta_time;
     }
     if (_bat_collider->speedTimer > 3.0f)
+    {
         _bat_collider->speed = false;
+        _bat_collider->speedTimer = 0.0f;
+    }
 
     // ** Shrinking animation **
     if (_bat_collider->shrunk == true)
@@ -398,7 +413,7 @@ void physics_system::cap_speed(vec3& currentSpeed)
     }
     else if (_bat_collider->speed == true)
     {
-        float superSpeed = maxSpeed * 3;
+        float superSpeed = maxSpeed * 2;
         if (currentSpeed.x > superSpeed) currentSpeed.x = superSpeed;
         if (currentSpeed.x < -superSpeed) currentSpeed.x = -superSpeed;
         if (currentSpeed.y > superSpeed) currentSpeed.y = superSpeed;

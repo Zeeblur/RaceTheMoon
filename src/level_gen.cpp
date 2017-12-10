@@ -65,7 +65,17 @@ void level_gen::addWaterfallPuzzle(int blockIdx)
 	auto levelGenInstance = level_gen::get();
 	
     // Waterfall boxes puzzle
-    //Left wall piece
+
+    // Floor piece
+    transform_data waterfallPlaneTrans;
+    waterfallPlaneTrans.x = 0.0f;
+    waterfallPlaneTrans.y = 0.0f;
+    waterfallPlaneTrans.z = blockIdx + 200.0f;
+    auto p = entity_manager::get()->create_entity("Plane" + std::to_string(blockIdx), state_type::GAME, waterfallPlaneTrans);
+    p->add_component("physics", physics_system::get()->build_component(p));
+    p->add_component("render", renderer::get()->build_component(p, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), "res/textures/floor.jpg", "plane", "Gouraud", phongDistance));
+    
+    // Left wall piece
     transform_data waterfallLeftWallTrans;
     waterfallLeftWallTrans.scale = glm::vec3(10.0f, 20.0f, 400.0f);
     waterfallLeftWallTrans.x = -260.0f;
@@ -232,7 +242,7 @@ void level_gen::addWaterfallPuzzle(int blockIdx)
 
     levelGenInstance->puzzleBlocks[blockIdx].push_back((sppu));
 
-    //Right wall piece
+    // Right wall piece
     transform_data waterfallRightWallTrans;
     waterfallRightWallTrans.scale = glm::vec3(10.0f, 20.0f, 400.0f);
     waterfallRightWallTrans.x =  250.0f;
@@ -250,7 +260,16 @@ void level_gen::addCrusher(int blockIdx)
 {
 	auto levelGenInstance = level_gen::get();
 
-    //Left wall piece
+    // Floor piece
+    transform_data waterfallPlaneTrans;
+    waterfallPlaneTrans.x = 0.0f;
+    waterfallPlaneTrans.y = 0.0f;
+    waterfallPlaneTrans.z = blockIdx + 200.0f;
+    auto p = entity_manager::get()->create_entity("Plane" + std::to_string(blockIdx), state_type::GAME, waterfallPlaneTrans);
+    p->add_component("physics", physics_system::get()->build_component(p));
+    p->add_component("render", renderer::get()->build_component(p, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), "res/textures/floor.jpg", "plane", "Gouraud", phongDistance));
+
+    // Left wall piece
     transform_data crusherLeftWallTrans;
     crusherLeftWallTrans.scale = glm::vec3(10.0f, 20.0f, 400.0f);
     crusherLeftWallTrans.x =  -260.0f;
@@ -431,7 +450,7 @@ void level_gen::addCrusher(int blockIdx)
 
     levelGenInstance->puzzleBlocks[blockIdx].push_back((ppu3));
 
-    //Right wall piece
+    // Right wall piece
     transform_data crusherRightWallTrans;
     crusherRightWallTrans.scale = glm::vec3(10.0f, 20.0f, 400.0f);
     crusherRightWallTrans.x =  250.0f;
@@ -449,11 +468,20 @@ void level_gen::addSnakeBalls(int blockIdx)
 {
 	auto levelGenInstance = level_gen::get();
 
-	//Left wall piece
+    // Floor piece
+    transform_data waterfallPlaneTrans;
+    waterfallPlaneTrans.x = 0.0f;
+    waterfallPlaneTrans.y = 0.0f;
+    waterfallPlaneTrans.z = blockIdx + 200.0f;
+    auto p = entity_manager::get()->create_entity("Plane" + std::to_string(blockIdx), state_type::GAME, waterfallPlaneTrans);
+    p->add_component("physics", physics_system::get()->build_component(p));
+    p->add_component("render", renderer::get()->build_component(p, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), "res/textures/floor.jpg", "plane", "Gouraud", phongDistance));
+
+	// Left wall piece
 	transform_data snakeLeftWall;
 	snakeLeftWall.scale = glm::vec3(10.0f, 20.0f, 400.0f);
 	snakeLeftWall.x = -260.0f;
-	snakeLeftWall.y =  12.0f;
+	snakeLeftWall.y =  10.0f;
 	snakeLeftWall.z = blockIdx + 200.0f;
 	auto sL = entity_manager::get()->create_entity("SnakeLeftWall" + std::to_string(blockIdx), state_type::GAME, snakeLeftWall);
 	sL->add_component("physics", physics_system::get()->build_component(sL));
@@ -490,7 +518,7 @@ void level_gen::addSnakeBalls(int blockIdx)
 
 	levelGenInstance->puzzleBlocks[blockIdx].push_back((sB1));
 
-	//Ball 2
+	// Ball 2
 	transform_data snakeBall2;
 	snakeBall2.scale = glm::vec3(12.0f, 12.0f, 12.0f);
 	snakeBall2.x =  -170.0f;
@@ -504,7 +532,7 @@ void level_gen::addSnakeBalls(int blockIdx)
 
 	levelGenInstance->puzzleBlocks[blockIdx].push_back((sB2));
 
-	//Ball 3
+	// Ball 3
 	transform_data snakeBall3;
 	snakeBall3.scale = glm::vec3(12.0f, 12.0f, 12.0f);
 	snakeBall3.x =  -110.0f;
@@ -518,7 +546,7 @@ void level_gen::addSnakeBalls(int blockIdx)
 
 	levelGenInstance->puzzleBlocks[blockIdx].push_back((sB3));
 
-	//Ball 4
+	// Ball 4
 	transform_data snakeBall4;
 	snakeBall4.scale = glm::vec3(12.0f, 12.0f, 12.0f);
 	snakeBall4.x =  -50.0f;
@@ -532,7 +560,7 @@ void level_gen::addSnakeBalls(int blockIdx)
 
 	levelGenInstance->puzzleBlocks[blockIdx].push_back((sB4));
 
-	//Ball 5
+	// Ball 5
 	transform_data snakeBall5;
 	snakeBall5.scale = glm::vec3(12.0f, 12.0f, 12.0f);
 	snakeBall5.x =  10.0f;
@@ -546,7 +574,7 @@ void level_gen::addSnakeBalls(int blockIdx)
 
 	levelGenInstance->puzzleBlocks[blockIdx].push_back((sB5));
 
-	//Ball 6
+	// Ball 6
 	transform_data snakeBall6;
 	snakeBall6.scale = glm::vec3(12.0f, 12.0f, 12.0f);
 	snakeBall6.x =  70.0f;
@@ -560,7 +588,7 @@ void level_gen::addSnakeBalls(int blockIdx)
 
 	levelGenInstance->puzzleBlocks[blockIdx].push_back((sB6));
 
-	//Ball 7
+	// Ball 7
 	transform_data snakeBall7;
 	snakeBall7.scale = glm::vec3(12.0f, 12.0f, 12.0f);
 	snakeBall7.x =  130.0f;
@@ -575,7 +603,7 @@ void level_gen::addSnakeBalls(int blockIdx)
 
 	levelGenInstance->puzzleBlocks[blockIdx].push_back((sB7));
 
-	//Ball 8
+	// Ball 8
 	transform_data snakeBall8;
 	snakeBall8.scale = glm::vec3(12.0f, 12.0f, 12.0f);
 	snakeBall8.x =  190.0f;
@@ -629,7 +657,7 @@ void level_gen::addSnakeBalls(int blockIdx)
     ppu3->add_component("render", renderer::get()->build_component(ppu3, glm::vec4(1.0f), "res/textures/score_power_up.jpg", "sphere", "Gouraud", phong));
     ppu3->add_component("collider", physics_system::get()->build_collider_component(ppu3, colType::POINTS));
 
-	//Right wall piece
+	// Right wall piece
 	transform_data snakeRightWall;
 	snakeRightWall.scale = glm::vec3(10.0f, 20.0f, 400.0f);
 	snakeRightWall.x =  250.0f;

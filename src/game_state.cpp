@@ -16,11 +16,14 @@ void game_state::initialise()
 	sph->add_component("physics", physics_system::get()->build_component(sph));
 	sph->add_component("render", renderer::get()->build_component(sph, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), "", "sphere", "Gouraud", sky));
 
-
-	// Adding plane
-	auto p = entity_manager::get()->create_entity("Plane", this->type);
-	p->add_component("physics", physics_system::get()->build_component(p));
-	p->add_component("render", renderer::get()->build_component(p, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), "res/textures/floor.jpg", "plane", "Gouraud", phongDistance));
+    // Initial Floor piece
+    transform_data initialPlaneTrans;
+    initialPlaneTrans.x = 0.0f;
+    initialPlaneTrans.y = 0.0f;
+    initialPlaneTrans.z = 200.0f;
+    auto p = entity_manager::get()->create_entity("InitialPlane", state_type::GAME, initialPlaneTrans);
+    p->add_component("physics", physics_system::get()->build_component(p));
+    p->add_component("render", renderer::get()->build_component(p, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), "res/textures/floor.jpg", "plane", "Gouraud", phongDistance));
 
     //auto levelGenerator = level_gen::get(); <------------- DO WE NEED THIS NOW? - Beej
 
