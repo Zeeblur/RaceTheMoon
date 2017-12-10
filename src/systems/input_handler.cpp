@@ -138,7 +138,19 @@ std::vector<Command*> input_handler::handle_input()
 
     if (glfwGetKey(glfw::window, glfw_button_right))
         commands.push_back(buttonRight_);
-
+	// Check if controller is present
+	int present = glfwJoystickPresent(GLFW_JOYSTICK_1);
+	int count;
+	const float* axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &count);
+	// Add hardcoded joystick controls
+	if (present && axes[0] < -0.1)
+		commands.push_back(buttonLeft_);
+	if (present && axes[0] > 0.1)
+		commands.push_back(buttonRight_);
+	if (present && axes[1] > 0.1)
+		commands.push_back(buttonUp_);
+	if (present && axes[1] < -0.1)
+		commands.push_back(buttonDown_);
     //fake always move forward
     //commands.push_back(fakeMove_);
 
