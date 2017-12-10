@@ -203,7 +203,6 @@ void collision(void* col1, void* batCol)
 
     std::shared_ptr<physics_system> ps = physics_system::get();
     auto data = ps->_data;
-    //float delta_time = *static_cast<float*> (arg2);
 
     // Is player bat colliding with something
     bool col = is_colliding(_obstacle->collider.get(), _bat_collider->collider.get());
@@ -296,58 +295,56 @@ void physics_system::update(float delta_time)
     }
 
     // ** Shrinking animation **
-    if (_bat_collider->shrunk == true)
+    if (_bat_collider->shrunk == true && isShrunk == false)
     {
         isShrinking = true;
-        shrinkingTimer += delta_time;
-        _bat_collider->shrunk = false;
-    }
-    if (isShrinking == true && shrinkingTimer && shrinkingTimer < ((1.0f / 15.0f) * totalShrinking))
-    {
-        shrinkingTimer += delta_time;
-        entity_manager::get()->get_entity("Bat")->get_trans().scale = glm::vec3(0.5f, 0.5f, 0.5f);
-    }
-    if (isShrinking == true && shrinkingTimer >= ((1.0f / 15.0f) * totalShrinking) && shrinkingTimer < ((2.0f / 15.0f) * totalShrinking))
-    {
-        shrinkingTimer += delta_time;
-        entity_manager::get()->get_entity("Bat")->get_trans().scale = glm::vec3(0.2f, 0.2f, 0.2f);
-    }
-    if (isShrinking == true && shrinkingTimer >= ((2.0f / 15.0f) * totalShrinking) && shrinkingTimer < ((3.0f / 15.0f) * totalShrinking))
-    {
-        shrinkingTimer += delta_time;
-        entity_manager::get()->get_entity("Bat")->get_trans().scale = glm::vec3(0.5f, 0.5f, 0.5f);
-    }
-    if (isShrinking == true && shrinkingTimer >= ((3.0f / 15.0f) * totalShrinking) && shrinkingTimer < ((4.0f / 15.0f) * totalShrinking))
-    {
-        shrinkingTimer += delta_time;
-        entity_manager::get()->get_entity("Bat")->get_trans().scale = glm::vec3(0.2f, 0.2f, 0.2f);
-    }
-    if (isShrinking == true && shrinkingTimer >= ((4.0f / 15.0f) * totalShrinking) && shrinkingTimer < ((5.0f / 15.0f) * totalShrinking))
-    {
-        shrinkingTimer += delta_time;
-        entity_manager::get()->get_entity("Bat")->get_trans().scale = glm::vec3(0.5f, 0.5f, 0.5f);
-    }
-    if (isShrinking == true && shrinkingTimer >= ((5.0f / 15.0f) * totalShrinking) && shrinkingTimer < ((8.0f / 15.0f) * totalShrinking))
-    {
-        shrinkingTimer += delta_time;
-        entity_manager::get()->get_entity("Bat")->get_trans().scale = glm::vec3(0.4f, 0.4f, 0.4f);
-    }
-    if (isShrinking == true && shrinkingTimer >= ((8.0f / 15.0f) * totalShrinking) && shrinkingTimer < ((11.0f / 15.0f) * totalShrinking))
-    {
-        shrinkingTimer += delta_time;
-        entity_manager::get()->get_entity("Bat")->get_trans().scale = glm::vec3(0.3f, 0.3f, 0.3f);
-    }
-    if (isShrinking == true && shrinkingTimer >= ((11.0f / 15.0f) * totalShrinking) && shrinkingTimer < ((14.0f / 15.0f) * totalShrinking))
-    {
-        shrinkingTimer += delta_time;
-        entity_manager::get()->get_entity("Bat")->get_trans().scale = glm::vec3(0.2f, 0.2f, 0.2f);
-    }
-    if (isShrinking == true && shrinkingTimer >= ((14.0f / 15.0f) * totalShrinking))
-    {
-        entity_manager::get()->get_entity("Bat")->get_trans().scale = glm::vec3(0.2f, 0.2f, 0.2f);
-        shrinkingTimer = 0.0f;
-        isShrinking = false;
-        isShrunk = true;
+        if (isShrinking == true && shrinkingTimer < ((1.0f / 15.0f) * totalShrinking))
+        {
+            shrinkingTimer += delta_time;
+            entity_manager::get()->get_entity("Bat")->get_trans().scale = glm::vec3(0.5f, 0.5f, 0.5f);
+        }
+        if (isShrinking == true && shrinkingTimer >= ((1.0f / 15.0f) * totalShrinking) && shrinkingTimer < ((2.0f / 15.0f) * totalShrinking))
+        {
+            shrinkingTimer += delta_time;
+            entity_manager::get()->get_entity("Bat")->get_trans().scale = glm::vec3(0.2f, 0.2f, 0.2f);
+        }
+        if (isShrinking == true && shrinkingTimer >= ((2.0f / 15.0f) * totalShrinking) && shrinkingTimer < ((3.0f / 15.0f) * totalShrinking))
+        {
+            shrinkingTimer += delta_time;
+            entity_manager::get()->get_entity("Bat")->get_trans().scale = glm::vec3(0.5f, 0.5f, 0.5f);
+        }
+        if (isShrinking == true && shrinkingTimer >= ((3.0f / 15.0f) * totalShrinking) && shrinkingTimer < ((4.0f / 15.0f) * totalShrinking))
+        {
+            shrinkingTimer += delta_time;
+            entity_manager::get()->get_entity("Bat")->get_trans().scale = glm::vec3(0.2f, 0.2f, 0.2f);
+        }
+        if (isShrinking == true && shrinkingTimer >= ((4.0f / 15.0f) * totalShrinking) && shrinkingTimer < ((5.0f / 15.0f) * totalShrinking))
+        {
+            shrinkingTimer += delta_time;
+            entity_manager::get()->get_entity("Bat")->get_trans().scale = glm::vec3(0.5f, 0.5f, 0.5f);
+        }
+        if (isShrinking == true && shrinkingTimer >= ((5.0f / 15.0f) * totalShrinking) && shrinkingTimer < ((8.0f / 15.0f) * totalShrinking))
+        {
+            shrinkingTimer += delta_time;
+            entity_manager::get()->get_entity("Bat")->get_trans().scale = glm::vec3(0.4f, 0.4f, 0.4f);
+        }
+        if (isShrinking == true && shrinkingTimer >= ((8.0f / 15.0f) * totalShrinking) && shrinkingTimer < ((11.0f / 15.0f) * totalShrinking))
+        {
+            shrinkingTimer += delta_time;
+            entity_manager::get()->get_entity("Bat")->get_trans().scale = glm::vec3(0.3f, 0.3f, 0.3f);
+        }
+        if (isShrinking == true && shrinkingTimer >= ((11.0f / 15.0f) * totalShrinking) && shrinkingTimer < ((14.0f / 15.0f) * totalShrinking))
+        {
+            shrinkingTimer += delta_time;
+            entity_manager::get()->get_entity("Bat")->get_trans().scale = glm::vec3(0.2f, 0.2f, 0.2f);
+        }
+        if (isShrinking == true && shrinkingTimer >= ((14.0f / 15.0f) * totalShrinking))
+        {
+            entity_manager::get()->get_entity("Bat")->get_trans().scale = glm::vec3(0.2f, 0.2f, 0.2f);
+            shrinkingTimer = 0.0f;
+            isShrinking = false;
+            isShrunk = true;
+        }
     }
     
     // If shrunk for long enough, resize animation 
@@ -394,7 +391,16 @@ void physics_system::update(float delta_time)
     {
         isShrunk = false;
         _bat_collider->shrunkTimer = 0.0f;
+        _bat_collider->shrunk = false;
     }
+
+    if (_bat_collider->shrunk == false)
+    {
+        isShrinking = false;
+        isShrunk = false;
+        entity_manager::get()->get_entity("Bat")->get_trans().scale = glm::vec3(0.5f, 0.5f, 0.5f);
+    }
+
     // ** end of animation ** 
 }
 

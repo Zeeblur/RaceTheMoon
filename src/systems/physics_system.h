@@ -17,8 +17,6 @@ private:
    
 	std::vector<std::weak_ptr<collider_data>> _collider_data;
 
-    std::shared_ptr<collider_data> _bat_collider;
-
     // Shield bool for shieldpowerup, used to turn off bat collisions.
     bool shield = false;
 
@@ -26,6 +24,8 @@ private:
     physics_system();
 
 public:
+
+    std::shared_ptr<collider_data> _bat_collider;
 
 	std::vector<std::shared_ptr<physics_data>> _data;
 

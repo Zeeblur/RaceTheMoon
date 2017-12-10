@@ -79,11 +79,14 @@ void game_state::on_reset()
 	auto bat = entity_manager::get()->get_entity("Bat");
 	bat->get_component("physics")->initialise();
 
+    // Reset physics and collition data
 	for (auto d : physics_system::get()->_data)
 	{
 		d->reset_data();
 	}
-
+    physics_system::get()->_bat_collider->reset_data();
+    // Reset level gen
+    engine::get()->get_subsystem("level_gen")->unload_content();
 	// set score system active
 	engine::get()->get_subsystem("score_system")->initialise();
 
