@@ -71,7 +71,7 @@ std::shared_ptr<render_component> renderer::build_component(std::shared_ptr<enti
 	return std::make_shared<render_component>(e, _rd);
 }
 
-void renderer::change_texture(std::shared_ptr<entity> &e, std::string texture_path)
+void renderer::change_texture(const std::shared_ptr<entity> &e, std::string texture_path)
 {
 	std::shared_ptr<render_component> rc = std::dynamic_pointer_cast<render_component>(e->get_component("render"));
 	

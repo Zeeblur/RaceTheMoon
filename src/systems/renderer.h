@@ -27,7 +27,7 @@ public:
 
 	std::shared_ptr<light_component> build_light(std::shared_ptr<entity> &e);
 
-	void change_texture(std::shared_ptr<entity> &e, std::string texture_path);
+	void change_texture(const std::shared_ptr<entity> &e, std::string texture_path);
 
     bool initialise();
 
