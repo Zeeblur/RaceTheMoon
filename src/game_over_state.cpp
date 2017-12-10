@@ -19,7 +19,8 @@ void show_error(MYSQL *mysql)
 
 void character_callback(GLFWwindow* window, unsigned int codepoint)
 {
-	if (!my_sql_error)
+	// Don't let user type ' and ", to avoid SQL injections
+	if (!my_sql_error && codepoint != 34 && codepoint != 39)
 	{
 		std::cout << (char)codepoint << std::endl;
 		// add character
