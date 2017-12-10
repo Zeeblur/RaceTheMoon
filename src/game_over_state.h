@@ -22,3 +22,4 @@ public:
 	void on_exit();
 };
 static std::vector<char> name;
+static int current_score = 0;

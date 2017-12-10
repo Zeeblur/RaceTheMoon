@@ -51,7 +51,7 @@ int main()
 	engine_state_machine::get()->add_state("game_over_state", std::make_shared<game_over_state>(), state_type::GAME_OVER);
 	engine_state_machine::get()->add_state("settings_state", std::make_shared<settings_state>(), state_type::SETTINGS);
 
-    engine_state_machine::get()->change_state("game_over_state");
+    engine_state_machine::get()->change_state("menu_state");
     eng->run();
 
     return 0;

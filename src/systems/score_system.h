@@ -16,14 +16,14 @@
 class score_system : public subsystem
 {
 private:
-    std::vector<std::shared_ptr<score_data>> _data;
+
 
 	score_system();
 
 	float totalTime = 0;
 	int seconds = 0;
 public:
-
+	std::vector<std::shared_ptr<score_data>> _data;
     static inline std::shared_ptr<score_system> get()
     {
         static std::shared_ptr<score_system> instance = std::shared_ptr<score_system>(new score_system());

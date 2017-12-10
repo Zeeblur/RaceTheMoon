@@ -77,7 +77,7 @@ void menu_state::on_enter()
 {
 	// Switch off entities, physics, renderer
 	auto m = engine::get()->get_subsystem("entity_manager");
-	// TODO: Should entity manager be enabled?
+
 	engine::get()->get_subsystem("entity_manager")->set_active(true);
 	engine::get()->get_subsystem("entity_manager")->set_visible(true);
 	engine::get()->get_subsystem("physics_system")->set_active(false);

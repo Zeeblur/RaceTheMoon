@@ -116,14 +116,16 @@ public:
     {
         //std::cout << "Entity manager updating" << std::endl;
         for (auto &e : _entities[currentState])
-            e.second->update(delta_time);
+			if (e.second)
+				e.second->update(delta_time);
     }
 
     void render() override final
     {
         //std::cout << "Entity manager rendering" << std::endl;
         for (auto &e : _entities[currentState])
-            e.second->render();
+			if (e.second)
+				e.second->render();
     }
 
     void unload_content() override final
