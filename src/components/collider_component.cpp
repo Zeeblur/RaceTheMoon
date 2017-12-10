@@ -49,6 +49,16 @@ collider_data::collider_data(transform_data trans, int behaviour, std::string na
 	//this->collider = std::move(col);
 }
 
+void collider_data::reset_data()
+{
+    shield = false;
+    timeOfShield = 0.0f;
+    shrunk = false;
+    shrunkTimer = 0.0f;
+    speed = false;
+    speedTimer = 0.0f;
+}
+
 collider_component::collider_component(std::shared_ptr<entity> &e, std::shared_ptr<collider_data> data)
 	: _parent(e), _data(data)
 {

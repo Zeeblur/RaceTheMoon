@@ -49,6 +49,7 @@ struct collider_data
     std::string name_ = "";
 	collider_data(transform_data trans, int behaviour = 0, std::string name_ = "");
     ~collider_data() = default;
+    void reset_data();
 };
 
 struct collider_component : public component

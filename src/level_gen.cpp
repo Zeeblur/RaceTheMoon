@@ -4,7 +4,7 @@
 
 #include "level_gen.h"
 
-// this is a function object to delete a pointer matching our criteria.
+// this is a function object to delete a pointer matching our criteria. <---- ARE WE USING THIS? - Beej
 struct entity_deleter
 {
 	void operator()(entity*& e) // important to take pointer by reference!
@@ -43,9 +43,9 @@ void level_gen::update(float delta_time)
 		// remove all components from entities
 		for (auto &e : puzzleBlocks[currentBlock])
 		{
-			entity_manager::get()->delete_entity(e._Get()->get_name());
+    		entity_manager::get()->delete_entity(e._Get()->get_name());
 		}
-
+        puzzleBlocks[currentBlock].clear();
 		// remove entities
 		currentBlock -= blocksize;
 
@@ -57,7 +57,24 @@ void level_gen::update(float delta_time)
 }
 
 void level_gen::render() {}
-void level_gen::unload_content() {}
+void level_gen::unload_content() 
+{
+    // level gen reset attempt - Beej
+    /*std::cout << "currentBlock = " << currentBlock << std::endl;
+    if (!puzzleBlocks.size() == 0 && currentBlock < -1600)
+    {
+        for (int i = -currentBlock; i <= 1200-currentBlock; i += 400)
+        {
+            for (auto &e : puzzleBlocks[-i])
+            {
+                std::cout << "i = " << -i << std::endl;
+                entity_manager::get()->delete_entity(e._Get()->get_name());
+            }
+        }
+        currentBlock = -400;
+        initialise();*/
+    }
+}
 void level_gen::shutdown() {}
 
 void level_gen::addWaterfallPuzzle(int blockIdx)
