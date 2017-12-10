@@ -467,13 +467,13 @@ namespace gl
 		std::vector<glm::vec3> positions
 		{
 			// 1
-			glm::vec3(1000.0f, 0.0f, -5000.0f),
-			glm::vec3(-1000.0f,  0.0f, -5000.0f),
-			glm::vec3(-1000.0f,  0.0f, 100.0f),
+			glm::vec3(1000.0f, 0.0f, -400.0f),
+			glm::vec3(-1000.0f,  0.0f, -400.0f),
+			glm::vec3(-1000.0f,  0.0f, 0.0f),
 			// 2
-			glm::vec3(-1000.0f, 0.0f, 100.0f),
-			glm::vec3(1000.0f, 0.0f, 100.0f),
-			glm::vec3(1000.0f,0.0f, -5000.0f)
+			glm::vec3(-1000.0f, 0.0f, 0.0f),
+			glm::vec3(1000.0f, 0.0f, 0.0f),
+			glm::vec3(1000.0f,0.0f, -400.0f)
 
         };
 
