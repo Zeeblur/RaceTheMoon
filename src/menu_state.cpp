@@ -20,8 +20,8 @@ void menu_state::initialise()
 
 	// Menu text transform
 	transform_data menu_transform;
-	menu_transform.x = x_size / 2 - 220;
-	menu_transform.y = y_size - 250;
+	menu_transform.x = x_size / 2;
+	menu_transform.y = y_size - 50;
 	// Menu
 	auto menu_text = entity_manager::get()->create_entity("mainMenu", state_type::MENU, menu_transform);
 	menu_text->add_component("render", renderer::get()->build_component(menu_text, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/play_button.png", "rectangle", "text", text));

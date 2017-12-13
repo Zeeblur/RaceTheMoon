@@ -104,8 +104,8 @@ void settings_state::initialise()
 
 	// Title transform
 	transform_data title_transform;
-	title_transform.x = x_size / 2 - 200;
-	title_transform.y = y_size - 250;
+	title_transform.x = x_size / 2;
+	title_transform.y = y_size - 50;
 	// Title
 	auto title = entity_manager::get()->create_entity("Title", state_type::SETTINGS, title_transform);
 	title->add_component("render", renderer::get()->build_component(title, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/play_button.png", "rectangle", "text", text));
