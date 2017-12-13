@@ -65,7 +65,7 @@ void settings_state::initialise()
 	resolution_value_transform.scale.y = 30;
 	// Resolution value
 	auto resolution_value = entity_manager::get()->create_entity("resolutionValue", state_type::SETTINGS, resolution_value_transform);
-	resolution_value->add_component("render", renderer::get()->build_component(resolution_value, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/1024x768.png", "rectangle", "Gouraud", simple_texture));
+	resolution_value->add_component("render", renderer::get()->build_component(resolution_value, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/1920x1080.png", "rectangle", "Gouraud", simple_texture));
 	resolution_value->add_component("camera", camera_system::get()->build_component(resolution_value, camera_type::ORTHO));
 
 	// Resolution transform

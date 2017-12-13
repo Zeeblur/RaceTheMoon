@@ -33,9 +33,9 @@ public:
 	int left_move_key = -1;
 	int right_move_key = -1;
 
-	resolution current_resolution = _1024x768;
+	resolution current_resolution = _1920x1080;
 
-	window_mode current_window_mode = windowed;
+	window_mode current_window_mode = fullscreen;
 
 	void initialise();
 
