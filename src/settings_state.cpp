@@ -38,7 +38,7 @@ void settings_state::initialise()
 	glfwGetWindowSize(glfw::window, &x_size, &y_size);
 
 	transform_data back_transform;
-	back_transform.scale = glm::vec3(x_size / 1.25, y_size / 1.25, 1.0f);
+	back_transform.scale = glm::vec3(x_size * 0.5 , y_size * 0.5, 1.0f);
 	back_transform.z = -10;
 	auto background = entity_manager::get()->create_entity("background", state_type::SETTINGS, back_transform);
 
@@ -270,18 +270,22 @@ void determine_screen_res(resolution &res)
 	{
 	case _1024x768:
 		glfwSetWindowSize(glfw::window, 1024, 768);
+        glfwSetWindowPos(glfw::window, 448, 156);
 		renderer::get()->change_texture(entity_manager::get()->get_entity("resolutionValue"), "res/textures/1024x768.png");
 		break;
 	case _1280x720:
 		glfwSetWindowSize(glfw::window, 1280, 720);
+        glfwSetWindowPos(glfw::window, 320, 180);
 		renderer::get()->change_texture(entity_manager::get()->get_entity("resolutionValue"), "res/textures/1280x720.png");
 		break;
 	case _1600x1200:
 		glfwSetWindowSize(glfw::window, 1600, 1200);
+        glfwSetWindowPos(glfw::window, 160, 0);
 		renderer::get()->change_texture(entity_manager::get()->get_entity("resolutionValue"), "res/textures/1600x1200.png");
 		break;
 	case _1920x1080:
 		glfwSetWindowSize(glfw::window, 1920, 1080);
+        glfwSetWindowPos(glfw::window, 0, 0);
 		renderer::get()->change_texture(entity_manager::get()->get_entity("resolutionValue"), "res/textures/1920x1080.png");
 		break;
 	}
@@ -289,13 +293,20 @@ void determine_screen_res(resolution &res)
 
 void determine_window_mode(window_mode &window_mode)
 {
+    int xsize = 0;
+    int ysize = 0;
+
+    glfwGetWindowSize(glfw::window, &xsize, &ysize);
+
 	switch (window_mode)
 	{
 	case fullscreen:
 		// Handle logic for fullscreen
+        glfwSetWindowMonitor(glfw::window, glfwGetPrimaryMonitor(), 0, 0, xsize, ysize, GLFW_DONT_CARE);
 		break;
 	case windowed:
 		// Handle logic for windowed
+        glfwSetWindowMonitor(glfw::window, NULL, ((1920 - xsize) / 2), ((1080 - ysize) / 2), xsize, ysize, GLFW_DONT_CARE);
 		break;
 	}
 }
