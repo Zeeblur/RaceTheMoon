@@ -407,6 +407,11 @@ void handle_remap_key_right()
 
 void settings_state::on_update(float delta_time)
 {
+	int x_size = 0, y_size = 0;
+	glfwGetWindowSize(glfw::window, &x_size, &y_size);
+	entity_manager::get()->get_entity("Title")->get_trans().x = x_size / 2;
+	entity_manager::get()->get_entity("Title")->get_trans().y = y_size - 50;
+
 	int present = glfwJoystickPresent(GLFW_JOYSTICK_1);
 
 	int count;

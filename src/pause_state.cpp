@@ -12,8 +12,8 @@ void pause_state::initialise()
 
 	// Pause text transform
 	transform_data paused_transform;
-	paused_transform.x = x_size / 2 - 175;
-	paused_transform.y = y_size - 250;
+	paused_transform.x = x_size / 2;
+	paused_transform.y = y_size - 50;
 	// Pause
 	auto paused_text = entity_manager::get()->create_entity("pause", state_type::PAUSE, paused_transform);
 	paused_text->add_component("render", renderer::get()->build_component(paused_text, glm::vec4(0.0f, 0.0f,  0.0f, 1.0f), "res/textures/play_button.png", "rectangle", "text", text));
@@ -77,6 +77,11 @@ void pause_state::on_enter()
 
 void pause_state::on_update(float delta_time)
 {
+	int x_size = 0, y_size = 0;
+	glfwGetWindowSize(glfw::window, &x_size, &y_size);
+	entity_manager::get()->get_entity("pause")->get_trans().x = x_size / 2;
+	entity_manager::get()->get_entity("pause")->get_trans().y = y_size - 50;
+
 	int present = glfwJoystickPresent(GLFW_JOYSTICK_1);
 
 	int count;
