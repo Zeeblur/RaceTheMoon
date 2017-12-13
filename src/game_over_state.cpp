@@ -123,11 +123,11 @@ void key_callback2(GLFWwindow* window, int key, int scancode, int action, int mo
 			your_name->_data->text = " ";
 		}
 	}
-	else if (key == GLFW_KEY_ENTER && action == GLFW_PRESS)
-	{
-		action = GLFW_RELEASE;
-		submit_score();
-	}
+	//else if (key == GLFW_KEY_ENTER && action == GLFW_PRESS)
+	//{
+	//	action = GLFW_RELEASE;
+	//	submit_score();
+	//}
 
 }
 
@@ -209,8 +209,9 @@ void game_over_state::initialise()
 		if (!my_sql_error)
 		{
 			mysql_free_result(result);
-			mysql_close(con);
+			
 		}
+		mysql_close(con);
 		if (!my_sql_error)
 		{
 			for (size_t i = 0; i < high_scores.size(); i++)
@@ -326,8 +327,9 @@ void game_over_state::display_high_scores()
 			if (!my_sql_error)
 			{
 				mysql_free_result(result);
-				mysql_close(con);
+				
 			}
+			mysql_close(con);
 			if (!my_sql_error)
 			{
 				for (size_t i = 0; i < high_scores.size(); i++)
@@ -413,13 +415,15 @@ void game_over_state::on_enter()
 
 void game_over_state::on_update(float delta_time)
 {
-	//std::shared_ptr<clickable_system> cs = std::static_pointer_cast<clickable_system>(engine::get()->get_subsystem("clickable_system"));
-	//if (cs->get_clicked_component_name() == "submit_score_button")
-	//{
-	//	can_submit = true;
-	//	display_high_scores();
-	//	cs->clear_clicked_component_name();
-	//}
+	static int enter_old_state = GLFW_RELEASE;
+	int enter_state = glfwGetKey(glfw::window, GLFW_KEY_ENTER);
+
+	if (enter_state == GLFW_RELEASE && enter_old_state == GLFW_PRESS)
+	{
+		std::cout << "ENTER" << std::endl;
+		submit_score();
+	}
+	enter_old_state = enter_state;
 }
 
 void game_over_state::on_exit()

@@ -332,8 +332,8 @@ void handle_remap_key_left()
 				// Add new button and old buttons
 				user_pref_file << "Left: " << latest_key_press << "\n";
 				user_pref_file << "Right: " << input_handler::get()->glfw_button_right << "\n";
-				user_pref_file << "Front: " << input_handler::get()->glfw_button_up << "\n";
-				user_pref_file << "Back: " << input_handler::get()->glfw_button_down << "\n";
+				user_pref_file << "Front: " << input_handler::get()->glfw_button_forward << "\n";
+				user_pref_file << "Back: " << input_handler::get()->glfw_button_backward << "\n";
 			}
 			// Close
 			user_pref_file.close();
@@ -379,8 +379,8 @@ void handle_remap_key_right()
 				// Add new button and old buttons
 				user_pref_file << "Left: " << input_handler::get()->glfw_button_left << "\n";
 				user_pref_file << "Right: " << latest_key_press << "\n";
-				user_pref_file << "Front: " << input_handler::get()->glfw_button_up << "\n";
-				user_pref_file << "Back: " << input_handler::get()->glfw_button_down << "\n";
+				user_pref_file << "Front: " << input_handler::get()->glfw_button_forward << "\n";
+				user_pref_file << "Back: " << input_handler::get()->glfw_button_backward << "\n";
 			}
 			// Close
 			user_pref_file.close();
@@ -405,9 +405,9 @@ void settings_state::on_update(float delta_time)
 
 	// Handle input for up arrow
 	static int up_old_state = GLFW_RELEASE;
-	int up_state = glfwGetKey(glfw::window, GLFW_KEY_UP);
+	int up_state = glfwGetKey(glfw::window, input_handler::get()->glfw_button_navigation_up);
 
-	if ((up_state == GLFW_RELEASE && up_old_state == GLFW_PRESS) || (present && axes[10] == GLFW_RELEASE && up_old_axis == GLFW_PRESS))
+	if ((up_state == GLFW_RELEASE && up_old_state == GLFW_PRESS) || (present && axes[input_handler::get()->glfw_joystick_up] == GLFW_RELEASE && up_old_axis == GLFW_PRESS))
 	{
 		std::string letter_right;
 		std::string letter_left;
@@ -520,9 +520,9 @@ void settings_state::on_update(float delta_time)
 	static char down_old_axis = GLFW_RELEASE;
 	// Handle input for down arrow
 	static int down_old_state = GLFW_RELEASE;
-	int down_state = glfwGetKey(glfw::window, GLFW_KEY_DOWN);
+	int down_state = glfwGetKey(glfw::window, input_handler::get()->glfw_button_navigation_down);
 
-	if ((down_state == GLFW_RELEASE && down_old_state == GLFW_PRESS) || (present && axes[12] == GLFW_RELEASE && down_old_axis == GLFW_PRESS))
+	if ((down_state == GLFW_RELEASE && down_old_state == GLFW_PRESS) || (present && axes[input_handler::get()->glfw_joystick_down] == GLFW_RELEASE && down_old_axis == GLFW_PRESS))
 	{
 		std::string letter_right;
 		std::string letter_left;
@@ -634,7 +634,7 @@ void settings_state::on_update(float delta_time)
 	static char enter_joystick_old_state = GLFW_RELEASE;
 	static int enter_old_state = GLFW_RELEASE;
 	int enter_state = glfwGetKey(glfw::window, GLFW_KEY_ENTER);
-	if (enter_state == GLFW_RELEASE && enter_old_state == GLFW_PRESS || (present && axes[0] == GLFW_RELEASE && enter_joystick_old_state == GLFW_PRESS))
+	if (enter_state == GLFW_RELEASE && enter_old_state == GLFW_PRESS || (present && axes[input_handler::get()->glfw_joystick_enter] == GLFW_RELEASE && enter_joystick_old_state == GLFW_PRESS))
 	{
 		switch (selection)
 		{
@@ -757,9 +757,9 @@ void settings_state::on_update(float delta_time)
 	// Reset controller button states
 	if (present)
 	{
-		up_old_axis = axes[10];
-		down_old_axis = axes[12];
-		enter_joystick_old_state = axes[0];
+		up_old_axis = axes[input_handler::get()->glfw_joystick_up];
+		down_old_axis = axes[input_handler::get()->glfw_joystick_down];
+		enter_joystick_old_state = axes[input_handler::get()->glfw_joystick_enter];
 	}
 
 	

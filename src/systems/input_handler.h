@@ -24,10 +24,19 @@ private:
     Command* fakeMove_;
 
 public:
-	int glfw_button_up;
-	int glfw_button_down;
+	int glfw_button_navigation_up;
+	int glfw_button_navigation_down;
+	int glfw_button_navigation_left;
+	int glfw_button_navigation_right;
 	int glfw_button_left;
 	int glfw_button_right;
+	int glfw_button_forward;
+	int glfw_button_backward;
+	int glfw_joystick_up;
+	int glfw_joystick_down;
+	int glfw_joystick_left;
+	int glfw_joystick_right;
+	int glfw_joystick_enter;
 
     inline static std::shared_ptr<input_handler> get()
     {

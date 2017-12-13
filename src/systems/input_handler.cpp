@@ -65,12 +65,30 @@ void input_handler::load_input_settings()
 			user_pref_file_out << "Right: " << GLFW_KEY_D << "\n";
 			user_pref_file_out << "Front: " << GLFW_KEY_W << "\n";
 			user_pref_file_out << "Back: " << GLFW_KEY_S << "\n";
+			user_pref_file_out << "NavigationUp: " << GLFW_KEY_UP << "\n";
+			user_pref_file_out << "NavigationDown: " << GLFW_KEY_DOWN << "\n";
+			user_pref_file_out << "NavigationLeft: " << GLFW_KEY_LEFT << "\n";
+			user_pref_file_out << "NavigationRight: " << GLFW_KEY_RIGHT << "\n";
+			user_pref_file_out << "JoystickEnter: " << 0 << "\n"; 
+			user_pref_file_out << "JoystickUp: " << 10 << "\n";
+			user_pref_file_out << "JoystickDown: " << 12 << "\n";
+			user_pref_file_out << "JoystickLeft: " << 11 << "\n"; // is this right?
+			user_pref_file_out << "JoystickRight: " << 13 << "\n"; // is this right?
+
 		}
 		// Assign defaults
 		glfw_button_left = GLFW_KEY_A;
 		glfw_button_right = GLFW_KEY_D;
-		glfw_button_up = GLFW_KEY_W;
-		glfw_button_down = GLFW_KEY_S;
+		glfw_button_forward = GLFW_KEY_W;
+		glfw_button_backward = GLFW_KEY_S;
+		glfw_button_navigation_up = GLFW_KEY_UP;
+		glfw_button_navigation_down = GLFW_KEY_DOWN;
+		glfw_joystick_enter = 0;
+		glfw_joystick_up = 10;
+		glfw_joystick_left = 11;
+		glfw_joystick_down = 12;
+		glfw_joystick_right = 13;
+		
 		// Close file, finished writing
 		user_pref_file_out.close();
 	}
@@ -88,11 +106,47 @@ void input_handler::load_input_settings()
 		}
 		else if (input == "Front:")
 		{
-			user_pref_file >> glfw_button_up;
+			user_pref_file >> glfw_button_forward;
 		}
 		else if (input == "Back:")
 		{
-			user_pref_file >> glfw_button_down;
+			user_pref_file >> glfw_button_backward;
+		}
+		else if (input == "NavigationUp:")
+		{
+			user_pref_file >> glfw_button_navigation_up;
+		}
+		else if (input == "NavigationDown:")
+		{
+			user_pref_file >> glfw_button_navigation_down;
+		}
+		else if (input == "NavigationRight:")
+		{
+			user_pref_file >> glfw_button_navigation_right;
+		}
+		else if (input == "NavigationLeft:")
+		{
+			user_pref_file >> glfw_button_navigation_left;
+		}
+		else if (input == "JoystickEnter:")
+		{
+			user_pref_file >> glfw_joystick_enter;
+		}
+		else if (input == "JoystickUp:")
+		{
+			user_pref_file >> glfw_joystick_up;
+		}
+		else if (input == "JoystickLeft:")
+		{
+			user_pref_file >> glfw_joystick_left;
+		}
+		else if (input == "JoystickDown:")
+		{
+			user_pref_file >> glfw_joystick_down;
+		}
+		else if (input == "JoystickRight:")
+		{
+			user_pref_file >> glfw_joystick_right;
 		}
 	}
 	user_pref_file.close();
@@ -127,10 +181,10 @@ void input_handler::shutdown()
 std::vector<Command*> input_handler::handle_input()
 {
     std::vector<Command*> commands;
-    if (glfwGetKey(glfw::window, glfw_button_up))
+    if (glfwGetKey(glfw::window, glfw_button_forward))
         commands.push_back(buttonUp_);
 
-    if (glfwGetKey(glfw::window, glfw_button_down))
+    if (glfwGetKey(glfw::window, glfw_button_backward))
         commands.push_back(buttonDown_);
 
     if (glfwGetKey(glfw::window, glfw_button_left))
