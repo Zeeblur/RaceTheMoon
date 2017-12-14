@@ -40,6 +40,11 @@ void clickable_system::update(float delta_time)
 	// cooldown for buttons used to avoid accidentally clicking overlayed buttons when switching states
 	static float cooldown;
 	cooldown += delta_time;
+
+	static int state_old = GLFW_RELEASE;
+
+	int state = glfwGetMouseButton(glfw::window, GLFW_MOUSE_BUTTON_LEFT);
+
     for (auto &d : _data)
     {
 
@@ -51,8 +56,6 @@ void clickable_system::update(float delta_time)
 
             glfwGetCursorPos(glfw::window, &x_pos, &y_pos);
 
-            int state = glfwGetMouseButton(glfw::window, GLFW_MOUSE_BUTTON_LEFT);
-			
 			int x_size = 0;
 			int y_size = 0;
 
@@ -69,7 +72,7 @@ void clickable_system::update(float delta_time)
 			
 			
 			// Check if click in bounds and cooldown has passed
-            if (cooldown > 0.5f && state == GLFW_PRESS && x_pos >= x_min && x_pos <= x_max && y_pos >= y_min && y_pos <= y_max
+            if (cooldown > 0.5f && state_old == GLFW_PRESS && state == GLFW_RELEASE && x_pos >= x_min && x_pos <= x_max && y_pos >= y_min && y_pos <= y_max
 				&& engine_state_machine::get()->get_current_state_type() == entity_manager::get()->get_entity(d.parent_name)->state)
             {
 				audio_system::get()->play_sound(button_press);
@@ -79,7 +82,7 @@ void clickable_system::update(float delta_time)
                 d.clicks++;
 				cooldown = 0;
             }
-			if (d.parent_name != "keyMoveLeft" && d.parent_name != "keyMoveRight")
+			if (d.parent_name != "keyMoveLeft" && d.parent_name != "keyMoveRight" && d.parent_name != "keyMenuEnter" && d.parent_name != "keyMenuEnterJoystick")
 			{
 				// Check if the entity has been deleted
 				if (entity_manager::get()->get_entity(d.parent_name))
@@ -117,14 +120,19 @@ void clickable_system::update(float delta_time)
 							{
 								renderer::get()->change_texture(entity_manager::get()->get_entity(d.parent_name), "res/textures/arrow_right.png");
 							}
-							else
+							else 
+							{
 								renderer::get()->change_texture(entity_manager::get()->get_entity(d.parent_name), "res/textures/" + d.parent_name + ".png");
+							}
+								
 						}
 					}
 				}
 			}
+			
         }
     }
+	state_old = state;
 }
 
 std::string clickable_system::get_clicked_component_name()

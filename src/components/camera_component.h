@@ -29,7 +29,8 @@ struct camera_projection
 	float bottom = 0;
 
 	camera_type type;
-	glm::mat4 model_view;
+	glm::mat4 view;
+	glm::mat4 proj;
 	glm::vec3 cam_pos;
 };
 

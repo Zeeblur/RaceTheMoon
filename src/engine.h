@@ -27,10 +27,13 @@ private:
 
 
 public:
-
+	std::string resPref;
+	std::string windowPref;
 
 
     void initWindowMan();
+
+	void save_preferences();
 
     inline static std::shared_ptr<engine> get()
     {
@@ -43,7 +46,7 @@ public:
     bool get_running() const noexcept { return _running; }
 
     // Set the current running value.
-    void set_running(bool value) noexcept { _running = value; }
+    void set_running(bool value) noexcept { save_preferences(); _running = value; }
 
     void add_subsystem(const std::string &name, std::shared_ptr<subsystem> sys);
 

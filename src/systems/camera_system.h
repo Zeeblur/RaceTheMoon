@@ -25,7 +25,8 @@ public:
         return instance;
     }
 
-	glm::mat4 player_cam_MV;
+	glm::mat4 player_cam_V;
+	glm::mat4 player_cam_P;
 	glm::vec3 player_cam_pos;
 
     std::shared_ptr<camera_component> build_component(std::shared_ptr<entity> e, camera_type type);

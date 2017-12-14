@@ -42,5 +42,5 @@ public:
 	void shutdown();
 
 	std::vector<std::shared_ptr<gl::render_data>> _dataList;
-
+	std::vector<std::shared_ptr<gl::render_data>> _dataText;
 };

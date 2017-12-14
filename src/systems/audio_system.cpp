@@ -50,8 +50,6 @@ void audio_system::play_sound(sound_id id)
 	sounds.push_back(sf::Sound(*sb));
 	sf::Sound& sound = sounds.back();
 
-	// vol
-	set_volume(0);
 	sound.play();
 }
 
@@ -72,7 +70,7 @@ void audio_system::play_music(music_id id)
 	
 	if (!music.openFromFile(filename))
 		throw std::runtime_error("Music " + filename + " could not be loaded.");
-	volume = 0.0;
+	
 	music.setVolume(volume);
 	music.setLoop(true);
 	music.play();
