@@ -149,7 +149,7 @@ install(TARGETS RaceTheMoon DESTINATION lib)
 #================================================
 # mariadb-connector https://github.com/MariaDB/mariadb-connector-c 434b67e
 add_subdirectory("lib/mariadb-connector")
-#target_include_directories(RaceTheMoon PUBLIC "lib/mariadb-connector")
+target_include_directories(RaceTheMoon PUBLIC "lib/mariadb-connector")
 target_include_directories(RaceTheMoon PUBLIC "lib/mariadb-connector/include")
 target_include_directories(RaceTheMoon PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/lib/mariadb-connector/include")
 #================================================

@@ -22,7 +22,7 @@ void settings_state::initialise()
 	glfwGetWindowSize(glfw::window, &x_size, &y_size);
 
 	transform_data back_transform;
-	back_transform.scale = glm::vec3(x_size * 0.5 , y_size * 0.5, 1.0f);
+	back_transform.scale = glm::vec3(1920 * 0.5 , 1080 * 0.5, 1.0f);
 	back_transform.z = -500;
 	auto background = entity_manager::get()->create_entity("background", state_type::SETTINGS, back_transform);
 
@@ -49,7 +49,7 @@ void settings_state::initialise()
 	controls_button_transform.scale.y = 50;
 	// Controls button
 	auto controls_button = entity_manager::get()->create_entity("controls_button", state_type::SETTINGS, controls_button_transform);
-	controls_button->add_component("render", renderer::get()->build_component(controls_button, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/back_button.png", "rectangle", "Gouraud", simple_texture));
+	controls_button->add_component("render", renderer::get()->build_component(controls_button, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/controls_button.png", "rectangle", "Gouraud", simple_texture));
 	controls_button->add_component("camera", camera_system::get()->build_component(controls_button, camera_type::ORTHO));
 	controls_button->add_component("clickable", clickable_system::get()->build_component(controls_button, vec2(controls_button_transform.x, -controls_button_transform.y), controls_button_transform.scale));
 
@@ -480,7 +480,7 @@ void settings_state::on_update(float delta_time)
 
 	static char enter_joystick_old_state = GLFW_RELEASE;
 	static int enter_old_state = GLFW_RELEASE;
-	int enter_state = glfwGetKey(glfw::window, input_handler::get()->glfw_joystick_enter);
+	int enter_state = glfwGetKey(glfw::window, GLFW_KEY_ENTER);
 	if (enter_state == GLFW_RELEASE && enter_old_state == GLFW_PRESS || (present && axes[input_handler::get()->glfw_joystick_enter] == GLFW_RELEASE && enter_joystick_old_state == GLFW_PRESS))
 	{
 		switch (selection)
