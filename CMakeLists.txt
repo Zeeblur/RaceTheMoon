@@ -143,17 +143,15 @@ target_include_directories(RaceTheMoon PUBLIC "lib/sfml/include")
 #target_include_directories(SFML PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/lib/sfml")
 install(TARGETS RaceTheMoon DESTINATION lib)
 #================================================
-# mysql-connector https://github.com/mysql/mysql-connector-cpp 894f875
-#add_subdirectory("lib/mysql-connector")
-#target_include_directories(RaceTheMoon PUBLIC "lib/mysql-connector")
-#target_include_directories(RaceTheMoon PUBLIC "lib/mysql-connector/include")
-#target_include_directories(RaceTheMoon PUBLIC "lib/mysql-connector/include")
 #================================================
+if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+else()
 # mariadb-connector https://github.com/MariaDB/mariadb-connector-c 434b67e
 add_subdirectory("lib/mariadb-connector")
 target_include_directories(RaceTheMoon PUBLIC "lib/mariadb-connector")
 target_include_directories(RaceTheMoon PUBLIC "lib/mariadb-connector/include")
 target_include_directories(RaceTheMoon PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/lib/mariadb-connector/include")
+endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 #================================================
 # OpenGL
 FIND_PACKAGE( OpenGL REQUIRED)
@@ -195,6 +193,8 @@ else()
             ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
             LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
             )
+
+	target_link_libraries(RaceTheMoon PUBLIC libmariadb)
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 #====================================================================
@@ -209,7 +209,6 @@ target_link_libraries(RaceTheMoon
 	PUBLIC assimp
 	PUBLIC sfml-audio
 	#PUBLIC libconcpp
-	PUBLIC libmariadb
 	#optimized sfml-audio debug sfml-audio-d 
 )
 add_dependencies(RaceTheMoon
