@@ -238,9 +238,9 @@ void game_over_state::initialise()
 		if (!my_sql_error)
 		{
 			mysql_free_result(result);
-			
+			mysql_close(con);
 		}
-		mysql_close(con);
+		
 		if (!my_sql_error)
 		{
 			for (size_t i = 0; i < high_scores.size(); i++)
@@ -327,9 +327,9 @@ void game_over_state::display_high_scores()
 			if (!my_sql_error)
 			{
 				mysql_free_result(result);
-				
+				mysql_close(con);
 			}
-			mysql_close(con);
+			
 			if (!my_sql_error)
 			{
 				for (size_t i = 0; i < high_scores.size(); i++)
