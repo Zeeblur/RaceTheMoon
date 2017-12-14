@@ -14,6 +14,8 @@ SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/bin")
 SET (CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/lib")
 SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/lib")
 
+
+
 file(GLOB_RECURSE SOURCE_FILES src/*.cpp src/*.h)
 # Add all shaders
 file(GLOB_RECURSE SHADER_FILES res/shaders/*.vert res/shaders/*.frag res/shaders/*.geom res/shaders/*.comp)
@@ -141,17 +143,15 @@ target_include_directories(RaceTheMoon PUBLIC "lib/sfml/include")
 #target_include_directories(SFML PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/lib/sfml")
 install(TARGETS RaceTheMoon DESTINATION lib)
 #================================================
-# mysql-connector https://github.com/mysql/mysql-connector-cpp 894f875
-#add_subdirectory("lib/mysql-connector")
-#target_include_directories(RaceTheMoon PUBLIC "lib/mysql-connector")
-#target_include_directories(RaceTheMoon PUBLIC "lib/mysql-connector/include")
-#target_include_directories(RaceTheMoon PUBLIC "lib/mysql-connector/include")
 #================================================
+if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+else()
 # mariadb-connector https://github.com/MariaDB/mariadb-connector-c 434b67e
 add_subdirectory("lib/mariadb-connector")
-#target_include_directories(RaceTheMoon PUBLIC "lib/mariadb-connector")
+target_include_directories(RaceTheMoon PUBLIC "lib/mariadb-connector")
 target_include_directories(RaceTheMoon PUBLIC "lib/mariadb-connector/include")
 target_include_directories(RaceTheMoon PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/lib/mariadb-connector/include")
+endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 #================================================
 # OpenGL
 FIND_PACKAGE( OpenGL REQUIRED)
@@ -185,6 +185,7 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 else()
 	# GLEW https://github.com/Perlmint/glew-cmake.git ea68a21
 	add_subdirectory("lib/glew_windows")
+	target_compile_definitions(RaceTheMoon PUBLIC WINDOWS)
 	target_include_directories(RaceTheMoon PUBLIC "lib/glew_windows/include")
 	set(GLEWLIB libglew_shared)
     set_target_properties(${GLEWLIB} PROPERTIES
@@ -192,6 +193,8 @@ else()
             ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
             LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
             )
+
+	target_link_libraries(RaceTheMoon PUBLIC libmariadb)
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 #====================================================================
@@ -206,7 +209,6 @@ target_link_libraries(RaceTheMoon
 	PUBLIC assimp
 	PUBLIC sfml-audio
 	#PUBLIC libconcpp
-	PUBLIC libmariadb
 	#optimized sfml-audio debug sfml-audio-d 
 )
 add_dependencies(RaceTheMoon

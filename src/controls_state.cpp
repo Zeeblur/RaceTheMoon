@@ -95,50 +95,64 @@ void handle_remap_key_right()
 
 void handle_remap_joystick_enter()
 {
-	glfwSetKeyCallback(glfw::window, key_callback);
-
-
-	// Update prompt
-	std::shared_ptr<text_component> tc = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity("help_text")->get_component("text"));
-	tc->_data->text = "Assign key, ESC to cancel...";
-	// Force render before going into the while loop.
-	renderer::get()->render();
-	while (true)
+	int present = glfwJoystickPresent(GLFW_JOYSTICK_1);
+	if (present)
 	{
-		int present = glfwJoystickPresent(GLFW_JOYSTICK_1);
-		int count;
-		const unsigned char* axes = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
-		int button = -1;
-		static int old_state = GLFW_RELEASE;
-		for (size_t i = 0; i < count; i++)
-		{
-			if (axes[i] == GLFW_PRESS)
-			{
-				button = i;
-				std::cout << " ====== " << i << std::endl;
-			}
-		}
-		// Check for events
-		glfwPollEvents();
+		//glfwSetKeyCallback(glfw::window, key_callback);
 
-		if (button != -1)
+
+		// Update prompt
+		std::shared_ptr<text_component> tc = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity("help_text")->get_component("text"));
+		tc->_data->text = "Assign key, ESC to cancel...";
+		// Force render before going into the while loop.
+		renderer::get()->render();
+		while (true)
 		{
-			renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/question_mark.png");
-			std::cout << "Before setting: " << input_handler::get()->glfw_joystick_enter << std::endl;
-			input_handler::get()->glfw_joystick_enter = button;
-			std::cout << "After setting: " << input_handler::get()->glfw_joystick_enter << std::endl;
-			// Remove actuall callback
-			glfwSetKeyCallback(glfw::window, key_callback_fake);
-			std::shared_ptr<text_component> tc = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity("help_text")->get_component("text"));
-			tc->_data->text = " ";
-			break;
+			int count;
+			const unsigned char* axes = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
+			static int button = -1;
+			static char old_state = GLFW_RELEASE;
+			for (size_t i = 0; i < count; i++)
+			{
+				if (axes[i] == GLFW_PRESS)
+				{
+					button = i;
+					std::cout << " ====== " << i << std::endl;
+				}
+			}
+			// Check for events
+			glfwPollEvents();
+
+			if (button != -1 && axes[button] == GLFW_RELEASE && old_state == GLFW_PRESS)
+			{
+				if (button == 0)
+					renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/A.png");
+				else if (button == 1)
+					renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/B.png");
+				else if (button == 2)
+					renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/X.png");
+				else if (button == 3)
+					renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/Y.png");
+				else
+					renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/question_mark.png");
+				std::cout << "Before setting: " << input_handler::get()->glfw_joystick_enter << std::endl;
+				input_handler::get()->glfw_joystick_enter = button;
+				std::cout << "After setting: " << input_handler::get()->glfw_joystick_enter << std::endl;
+				// Remove actuall callback
+				//glfwSetKeyCallback(glfw::window, key_callback_fake);
+				std::shared_ptr<text_component> tc = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity("help_text")->get_component("text"));
+				tc->_data->text = " ";
+				button = -1;
+				break;
+			}
+			old_state = axes[button];
 		}
-		//old_state = 
 	}
 }
 
 void controls_state::initialise()
 {
+	glfwSetKeyCallback(glfw::window, key_callback_fake);
 	latest_key_press = -1;
 	initText2D("res/textures/myriad.png");
 
@@ -149,7 +163,7 @@ void controls_state::initialise()
 
 	transform_data back_transform;
 	back_transform.scale = glm::vec3(x_size * 0.5, y_size * 0.5, 1.0f);
-	back_transform.z = -10;
+	back_transform.z = -500;
 	auto background = entity_manager::get()->create_entity("background", state_type::CONTROLS, back_transform);
 
 	background->add_component("render", renderer::get()->build_component(background, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/race_the_moon.png", "rectangle", "Gouraud", simple_texture));
@@ -186,16 +200,16 @@ void controls_state::initialise()
 	move_right->add_component("render", renderer::get()->build_component(move_right, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/move_right.png", "rectangle", "Gouraud", simple_texture));
 	move_right->add_component("camera", camera_system::get()->build_component(move_right, camera_type::ORTHO));
 
-	// menu enter transform
-	transform_data menu_enter_transform;
-	menu_enter_transform.scale = glm::vec3(100, 30, 1.0f);
-	menu_enter_transform.x = -30 - 400;
-	menu_enter_transform.y = -180;
+	//// menu enter transform
+	//transform_data menu_enter_transform;
+	//menu_enter_transform.scale = glm::vec3(100, 30, 1.0f);
+	//menu_enter_transform.x = -30 - 400;
+	//menu_enter_transform.y = -180;
 
-	// menu enter
-	auto menu_enter = entity_manager::get()->create_entity("menuEnter", state_type::CONTROLS, menu_enter_transform);
-	menu_enter->add_component("render", renderer::get()->build_component(menu_enter, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/move_right.png", "rectangle", "Gouraud", simple_texture));
-	menu_enter->add_component("camera", camera_system::get()->build_component(menu_enter, camera_type::ORTHO));
+	//// menu enter
+	//auto menu_enter = entity_manager::get()->create_entity("menuEnter", state_type::CONTROLS, menu_enter_transform);
+	//menu_enter->add_component("render", renderer::get()->build_component(menu_enter, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/menu_accept.png", "rectangle", "Gouraud", simple_texture));
+	//menu_enter->add_component("camera", camera_system::get()->build_component(menu_enter, camera_type::ORTHO));
 
 	// menu enter transform
 	transform_data menu_enter_joystick_transform;
@@ -205,7 +219,7 @@ void controls_state::initialise()
 
 	// menu enter
 	auto menu_enter_joystick = entity_manager::get()->create_entity("menuEnterJoystick", state_type::CONTROLS, menu_enter_joystick_transform);
-	menu_enter_joystick->add_component("render", renderer::get()->build_component(menu_enter_joystick, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/move_right.png", "rectangle", "Gouraud", simple_texture));
+	menu_enter_joystick->add_component("render", renderer::get()->build_component(menu_enter_joystick, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/menu_accept.png", "rectangle", "Gouraud", simple_texture));
 	menu_enter_joystick->add_component("camera", camera_system::get()->build_component(menu_enter_joystick, camera_type::ORTHO));
 
 	// Back button transform
@@ -219,30 +233,6 @@ void controls_state::initialise()
 	back_button->add_component("render", renderer::get()->build_component(back_button, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/back_button.png", "rectangle", "Gouraud", simple_texture));
 	back_button->add_component("camera", camera_system::get()->build_component(back_button, camera_type::ORTHO));
 	back_button->add_component("clickable", clickable_system::get()->build_component(back_button, vec2(back_button_transform.x, -back_button_transform.y), back_button_transform.scale));
-
-	//// menu left trans
-	//transform_data menu_left_transform;
-	//menu_left_transform.scale = glm::vec3(100, 30, 1.0f);
-	//menu_left_transform.x = -30 - 400;
-	//menu_left_transform.y = -180;
-
-	//// menu left
-	//auto menu_left = entity_manager::get()->create_entity("menuMoveLeft", state_type::CONTROLS, menu_left_transform);
-	//menu_left->add_component("render", renderer::get()->build_component(menu_left, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/move_right.png", "rectangle", "Gouraud", simple_texture));
-	//menu_left->add_component("camera", camera_system::get()->build_component(menu_left, camera_type::ORTHO));
-
-	//// menu left trans
-	//transform_data menu_right_transform;
-	//menu_right_transform.scale = glm::vec3(100, 30, 1.0f);
-	//menu_right_transform.x = -30 - 400;
-	//menu_right_transform.y = -240;
-
-	//// menu left
-	//auto menu_right = entity_manager::get()->create_entity("menuMoveLeft", state_type::CONTROLS, menu_right_transform);
-	//menu_right->add_component("render", renderer::get()->build_component(menu_right, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/move_right.png", "rectangle", "Gouraud", simple_texture));
-	//menu_right->add_component("camera", camera_system::get()->build_component(menu_right, camera_type::ORTHO));
-
-	// ============================================================
 
 	// key move left trans
 	transform_data key_move_left_transform;
@@ -288,40 +278,26 @@ void controls_state::initialise()
 	key_menu_enter_joystick->add_component("render", renderer::get()->build_component(key_menu_enter_joystick, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/letters/question_mark.png", "rectangle", "Gouraud", simple_texture));
 	key_menu_enter_joystick->add_component("camera", camera_system::get()->build_component(key_menu_enter_joystick, camera_type::ORTHO));
 
-	// key menu move left trans
-	transform_data key_menu_enter_transform;
-	key_menu_enter_transform.scale = glm::vec3(15, 15, 1.0f);
-	key_menu_enter_transform.x = 90 - 400;
-	key_menu_enter_transform.y = -180;
-
-	// key menu move left
-	auto key_menu_enter = entity_manager::get()->create_entity("keyMenuEnter", state_type::CONTROLS, key_menu_enter_transform);
-	key_menu_enter->add_component("clickable", clickable_system::get()->build_component(key_menu_enter, glm::dvec2(key_menu_enter_transform.x, -key_menu_enter_transform.y), glm::dvec2(15, 15)));
-	key_menu_enter->add_component("render", renderer::get()->build_component(key_menu_enter, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/letters/question_mark.png", "rectangle", "Gouraud", simple_texture));
-	key_menu_enter->add_component("camera", camera_system::get()->build_component(key_menu_enter, camera_type::ORTHO));
+	if (input_handler::get()->glfw_joystick_enter == 0)
+		renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/A.png");
+	else if (input_handler::get()->glfw_joystick_enter == 1)
+		renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/B.png");
+	else if (input_handler::get()->glfw_joystick_enter == 2)
+		renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/X.png");
+	else if (input_handler::get()->glfw_joystick_enter == 3)
+		renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/Y.png");
 
 	//// key menu move left trans
-	//transform_data key_menu_left_transform;
-	//key_menu_left_transform.scale = glm::vec3(15, 15, 1.0f);
-	//key_menu_left_transform.x = 90 - 400;
-	//key_menu_left_transform.y = -180;
+	//transform_data key_menu_enter_transform;
+	//key_menu_enter_transform.scale = glm::vec3(15, 15, 1.0f);
+	//key_menu_enter_transform.x = 90 - 400;
+	//key_menu_enter_transform.y = -180;
 
 	//// key menu move left
-	//auto key_menu_left = entity_manager::get()->create_entity("keyMenuMoveLeft", state_type::CONTROLS, key_menu_left_transform);
-	//key_menu_left->add_component("clickable", clickable_system::get()->build_component(key_menu_left, glm::dvec2(key_menu_left_transform.x, -key_menu_left_transform.y), glm::dvec2(15, 15)));
-	//key_menu_left->add_component("render", renderer::get()->build_component(key_menu_left, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/letters/question_mark.png", "rectangle", "Gouraud", simple_texture));
-	//key_menu_left->add_component("camera", camera_system::get()->build_component(key_menu_left, camera_type::ORTHO));
-
-	//// Controls trans
-	//transform_data controls_transform;
-	//controls_transform.scale = glm::vec3(100, 30, 1.0f);
-	//controls_transform.x = 0;
-	//controls_transform.y = 0;
-
-	//// Controls
-	//auto controls = entity_manager::get()->create_entity("controls", state_type::CONTROLS, controls_transform);
-	//controls->add_component("render", renderer::get()->build_component(controls, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/controls.png", "rectangle", "Gouraud", simple_texture));
-	//controls->add_component("camera", camera_system::get()->build_component(controls, camera_type::ORTHO));
+	//auto key_menu_enter = entity_manager::get()->create_entity("keyMenuEnter", state_type::CONTROLS, key_menu_enter_transform);
+	//key_menu_enter->add_component("clickable", clickable_system::get()->build_component(key_menu_enter, glm::dvec2(key_menu_enter_transform.x, -key_menu_enter_transform.y), glm::dvec2(15, 15)));
+	//key_menu_enter->add_component("render", renderer::get()->build_component(key_menu_enter, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/letters/question_mark.png", "rectangle", "Gouraud", simple_texture));
+	//key_menu_enter->add_component("camera", camera_system::get()->build_component(key_menu_enter, camera_type::ORTHO));
 
 	// Keyboard trans
 	transform_data keyboard_transform;
@@ -331,7 +307,7 @@ void controls_state::initialise()
 
 	// Keyboard
 	auto keyboard = entity_manager::get()->create_entity("keyboard", state_type::CONTROLS, keyboard_transform);
-	keyboard->add_component("render", renderer::get()->build_component(keyboard, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/controls.png", "rectangle", "Gouraud", simple_texture));
+	keyboard->add_component("render", renderer::get()->build_component(keyboard, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/keyboard.png", "rectangle", "Gouraud", simple_texture));
 	keyboard->add_component("camera", camera_system::get()->build_component(keyboard, camera_type::ORTHO));
 
 	// Joystick trans
@@ -341,8 +317,8 @@ void controls_state::initialise()
 	joystick_transform.y = 0;
 
 	// Joystick
-	auto joystick = entity_manager::get()->create_entity("joystick", state_type::CONTROLS, joystick_transform);
-	joystick->add_component("render", renderer::get()->build_component(joystick, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/controls.png", "rectangle", "Gouraud", simple_texture));
+	auto joystick = entity_manager::get()->create_entity("controller", state_type::CONTROLS, joystick_transform);
+	joystick->add_component("render", renderer::get()->build_component(joystick, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/controller.png", "rectangle", "Gouraud", simple_texture));
 	joystick->add_component("camera", camera_system::get()->build_component(joystick, camera_type::ORTHO));
 
 	transform_data text_transform;
@@ -388,6 +364,257 @@ void controls_state::on_update(float delta_time)
 	int count;
 	const unsigned char* axes = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
 
+	//std::cout << axes[10] << std::endl;
+	static char up_old_axis = GLFW_RELEASE;
+	//std::cout << count << std::endl;
+	// Handle input for up arrow
+	static int up_old_state = GLFW_RELEASE;
+	int up_state = glfwGetKey(glfw::window, input_handler::get()->glfw_button_navigation_up);
+
+	if ((up_state == GLFW_RELEASE && up_old_state == GLFW_PRESS) || (present && axes[input_handler::get()->glfw_joystick_up] == GLFW_RELEASE && up_old_axis == GLFW_PRESS))
+	{
+		std::string letter_right;
+		std::string letter_left;
+		letter_right = (char)input_handler::get()->glfw_button_right;
+		letter_left = (char)input_handler::get()->glfw_button_left;
+		switch (selection)
+		{
+		case controls_back_button:
+			selection = enter_joystick_button;
+
+			// Set normal textures for other states
+			renderer::get()->change_texture(entity_manager::get()->get_entity("controls_back_button"), "res/textures/controls_back_button.png");
+
+			if (input_handler::get()->glfw_joystick_enter == 0)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/A_selected.png");
+			else if (input_handler::get()->glfw_joystick_enter == 1)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/B_selected.png");
+			else if (input_handler::get()->glfw_joystick_enter == 2)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/X_selected.png");
+			else if (input_handler::get()->glfw_joystick_enter == 3)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/Y_selected.png");
+			else 
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/question_mark_selected.png");
+
+			if (input_handler::get()->glfw_button_left >= 65 && input_handler::get()->glfw_button_left <= 90)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/" + letter_left + ".png");
+			else
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/question_mark.png");
+
+			if (input_handler::get()->glfw_button_right >= 65 && input_handler::get()->glfw_button_right <= 90)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/" + letter_right + ".png");
+			else
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/question_mark.png");
+			break;
+		case enter_joystick_button:
+			selection = move_right_button;
+			// Update texture to new letter
+			if (input_handler::get()->glfw_button_right >= 65 && input_handler::get()->glfw_button_right <= 90)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/" + letter_right + "_selected.png");
+			else
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/question_mark_selected.png");
+			// Set normal textures for other states
+			renderer::get()->change_texture(entity_manager::get()->get_entity("controls_back_button"), "res/textures/controls_back_button.png");
+
+			if (input_handler::get()->glfw_button_right >= 65 && input_handler::get()->glfw_button_right <= 90)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/" + letter_left + ".png");
+			else
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/question_mark.png");
+
+			if (input_handler::get()->glfw_joystick_enter == 0)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/A.png");
+			else if (input_handler::get()->glfw_joystick_enter == 1)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/B.png");
+			else if (input_handler::get()->glfw_joystick_enter == 2)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/X.png");
+			else if (input_handler::get()->glfw_joystick_enter == 3)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/Y.png");
+			else
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/question_mark.png");
+
+			break;
+		case move_right_button:
+			selection = move_left_button;
+			// Update texture to new letter
+			if (input_handler::get()->glfw_button_left >= 65 && input_handler::get()->glfw_button_left <= 90)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/" + letter_left + "_selected.png");
+			else
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/question_mark_selected.png");
+			// Set normal textures for other states
+			renderer::get()->change_texture(entity_manager::get()->get_entity("controls_back_button"), "res/textures/controls_back_button.png");
+
+			if (input_handler::get()->glfw_button_right >= 65 && input_handler::get()->glfw_button_right <= 90)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/" + letter_right + ".png");
+			else
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/question_mark.png");
+
+			if (input_handler::get()->glfw_joystick_enter == 0)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/A.png");
+			else if (input_handler::get()->glfw_joystick_enter == 1)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/B.png");
+			else if (input_handler::get()->glfw_joystick_enter == 2)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/X.png");
+			else if (input_handler::get()->glfw_joystick_enter == 3)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/Y.png");
+			else
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/question_mark.png");
+			break;
+		case move_left_button:
+			selection = controls_back_button;
+			// Set selected textures
+			renderer::get()->change_texture(entity_manager::get()->get_entity("controls_back_button"), "res/textures/controls_back_button_selected.png");
+
+			if (input_handler::get()->glfw_button_right >= 65 && input_handler::get()->glfw_button_right <= 90)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/" + letter_right + ".png");
+			else
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/question_mark.png");
+			if (input_handler::get()->glfw_button_left >= 65 && input_handler::get()->glfw_button_left <= 90)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/" + letter_left + ".png");
+			else
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/question_mark.png");
+
+			if (input_handler::get()->glfw_joystick_enter == 0)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/A.png");
+			else if (input_handler::get()->glfw_joystick_enter == 1)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/B.png");
+			else if (input_handler::get()->glfw_joystick_enter == 2)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/X.png");
+			else if (input_handler::get()->glfw_joystick_enter == 3)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/Y.png");
+			else
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/question_mark.png");
+
+			break;
+		}
+		std::cout << selection << std::endl;
+	}
+
+
+	static char down_old_axis = GLFW_RELEASE;
+	// Handle input for down arrow
+	static int down_old_state = GLFW_RELEASE;
+	int down_state = glfwGetKey(glfw::window, input_handler::get()->glfw_button_navigation_down);
+
+	if ((down_state == GLFW_RELEASE && down_old_state == GLFW_PRESS) || (present && axes[input_handler::get()->glfw_joystick_down] == GLFW_RELEASE && down_old_axis == GLFW_PRESS))
+	{
+		std::string letter_right;
+		std::string letter_left;
+		letter_right = (char)input_handler::get()->glfw_button_right;
+		letter_left = (char)input_handler::get()->glfw_button_left;
+		switch (selection)
+		{
+		case move_left_button:
+			selection = move_right_button;
+			// Update texture to new letter
+			if (input_handler::get()->glfw_button_right >= 65 && input_handler::get()->glfw_button_right <= 90)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/" + letter_right + "_selected.png");
+			else
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/question_mark_selected.png");
+			// Set normal textures for other states
+	
+			renderer::get()->change_texture(entity_manager::get()->get_entity("controls_back_button"), "res/textures/controls_back_button.png");
+
+			if (input_handler::get()->glfw_button_right >= 65 && input_handler::get()->glfw_button_right <= 90)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/" + letter_left + ".png");
+			else
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/question_mark.png");
+			break;
+
+			if (input_handler::get()->glfw_joystick_enter == 0)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/A.png");
+			else if (input_handler::get()->glfw_joystick_enter == 1)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/B.png");
+			else if (input_handler::get()->glfw_joystick_enter == 2)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/X.png");
+			else if (input_handler::get()->glfw_joystick_enter == 3)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/Y.png");
+			else
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/question_mark.png");
+
+		case move_right_button:
+			selection = enter_joystick_button;
+
+			if (input_handler::get()->glfw_joystick_enter == 0)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/A_selected.png");
+			else if (input_handler::get()->glfw_joystick_enter == 1)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/B_selected.png");
+			else if (input_handler::get()->glfw_joystick_enter == 2)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/X_selected.png");
+			else if (input_handler::get()->glfw_joystick_enter == 3)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/Y_selected.png");
+			else
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/question_mark_selected.png");
+			// Set normal textures for other states
+			renderer::get()->change_texture(entity_manager::get()->get_entity("controls_back_button"), "res/textures/controls_back_button.png");
+
+			if (input_handler::get()->glfw_button_left >= 65 && input_handler::get()->glfw_button_left <= 90)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/" + letter_left + ".png");
+			else
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/question_mark.png");
+
+			if (input_handler::get()->glfw_button_right >= 65 && input_handler::get()->glfw_button_right <= 90)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/" + letter_right + ".png");
+			else
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/question_mark.png");
+			
+			break;
+		case enter_joystick_button:
+			selection = controls_back_button;
+
+			// Set selected textures
+			renderer::get()->change_texture(entity_manager::get()->get_entity("controls_back_button"), "res/textures/controls_back_button_selected.png");
+
+			if (input_handler::get()->glfw_button_right >= 65 && input_handler::get()->glfw_button_right <= 90)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/" + letter_right + ".png");
+			else
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/question_mark.png");
+			if (input_handler::get()->glfw_button_left >= 65 && input_handler::get()->glfw_button_left <= 90)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/" + letter_left + ".png");
+			else
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/question_mark.png");
+
+			if (input_handler::get()->glfw_joystick_enter == 0)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/A.png");
+			else if (input_handler::get()->glfw_joystick_enter == 1)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/B.png");
+			else if (input_handler::get()->glfw_joystick_enter == 2)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/X.png");
+			else if (input_handler::get()->glfw_joystick_enter == 3)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/Y.png");
+			else
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/question_mark.png");
+
+			break;
+		case controls_back_button:
+			selection = move_left_button;
+			// Update texture to new letter
+			if (input_handler::get()->glfw_button_left >= 65 && input_handler::get()->glfw_button_left <= 90)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/" + letter_left + "_selected.png");
+			else
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/question_mark_selected.png");
+
+			// Set normal textures for other states
+			renderer::get()->change_texture(entity_manager::get()->get_entity("controls_back_button"), "res/textures/controls_back_button.png");
+			if (input_handler::get()->glfw_button_right >= 65 && input_handler::get()->glfw_button_right <= 90)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/" + letter_right + ".png");
+			else
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/question_mark.png");
+
+			if (input_handler::get()->glfw_joystick_enter == 0)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/A.png");
+			else if (input_handler::get()->glfw_joystick_enter == 1)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/B.png");
+			else if (input_handler::get()->glfw_joystick_enter == 2)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/X.png");
+			else if (input_handler::get()->glfw_joystick_enter == 3)
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/Y.png");
+			else
+				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/question_mark.png");
+			break;
+		}
+		std::cout << selection << std::endl;
+	}
+
 	static char enter_joystick_old_state = GLFW_RELEASE;
 	static int enter_old_state = GLFW_RELEASE;
 	int enter_state = glfwGetKey(glfw::window, GLFW_KEY_ENTER);
@@ -404,7 +631,21 @@ void controls_state::on_update(float delta_time)
 		case move_right_button:
 			handle_remap_key_right();
 			break;
+		case enter_joystick_button:
+			handle_remap_joystick_enter();
+			break;
 		}
+	}
+
+	up_old_state = up_state;
+	down_old_state = down_state;
+	enter_old_state = enter_state;
+
+	if (present)
+	{
+		up_old_axis = axes[input_handler::get()->glfw_joystick_up];
+		down_old_axis = axes[input_handler::get()->glfw_joystick_down];
+		enter_joystick_old_state = axes[input_handler::get()->glfw_joystick_enter];
 	}
 
 	std::shared_ptr<clickable_system> cs = std::static_pointer_cast<clickable_system>(engine::get()->get_subsystem("clickable_system"));
