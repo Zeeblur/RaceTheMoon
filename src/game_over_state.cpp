@@ -146,12 +146,41 @@ void game_over_state::initialise()
 
 	// High scores text transform
 	transform_data menu_transform;
-	menu_transform.x = x_size / 2 - 230;
-	menu_transform.y = y_size - 250;
+	menu_transform.x = x_size / 2 - 100;
+	menu_transform.y = y_size - 50;
 	// High scores
 	auto menu_text = entity_manager::get()->create_entity("highScores", state_type::GAME_OVER, menu_transform);
 	menu_text->add_component("render", renderer::get()->build_component(menu_text, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/play_button.png", "rectangle", "text", text));
 	menu_text->add_component("text", text_system::get()->build_component(menu_text, "HIGH SCORES"));
+
+	transform_data your_score_prompt_transform;
+	your_score_prompt_transform.x = x_size / 2 - 300;
+	your_score_prompt_transform.y = 40;
+	auto your_score_prompt = entity_manager::get()->create_entity("your_score_prompt", state_type::GAME_OVER, your_score_prompt_transform);
+	your_score_prompt->add_component("render", renderer::get()->build_component(your_score_prompt, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), "res/textures/exit_button.png", "rectangle", "text", text));
+	your_score_prompt->add_component("text", text_system::get()->build_component(your_score_prompt, "Your score: " + std::to_string(current_score)));
+
+	transform_data your_name_prompt_transform;
+	your_name_prompt_transform.x = x_size / 2 - 300;
+	your_name_prompt_transform.y = 10;
+	auto your_name_prompt = entity_manager::get()->create_entity("your_name_prompt", state_type::GAME_OVER, your_name_prompt_transform);
+	your_name_prompt->add_component("render", renderer::get()->build_component(your_name_prompt, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), "res/textures/exit_button.png", "rectangle", "text", text));
+	your_name_prompt->add_component("text", text_system::get()->build_component(your_name_prompt, "Your name:"));
+
+	transform_data text_transform;
+	text_transform.x = x_size / 2 - 50;
+	text_transform.y = 10;
+	auto test = entity_manager::get()->create_entity("your_name", state_type::GAME_OVER, text_transform);
+	test->add_component("render", renderer::get()->build_component(test, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), "res/textures/exit_button.png", "rectangle", "text", text));
+	test->add_component("text", text_system::get()->build_component(test, " "));
+
+	transform_data help_text_transform;
+	help_text_transform.x = x_size / 2 - 400;
+	help_text_transform.y = 60;
+	help_text_transform.z = 16;
+	auto help_text = entity_manager::get()->create_entity("help_text_game_over", state_type::GAME_OVER, help_text_transform);
+	help_text->add_component("render", renderer::get()->build_component(help_text, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), "res/textures/exit_button.png", "rectangle", "text", text));
+	help_text->add_component("text", text_system::get()->build_component(help_text, "Type your name and press enter to submit..."));
 
 	printf("MySQL client version: %s\n", mysql_get_client_info());
 
@@ -218,50 +247,20 @@ void game_over_state::initialise()
 			{
 				std::cout << "high score count: " << high_scores.size() << std::endl;
 				transform_data text_transform;
-				text_transform.x = x_size / 2 - 150;
+				text_transform.x = x_size / 2 - 100;
 				if (i % 2 == 0)
-					text_transform.y = y_size - 300 - i * 25;
+					text_transform.y = y_size - 100 - i * 25;
 				else
-					text_transform.y = y_size - 300 - i * 25 + 5;
+					text_transform.y = y_size - 100 - i * 25 + 5;
 				auto test = entity_manager::get()->create_entity("score" + std::to_string(i), state_type::GAME_OVER, text_transform);
 				test->add_component("render", renderer::get()->build_component(test, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), "res/textures/exit_button.png", "rectangle", "text", text));
 				test->add_component("text", text_system::get()->build_component(test, high_scores[i]));
 			}
-
-
-			transform_data your_score_prompt_transform;
-			your_score_prompt_transform.x = x_size / 2 - 400;
-			your_score_prompt_transform.y = 40;
-			auto your_score_prompt = entity_manager::get()->create_entity("your_score_prompt", state_type::GAME_OVER, your_score_prompt_transform);
-			your_score_prompt->add_component("render", renderer::get()->build_component(your_score_prompt, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), "res/textures/exit_button.png", "rectangle", "text", text));
-			your_score_prompt->add_component("text", text_system::get()->build_component(your_score_prompt, "Your score: " + std::to_string(current_score)));
-
-			transform_data your_name_prompt_transform;
-			your_name_prompt_transform.x = x_size / 2 - 400;
-			your_name_prompt_transform.y = 10;
-			auto your_name_prompt = entity_manager::get()->create_entity("your_name_prompt", state_type::GAME_OVER, your_name_prompt_transform);
-			your_name_prompt->add_component("render", renderer::get()->build_component(your_name_prompt, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), "res/textures/exit_button.png", "rectangle", "text", text));
-			your_name_prompt->add_component("text", text_system::get()->build_component(your_name_prompt, "Your name:"));
-
-			transform_data text_transform;
-			text_transform.x = x_size / 2 - 150;
-			text_transform.y = 10;
-			auto test = entity_manager::get()->create_entity("your_name", state_type::GAME_OVER, text_transform);
-			test->add_component("render", renderer::get()->build_component(test, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), "res/textures/exit_button.png", "rectangle", "text", text));
-			test->add_component("text", text_system::get()->build_component(test, " "));
-
-			transform_data help_text_transform;
-			help_text_transform.x = x_size / 2 - 500;
-			help_text_transform.y = 60;
-			help_text_transform.z = 16;
-			auto help_text = entity_manager::get()->create_entity("help_text_game_over", state_type::GAME_OVER, help_text_transform);
-			help_text->add_component("render", renderer::get()->build_component(help_text, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), "res/textures/exit_button.png", "rectangle", "text", text));
-			help_text->add_component("text", text_system::get()->build_component(help_text, "Type your name and press enter to submit..."));
 		}
 		else
 		{
 			transform_data no_connection_transform;
-			no_connection_transform.x = x_size / 2 - 450;
+			no_connection_transform.x = x_size / 2 - 350;
 			no_connection_transform.y = y_size / 2;
 			no_connection_transform.z = 16;
 			auto no_connection = entity_manager::get()->create_entity("no_connection", state_type::GAME_OVER, no_connection_transform);
@@ -274,11 +273,12 @@ void game_over_state::initialise()
 
 void game_over_state::display_high_scores()
 {
+	// Update score
+	std::shared_ptr<text_component> your_score = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity("your_score_prompt")->get_component("text"));
+	your_score->_data->text = "Your score: " + std::to_string(current_score);
+
 	if (!my_sql_error)
 	{
-		// Update score
-		std::shared_ptr<text_component> your_score = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity("your_score_prompt")->get_component("text"));
-		your_score->_data->text = "Your score: " + std::to_string(current_score);
 
 		MYSQL *con = mysql_init(NULL);
 
@@ -343,48 +343,12 @@ void game_over_state::display_high_scores()
 			}
 		}
 	}
-	//entity_manager::get()->delete_entity("menu_button2");
-	//entity_manager::get()->delete_entity("submit_score_button");
-	//entity_manager::get()->delete_entity("game_over");
-	//entity_manager::get()->get_entity("menu_button2")->get_trans().z = -20;
-	//entity_manager::get()->get_entity("submit_score_button")->get_trans().z = -20;
-	//entity_manager::get()->get_entity("game_over")->get_trans().z = -20;
 
 
 }
 
 void game_over_state::on_reset()
 {
-	//if (entity_manager::get()->get_entity("your_score"))
-	//{
-	//	std::shared_ptr<text_component> your_score = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity("your_score_prompt")->get_component("text"));
-	//	your_score->_data->text = "Your score: " + std::to_string(current_score);
-	//}
-	//if (entity_manager::get()->get_entity("help_text_game_over"))
-	//{
-	//	std::shared_ptr<text_component> help_text_game_over = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity("help_text_game_over")->get_component("text"));
-	//	help_text_game_over->_data->text = " ";
-	//}
-	//if (entity_manager::get()->get_entity("your_name_prompt"))
-	//{
-	//	std::shared_ptr<text_component> your_name_prompt = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity("your_name_prompt")->get_component("text"));
-	//	your_name_prompt->_data->text = " ";
-	//}
-	//
-	//if (entity_manager::get()->get_entity("your_score_prompt"))
-	//{
-	//	std::shared_ptr<text_component> your_score_prompt = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity("your_score_prompt")->get_component("text"));
-	//	your_score_prompt->_data->text = " ";
-	//}
-	//for (size_t i = 0; i < high_scores.size(); i++)
-	//{
-	//	if (entity_manager::get()->get_entity("score" + std::to_string(i)))
-	//	{
-	//		std::shared_ptr<text_component> score = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity("score" + std::to_string(i))->get_component("text"));
-	//		score->_data->text = " ";
-	//	}
-	//}
-	////entity_manager::get()->delete_entity("score" + std::to_string(i));
 	current_score = 0;
 	name.clear();
 }
@@ -415,6 +379,42 @@ void game_over_state::on_enter()
 
 void game_over_state::on_update(float delta_time)
 {
+	int x_size = 0, y_size = 0;
+	glfwGetWindowSize(glfw::window, &x_size, &y_size);
+
+	entity_manager::get()->get_entity("your_score_prompt")->get_trans().x = x_size / 2 - 300;
+	entity_manager::get()->get_entity("your_name_prompt")->get_trans().x = x_size / 2 - 300;
+	entity_manager::get()->get_entity("help_text_game_over")->get_trans().x = x_size / 2 - 400;
+	entity_manager::get()->get_entity("highScores")->get_trans().x = x_size / 2 - 100;
+	entity_manager::get()->get_entity("highScores")->get_trans().y = y_size - 50;
+	entity_manager::get()->get_entity("your_name")->get_trans().x = x_size / 2 - 50;
+
+	if (!my_sql_error)
+	{
+		int count = 1;
+		for (size_t i = 0; i < high_scores.size(); i++)
+		{
+			if (entity_manager::get()->get_entity("score" + std::to_string(i)))
+			{
+				entity_manager::get()->get_entity("score" + std::to_string(i))->get_trans().x = x_size / 2 - 100;
+
+				if (i % 2 == 0)
+					entity_manager::get()->get_entity("score" + std::to_string(i))->get_trans().y = y_size - 100 - i * 25;
+				else
+					entity_manager::get()->get_entity("score" + std::to_string(i))->get_trans().y = y_size - 100 - i * 25 + 5;
+
+				std::shared_ptr<text_component> score = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity("score" + std::to_string(i))->get_component("text"));
+				if (i % 2 == 0)
+				{
+					score->_data->text = std::to_string(count) + " -" + high_scores[i];
+					count++;
+				}
+				else
+					score->_data->text = "   " + high_scores[i];
+			}
+		}
+	}
+
 	static int enter_old_state = GLFW_RELEASE;
 	int enter_state = glfwGetKey(glfw::window, GLFW_KEY_ENTER);
 

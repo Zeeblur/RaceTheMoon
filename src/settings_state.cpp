@@ -104,7 +104,7 @@ void settings_state::initialise()
 
 	// Title transform
 	transform_data title_transform;
-	title_transform.x = x_size / 2;
+	title_transform.x = x_size / 2 - 100;
 	title_transform.y = y_size - 50;
 	// Title
 	auto title = entity_manager::get()->create_entity("Title", state_type::SETTINGS, title_transform);
@@ -303,10 +303,12 @@ void determine_window_mode(window_mode &window_mode)
 	case fullscreen:
 		// Handle logic for fullscreen
         glfwSetWindowMonitor(glfw::window, glfwGetPrimaryMonitor(), 0, 0, xsize, ysize, GLFW_DONT_CARE);
+		renderer::get()->change_texture(entity_manager::get()->get_entity("windowModeValue"), "res/textures/fullscreen.png");
 		break;
 	case windowed:
 		// Handle logic for windowed
         glfwSetWindowMonitor(glfw::window, NULL, ((1920 - xsize) / 2), ((1080 - ysize) / 2), xsize, ysize, GLFW_DONT_CARE);
+		renderer::get()->change_texture(entity_manager::get()->get_entity("windowModeValue"), "res/textures/windowed.png");
 		break;
 	}
 }
@@ -409,7 +411,7 @@ void settings_state::on_update(float delta_time)
 {
 	int x_size = 0, y_size = 0;
 	glfwGetWindowSize(glfw::window, &x_size, &y_size);
-	entity_manager::get()->get_entity("Title")->get_trans().x = x_size / 2;
+	entity_manager::get()->get_entity("Title")->get_trans().x = x_size / 2 - 100;
 	entity_manager::get()->get_entity("Title")->get_trans().y = y_size - 50;
 
 	int present = glfwJoystickPresent(GLFW_JOYSTICK_1);
@@ -418,7 +420,7 @@ void settings_state::on_update(float delta_time)
 	const unsigned char* axes = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
 	//std::cout << axes[10] << std::endl;
 	static char up_old_axis = GLFW_RELEASE;
-
+	std::cout << count << std::endl;
 	// Handle input for up arrow
 	static int up_old_state = GLFW_RELEASE;
 	int up_state = glfwGetKey(glfw::window, input_handler::get()->glfw_button_navigation_up);
@@ -675,9 +677,13 @@ void settings_state::on_update(float delta_time)
 	static int left_old_state = GLFW_RELEASE;
 	int left_state = glfwGetKey(glfw::window, GLFW_KEY_LEFT);
 
+	static int right_joystick_old_state = GLFW_RELEASE;
+	static int left_joystick_old_state = GLFW_RELEASE;
+
 	//std::cout << "********** SETTINGS DISPLAYED ****************" << std::endl;
 	std::shared_ptr<clickable_system> cs = std::static_pointer_cast<clickable_system>(engine::get()->get_subsystem("clickable_system"));
-	if (cs->get_clicked_component_name() == "resolution_arrow_right" || (right_state == GLFW_RELEASE && right_old_state == GLFW_PRESS && selection == resolution_button))
+	if (cs->get_clicked_component_name() == "resolution_arrow_right" || (right_state == GLFW_RELEASE && right_old_state == GLFW_PRESS && selection == resolution_button)
+		|| (present && axes[input_handler::get()->glfw_joystick_right] == GLFW_RELEASE && right_joystick_old_state == GLFW_PRESS && selection == resolution_button))
 	{
 		// Wrap around
 		switch (current_resolution)
@@ -701,7 +707,8 @@ void settings_state::on_update(float delta_time)
 		cs->clear_clicked_component_name();
 
 	}
-	else if (cs->get_clicked_component_name() == "resolution_arrow_left" || (left_state == GLFW_RELEASE && left_old_state == GLFW_PRESS && selection == resolution_button))
+	else if (cs->get_clicked_component_name() == "resolution_arrow_left" || (left_state == GLFW_RELEASE && left_old_state == GLFW_PRESS && selection == resolution_button)
+		|| (present && axes[input_handler::get()->glfw_joystick_left] == GLFW_RELEASE && left_joystick_old_state == GLFW_PRESS && selection == resolution_button))
 	{
 		// Wrap around
 		switch (current_resolution)
@@ -723,7 +730,8 @@ void settings_state::on_update(float delta_time)
 
 		cs->clear_clicked_component_name();
 	}
-	else if (cs->get_clicked_component_name() == "window_mode_arrow_left" || (left_state == GLFW_RELEASE && left_old_state == GLFW_PRESS && selection == window_mode_button))
+	else if (cs->get_clicked_component_name() == "window_mode_arrow_left" || (left_state == GLFW_RELEASE && left_old_state == GLFW_PRESS && selection == window_mode_button)
+		|| (present && axes[input_handler::get()->glfw_joystick_left] == GLFW_RELEASE && left_joystick_old_state == GLFW_PRESS && selection == window_mode_button))
 	{
 		// Wrap around
 		switch (current_window_mode)
@@ -738,7 +746,8 @@ void settings_state::on_update(float delta_time)
 		determine_window_mode(current_window_mode);
 		cs->clear_clicked_component_name();
 	}
-	else if (cs->get_clicked_component_name() == "window_mode_arrow_right" || (right_state == GLFW_RELEASE && right_old_state == GLFW_PRESS && selection == window_mode_button))
+	else if (cs->get_clicked_component_name() == "window_mode_arrow_right" || (right_state == GLFW_RELEASE && right_old_state == GLFW_PRESS && selection == window_mode_button)
+		|| (present && axes[input_handler::get()->glfw_joystick_right] == GLFW_RELEASE && right_joystick_old_state == GLFW_PRESS && selection == window_mode_button))
 	{
 		// Wrap around
 		switch (current_window_mode)
@@ -776,6 +785,8 @@ void settings_state::on_update(float delta_time)
 		up_old_axis = axes[input_handler::get()->glfw_joystick_up];
 		down_old_axis = axes[input_handler::get()->glfw_joystick_down];
 		enter_joystick_old_state = axes[input_handler::get()->glfw_joystick_enter];
+		right_joystick_old_state = axes[input_handler::get()->glfw_joystick_right];
+		left_joystick_old_state = axes[input_handler::get()->glfw_joystick_left];
 	}
 
 	

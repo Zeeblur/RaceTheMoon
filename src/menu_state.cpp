@@ -20,7 +20,7 @@ void menu_state::initialise()
 
 	// Menu text transform
 	transform_data menu_transform;
-	menu_transform.x = x_size / 2;
+	menu_transform.x = x_size / 2 - 100;
 	menu_transform.y = y_size - 50;
 	// Menu
 	auto menu_text = entity_manager::get()->create_entity("mainMenu", state_type::MENU, menu_transform);
@@ -96,7 +96,7 @@ void menu_state::on_update(float delta_time)
 {
 	int x_size = 0, y_size = 0;
 	glfwGetWindowSize(glfw::window, &x_size, &y_size);
-	entity_manager::get()->get_entity("mainMenu")->get_trans().x = x_size / 2;
+	entity_manager::get()->get_entity("mainMenu")->get_trans().x = x_size / 2 - 100;
 	entity_manager::get()->get_entity("mainMenu")->get_trans().y = y_size - 50;
 
 
