@@ -3,7 +3,9 @@
 #include "entity_manager.h"
 #include <iostream>
 #include <stdlib.h>
+#ifdef WINDOWS
 #include <mysql.h>
+#endif
 #include "engine_state_machine.h"
 using namespace std;
 
