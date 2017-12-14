@@ -35,15 +35,15 @@ void level_gen::update(float delta_time)
 {
 	// remove block that has passed
     auto pos = entity_manager::get()->get_entity("Bat")->get_trans().z;
-    std::cout << "pos = " << pos << std::endl;
-	if (pos < currentBlock-200)
+   // std::cout << "pos = " << pos << std::endl;
+	if (pos < currentBlock-300)
 	{
-		std::cout << "passed block: " << currentBlock << std::endl;
+	//	std::cout << "passed block: " << currentBlock << std::endl;
 
 		// remove all components from entities
 		for (auto &e : puzzleBlocks[currentBlock])
 		{
-    		entity_manager::get()->delete_entity(e._Get()->get_name());
+    		entity_manager::get()->delete_entity(e.lock()->get_name());
 		}
         puzzleBlocks[currentBlock].clear();
 		// remove entities
@@ -60,7 +60,7 @@ void level_gen::render() {}
 void level_gen::reset()
 {
     // level gen reset attempt - Beej
-    std::cout << "currentBlock = " << currentBlock << std::endl;
+  //  std::cout << "currentBlock = " << currentBlock << std::endl;
 
     for (int i = 0; i <= (-currentBlock) + 1600; i += 400)
     {
@@ -68,14 +68,14 @@ void level_gen::reset()
         {
             for (auto &e : puzzleBlocks[-i])
             {
-                entity_manager::get()->delete_entity(e._Get()->get_name());
+                entity_manager::get()->delete_entity(e.lock()->get_name());
             }
             puzzleBlocks[-i].clear();
         }
     }
 
     currentBlock = -400;
-    //initialise();
+    initialise();
 }
 void level_gen::unload_content() {}
 void level_gen::shutdown() {}
