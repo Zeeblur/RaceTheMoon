@@ -19,9 +19,8 @@ enum settings_selection
 {
 	resolution_button = 0,
 	window_mode_button = 1,
-	move_left_button = 2,
-	move_right_button = 3,
-	back_button = 4
+	controls_button = 2,
+	back_button = 3
 };
 
 // Settings state
@@ -47,5 +46,3 @@ public:
 
 	void on_exit();
 };
-
-static int latest_key_press;

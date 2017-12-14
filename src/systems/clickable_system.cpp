@@ -82,7 +82,7 @@ void clickable_system::update(float delta_time)
                 d.clicks++;
 				cooldown = 0;
             }
-			if (d.parent_name != "keyMoveLeft" && d.parent_name != "keyMoveRight")
+			if (d.parent_name != "keyMoveLeft" && d.parent_name != "keyMoveRight" && d.parent_name != "keyMenuEnter" && d.parent_name != "keyMenuEnterJoystick")
 			{
 				// Check if the entity has been deleted
 				if (entity_manager::get()->get_entity(d.parent_name))
@@ -120,8 +120,11 @@ void clickable_system::update(float delta_time)
 							{
 								renderer::get()->change_texture(entity_manager::get()->get_entity(d.parent_name), "res/textures/arrow_right.png");
 							}
-							else
+							else 
+							{
 								renderer::get()->change_texture(entity_manager::get()->get_entity(d.parent_name), "res/textures/" + d.parent_name + ".png");
+							}
+								
 						}
 					}
 				}

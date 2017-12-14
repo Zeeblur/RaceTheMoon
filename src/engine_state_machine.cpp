@@ -119,6 +119,11 @@ void engine_state_machine::update(float delta_time)
 			engine_state_machine::get()->change_state("menu_state");
 			cs->clear_clicked_component_name();
 		}
+		else if (cs->get_clicked_component_name() == "controls_button")
+		{
+			engine_state_machine::get()->change_state("controls_state");
+			cs->clear_clicked_component_name();
+		}
 	}
 	else if (engine_state_machine::get()->get_current_state_type() == state_type::GAME_OVER)
 	{
