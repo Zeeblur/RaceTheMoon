@@ -79,7 +79,8 @@ public:
     {
         //std::cout << "Entity " << _id << " rendering" << std::endl;
         for (auto &c : _components)
-            c.second->render();
+			if (c.second)
+				c.second->render();
     }
 
     inline void unload_content()
@@ -87,6 +88,7 @@ public:
         std::cout << "Entity " << _id << " unloading content" << std::endl;
         for (auto &c : _components)
             c.second->unload_content();
+
     }
 
     inline void shutdown()

@@ -25,7 +25,7 @@ void main()
 	gl_Position = MVP * vec4(position, 1.0);
 
 	vertex_pos = vec3(M * vec4(position, 1.0f));
-	trans_normal = normal;//normalize(N * normal);
+	trans_normal = normalize(N * normal);
 	
 	frag_colour = in_colour;
 

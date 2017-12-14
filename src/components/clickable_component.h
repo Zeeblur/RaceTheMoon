@@ -10,7 +10,7 @@ struct clickable_data
 	glm::dvec2 scale;
 	glm::dvec2 center;
     std::string parent_name;
-
+	bool hover = false;
 };
 
 struct clickable_component : public component

@@ -27,17 +27,29 @@ struct sphere : public collider_base
 enum colType
 {
     DAMAGE,
-    POWER,
+    SHIELD,
+    POINTS,
+    MINIBAT,
+    SPEED,
     PLAYER
 };
+
 
 struct collider_data
 {
     colType behaviour_;
 	bool active = false;
 	std::shared_ptr<collider_base> collider;
-	collider_data(transform_data trans, int behaviour = 0);
+    bool shield = false;
+    float timeOfShield = 0.0f;
+    bool shrunk = false;
+    float shrunkTimer = 0.0f;
+    bool speed = false;
+    float speedTimer = 0.0f;
+    std::string name_ = "";
+	collider_data(transform_data trans, int behaviour = 0, std::string name_ = "");
     ~collider_data() = default;
+    void reset_data();
 };
 
 struct collider_component : public component
@@ -50,7 +62,7 @@ private:
 	// We'll also keep a reference to the parent entity
 	std::shared_ptr<entity> _parent;
 public:
-	collider_component(std::shared_ptr<entity> &e, std::shared_ptr<collider_data> &data);
+	collider_component(std::shared_ptr<entity> &e, std::shared_ptr<collider_data> data);
 
 	bool initialise() override final;
 

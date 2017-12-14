@@ -1,6 +1,6 @@
 #include "collider_component.h"
 
-collider_data::collider_data(transform_data trans, int behaviour)
+collider_data::collider_data(transform_data trans, int behaviour, std::string name)
 {
 
     behaviour_ = (colType)behaviour;
@@ -14,6 +14,8 @@ collider_data::collider_data(transform_data trans, int behaviour)
             auto maxScale = glm::max(trans.scale.x, trans.scale.y);
             maxScale = glm::max(maxScale, trans.scale.z);
             c->radius *= maxScale;
+            // hardocde fix for collision size of bat, we cool zoe? - beej
+            c->radius *= 0.75;
 
 			this->collider.reset(c);
 
@@ -41,11 +43,23 @@ collider_data::collider_data(transform_data trans, int behaviour)
 	this->collider->centerPoint.y = trans.y;
 	this->collider->centerPoint.z = trans.z;
 
+    name_ = name;
+
 
 	//this->collider = std::move(col);
 }
 
-collider_component::collider_component(std::shared_ptr<entity> &e, std::shared_ptr<collider_data> &data)
+void collider_data::reset_data()
+{
+    shield = false;
+    timeOfShield = 0.0f;
+    shrunk = false;
+    shrunkTimer = 0.0f;
+    speed = false;
+    speedTimer = 0.0f;
+}
+
+collider_component::collider_component(std::shared_ptr<entity> &e, std::shared_ptr<collider_data> data)
 	: _parent(e), _data(data)
 {
 	_visible = false;
@@ -90,6 +104,7 @@ void collider_component::render()
 
 void collider_component::unload_content()
 {
+	_data.reset();
 }
 
 void collider_component::shutdown()

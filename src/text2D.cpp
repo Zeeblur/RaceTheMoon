@@ -10,7 +10,7 @@ using namespace glm;
 //#include "texture.hpp"
 #include "opengl_util.h"
 #include "text2D.h"
-
+#include "glfw.h"
 //unsigned int Text2DTextureID;
 std::shared_ptr<gl::texture> textureObj;
 unsigned int Text2DVertexBufferID;
@@ -82,6 +82,11 @@ void printText2D(const char * text, int x, int y, int size) {
 	glUseProgram(Text2DShaderID);
 
 	//std::cout << "my id is: " << Text2DTextureID << std::endl;
+	int x_size = 0, y_size = 0;
+	glfwGetWindowSize(glfw::window, &x_size, &y_size);
+	
+	glUniform1i(glGetUniformLocation(Text2DShaderID, "x_size"), x_size/2);
+	glUniform1i(glGetUniformLocation(Text2DShaderID, "y_size"), y_size/2);
 
 	// Bind texture
 	glActiveTexture(GL_TEXTURE0);

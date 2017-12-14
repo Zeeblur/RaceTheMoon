@@ -42,7 +42,7 @@ std::shared_ptr<render_component> renderer::build_component(std::shared_ptr<enti
 	_rd->MVP = mat4(1.0f);
 	_rd->M = mat4(1.0f);
 	_rd->N = mat3(1.0f);
-
+	
     _rd->shader = shader;
     _rd->mesh = gl::load_mesh(shape);
 	
@@ -63,9 +63,34 @@ std::shared_ptr<render_component> renderer::build_component(std::shared_ptr<enti
 		
 		_rd->textureObj = textureList[texture_path];
 	}
+	else
+	{
+		_rd->textureObj = nullptr;
+	}
 
 	return std::make_shared<render_component>(e, _rd);
 }
+
+void renderer::change_texture(const std::shared_ptr<entity> &e, std::string texture_path)
+{
+	std::shared_ptr<render_component> rc = std::dynamic_pointer_cast<render_component>(e->get_component("render"));
+	
+	auto _rd = rc.get()->get_data();
+
+	// Update texture data
+	if (texture_path != "")
+	{
+		if (textureList[texture_path] == nullptr)
+		{
+			textureList[texture_path] = std::make_shared<gl::texture>(gl::texture(texture_path));
+		}
+
+
+		_rd->textureObj = textureList[texture_path];
+	}
+	
+}
+
 
 bool renderer::initialise()
 {
@@ -128,7 +153,10 @@ void renderer::render()
 	auto err2 = glGetError();
 
 	for (auto &r : _dataList)
-	{
+    {
+        if (!r->visible)
+            continue;
+
 		// bind effect
 		gl::render(r);
 		glBindVertexArray(0);

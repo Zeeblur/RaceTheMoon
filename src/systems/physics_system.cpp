@@ -8,6 +8,8 @@
 
 using namespace glm;
 
+bool increasedSpeed = false;
+
 physics_system::physics_system()
 {
     _visible = false;
@@ -16,10 +18,20 @@ physics_system::physics_system()
 
 std::shared_ptr<physics_component> physics_system::build_component(std::shared_ptr<entity> e)
 {
-	auto pd = std::make_shared<physics_data>(physics_data(e->get_trans()));
+    if (e->get_name() == "Bat")
+    {
+        auto pd = std::make_shared<physics_data>(physics_data(e->get_trans(), "Bat"));
 
-	_data.push_back(pd);
-    return std::make_shared<physics_component>(e, pd);
+        _data.push_back(std::ref(pd));
+        return std::make_shared<physics_component>(e, pd);
+    }
+    else
+    {
+        auto pd = std::make_shared<physics_data>(physics_data(e->get_trans()));
+
+        _data.push_back(std::ref(pd));
+        return std::make_shared<physics_component>(e, pd);
+    }
 }
 
 std::shared_ptr<physics_component> physics_system::build_component(std::shared_ptr<entity> e, std::shared_ptr<physics_data> d)
@@ -29,24 +41,52 @@ std::shared_ptr<physics_component> physics_system::build_component(std::shared_p
 	return std::make_shared<physics_component>(e, d);
 }
 
-std::shared_ptr<collider_component> physics_system::build_collider_component(std::shared_ptr<entity> e)
+std::shared_ptr<collider_component> physics_system::build_collider_component(std::shared_ptr<entity> e, colType c)
 {
     auto ree = e->get_trans();
 
-    if (e->get_name() == "Bat")
+    // Sort incoming collider components into respective physics_system collider data
+    if (c == colType::PLAYER)
     {
-
-        std::shared_ptr<collider_data> cd = std::make_shared<collider_data>(collider_data(e->get_trans(), colType::PLAYER));
+        std::shared_ptr<collider_data> cd = std::make_shared<collider_data>(e->get_trans(), colType::PLAYER, e->get_name());
 
         _bat_collider = std::ref(cd);
-        return std::make_shared<collider_component>(e, std::ref(_bat_collider));
+        return std::make_shared<collider_component>(e, _bat_collider);
     }
-    else
+    else if (c == colType::DAMAGE)
     {
-        std::shared_ptr<collider_data> cd = std::make_shared<collider_data>(collider_data(e->get_trans(), colType::DAMAGE));
+        auto cd = std::make_shared<collider_data>(e->get_trans(), colType::DAMAGE, e->get_name());
 
         _collider_data.push_back(cd);
-        return std::make_shared<collider_component>(e, std::ref(_collider_data.back()));
+        return std::make_shared<collider_component>(e, std::move(cd));
+    }
+    else if (c == colType::SHIELD)
+    {
+        auto cd = std::make_shared<collider_data>(e->get_trans(), colType::SHIELD, e->get_name());
+
+        _collider_data.push_back(cd);
+        return std::make_shared<collider_component>(e, std::move(cd));
+    }
+    else if (c == colType::POINTS)
+    {
+        auto cd = std::make_shared<collider_data>(e->get_trans(), colType::POINTS, e->get_name());
+
+        _collider_data.push_back(cd);
+        return std::make_shared<collider_component>(e, std::move(cd));
+    }
+    else if (c == colType::MINIBAT)
+    {
+        auto cd = std::make_shared<collider_data>(e->get_trans(), colType::MINIBAT, e->get_name());
+
+        _collider_data.push_back(cd);
+        return std::make_shared<collider_component>(e, std::move(cd));
+    }
+    else if (c == colType::SPEED)
+    {
+        auto cd = std::make_shared<collider_data>(e->get_trans(), colType::SPEED, e->get_name());
+
+        _collider_data.push_back(cd);
+        return std::make_shared<collider_component>(e, std::move(cd));
     }
 }
 
@@ -150,10 +190,6 @@ void moveTask(void* arg1, void* arg2)
             if (d->currentVelocity.z > 0 && d->currentVelocity.z < ps->deceleration.z) d->currentVelocity.z = 0;
             if (d->currentVelocity.z < 0 && d->currentVelocity.z > -ps->deceleration.z) d->currentVelocity.z = 0;
         }
-        else
-        {
-            std::cout << d->currentVelocity.y << std::endl;
-        }
 
         // reset move request
         d->moveRequest = false;
@@ -165,16 +201,63 @@ void collision(void* col1, void* batCol)
     auto &_obstacle = *static_cast<shared_ptr<collider_data>*>(col1);
     auto &_bat_collider = *static_cast<shared_ptr<collider_data>*>(batCol);
 
+    std::shared_ptr<physics_system> ps = physics_system::get();
+    auto data = ps->_data;
+
+    // Is player bat colliding with something
     bool col = is_colliding(_obstacle->collider.get(), _bat_collider->collider.get());
 
-    if (col)
+    // Obstacle collision without shield
+    if (col && _bat_collider->shield == false && _obstacle->behaviour_ == colType::DAMAGE)
     {
+        for (auto &d : data)
+        {
+            if (d->name_ == "Bat")
+            {
+                d->currentVelocity -= d->currentVelocity;
+            }
+        }
         engine::get()->get_subsystem("score_system")->hurt();
+    }
+    // Obstacle collision with shield
+    else if (col && _bat_collider->shield == true && _obstacle->behaviour_ == colType::DAMAGE)
+    {
+        _bat_collider->timeOfShield++;
+    }
+    // Shield power-up collision
+    else if (col && _obstacle->behaviour_ == colType::SHIELD)
+    {
+         entity_manager::get()->get_entity(_obstacle->name_)->get_component("render")->set_visible(false);
+        _bat_collider->shield = true;
+    }
+    // Points power-up collision
+    else if (col && _obstacle->behaviour_ == colType::POINTS)
+    {
+        entity_manager::get()->get_entity(_obstacle->name_)->get_component("render")->set_visible(false);
+        engine::get()->get_subsystem("score_system")->addPointsPowerUp();
+    }
+    // Minibat power-up collision
+    else if (col && _obstacle->behaviour_ == colType::MINIBAT)
+    {
+        entity_manager::get()->get_entity(_obstacle->name_)->get_component("render")->set_visible(false);
+        _bat_collider->shrunk = true;
+
+    }
+    // Speed power-up collision
+    else if (col && _obstacle->behaviour_ == colType::SPEED)
+    {
+        entity_manager::get()->get_entity(_obstacle->name_)->get_component("render")->set_visible(false);
+        _bat_collider->speedTimer = 0.0f;
+        _bat_collider->speed = true;
     }
 }
 
 void physics_system::update(float delta_time)
 {
+    static bool isShrinking = false;
+    static bool isShrunk = false;
+    static float shrinkingTimer = 0.0f;
+    static float totalShrinking = 2.0f;
     //std::cout << "Physics system updating" << std::endl;
     for (auto &d : _data)
     {
@@ -184,24 +267,166 @@ void physics_system::update(float delta_time)
             thread_pool::get()->add_job(thread_pool::get()->makeTask(moveTask, &d, &delta_time));
         }
     }
-
     for (auto &c : _collider_data)
     {
-        thread_pool::get()->add_job(thread_pool::get()->makeTask(collision, &c, &_bat_collider));
+        if (!c.expired())
+            thread_pool::get()->add_job(thread_pool::get()->makeTask(collision, &c, &_bat_collider));
+    }
+    // If collisions have happened for long enough, remove shield
+    if (_bat_collider->timeOfShield > 50.0f)
+        _bat_collider->shield = false;
+
+    // Superspeed lasts 3 seconds
+    if (_bat_collider->speed)
+    {
+        for (auto &d : _data)
+        {
+            if (d->name_ == "Bat")
+            {
+                d->currentVelocity.z -= maxSpeed;
+            }
+        }
+        _bat_collider->speedTimer += delta_time;
+    }
+    if (_bat_collider->speedTimer > 3.0f)
+    {
+        _bat_collider->speed = false;
+        _bat_collider->speedTimer = 0.0f;
     }
 
+    // ** Shrinking animation **
+    if (_bat_collider->shrunk == true && isShrunk == false)
+    {
+        isShrinking = true;
+        if (isShrinking == true && shrinkingTimer < ((1.0f / 15.0f) * totalShrinking))
+        {
+            shrinkingTimer += delta_time;
+            entity_manager::get()->get_entity("Bat")->get_trans().scale = glm::vec3(0.5f, 0.5f, 0.5f);
+        }
+        if (isShrinking == true && shrinkingTimer >= ((1.0f / 15.0f) * totalShrinking) && shrinkingTimer < ((2.0f / 15.0f) * totalShrinking))
+        {
+            shrinkingTimer += delta_time;
+            entity_manager::get()->get_entity("Bat")->get_trans().scale = glm::vec3(0.2f, 0.2f, 0.2f);
+        }
+        if (isShrinking == true && shrinkingTimer >= ((2.0f / 15.0f) * totalShrinking) && shrinkingTimer < ((3.0f / 15.0f) * totalShrinking))
+        {
+            shrinkingTimer += delta_time;
+            entity_manager::get()->get_entity("Bat")->get_trans().scale = glm::vec3(0.5f, 0.5f, 0.5f);
+        }
+        if (isShrinking == true && shrinkingTimer >= ((3.0f / 15.0f) * totalShrinking) && shrinkingTimer < ((4.0f / 15.0f) * totalShrinking))
+        {
+            shrinkingTimer += delta_time;
+            entity_manager::get()->get_entity("Bat")->get_trans().scale = glm::vec3(0.2f, 0.2f, 0.2f);
+        }
+        if (isShrinking == true && shrinkingTimer >= ((4.0f / 15.0f) * totalShrinking) && shrinkingTimer < ((5.0f / 15.0f) * totalShrinking))
+        {
+            shrinkingTimer += delta_time;
+            entity_manager::get()->get_entity("Bat")->get_trans().scale = glm::vec3(0.5f, 0.5f, 0.5f);
+        }
+        if (isShrinking == true && shrinkingTimer >= ((5.0f / 15.0f) * totalShrinking) && shrinkingTimer < ((8.0f / 15.0f) * totalShrinking))
+        {
+            shrinkingTimer += delta_time;
+            entity_manager::get()->get_entity("Bat")->get_trans().scale = glm::vec3(0.4f, 0.4f, 0.4f);
+        }
+        if (isShrinking == true && shrinkingTimer >= ((8.0f / 15.0f) * totalShrinking) && shrinkingTimer < ((11.0f / 15.0f) * totalShrinking))
+        {
+            shrinkingTimer += delta_time;
+            entity_manager::get()->get_entity("Bat")->get_trans().scale = glm::vec3(0.3f, 0.3f, 0.3f);
+        }
+        if (isShrinking == true && shrinkingTimer >= ((11.0f / 15.0f) * totalShrinking) && shrinkingTimer < ((14.0f / 15.0f) * totalShrinking))
+        {
+            shrinkingTimer += delta_time;
+            entity_manager::get()->get_entity("Bat")->get_trans().scale = glm::vec3(0.2f, 0.2f, 0.2f);
+        }
+        if (isShrinking == true && shrinkingTimer >= ((14.0f / 15.0f) * totalShrinking))
+        {
+            entity_manager::get()->get_entity("Bat")->get_trans().scale = glm::vec3(0.2f, 0.2f, 0.2f);
+            shrinkingTimer = 0.0f;
+            isShrinking = false;
+            isShrunk = true;
+        }
+    }
+    
+    // If shrunk for long enough, resize animation 
+    if (isShrunk == true && _bat_collider->shrunkTimer < ((30.0f / 15.0f) * totalShrinking))
+    {
+        _bat_collider->shrunkTimer += delta_time;
+    }
+    if (isShrunk == true && _bat_collider->shrunkTimer >= ((30.0f / 15.0f) * totalShrinking) && _bat_collider->shrunkTimer < ((32.0f / 15.0f)* totalShrinking))
+    {
+        _bat_collider->shrunkTimer += delta_time;
+        entity_manager::get()->get_entity("Bat")->get_trans().scale = glm::vec3(0.5f, 0.5f, 0.5f);
+    }
+    if (isShrunk == true && _bat_collider->shrunkTimer >= ((32.0f / 15.0f) * totalShrinking) && _bat_collider->shrunkTimer < ((34.0f / 15.0f) * totalShrinking))
+    {
+        _bat_collider->shrunkTimer += delta_time;
+        entity_manager::get()->get_entity("Bat")->get_trans().scale = glm::vec3(0.2f, 0.2f, 0.2f);
+    }
+    if (isShrunk == true && _bat_collider->shrunkTimer >= ((34.0f / 15.0f) * totalShrinking) && _bat_collider->shrunkTimer < ((36.0f / 15.0f) * totalShrinking))
+    {
+        _bat_collider->shrunkTimer += delta_time;
+        entity_manager::get()->get_entity("Bat")->get_trans().scale = glm::vec3(0.5f, 0.5f, 0.5f);
+    }
+    if (isShrunk == true && _bat_collider->shrunkTimer >= ((36.0f / 15.0f) * totalShrinking) && _bat_collider->shrunkTimer < ((38.0f / 15.0f) * totalShrinking))
+    {
+        _bat_collider->shrunkTimer += delta_time;
+        entity_manager::get()->get_entity("Bat")->get_trans().scale = glm::vec3(0.2f, 0.2f, 0.2f);
+    }
+    if (isShrunk == true && _bat_collider->shrunkTimer >= ((38.0f / 15.0f) * totalShrinking) && _bat_collider->shrunkTimer < ((40.0f / 15.0f) * totalShrinking))
+    {
+        _bat_collider->shrunkTimer += delta_time;
+        entity_manager::get()->get_entity("Bat")->get_trans().scale = glm::vec3(0.3f, 0.3f, 0.3f);
+    }
+    if (isShrunk == true && _bat_collider->shrunkTimer >= ((40.0f / 15.0f) * totalShrinking) && _bat_collider->shrunkTimer < ((42.0f / 15.0f) * totalShrinking))
+    {
+        _bat_collider->shrunkTimer += delta_time;
+        entity_manager::get()->get_entity("Bat")->get_trans().scale = glm::vec3(0.4f, 0.4f, 0.4f);
+    }
+    if (isShrunk == true && _bat_collider->shrunkTimer >= ((42.0f / 15.0f) * totalShrinking) && _bat_collider->shrunkTimer < ((44.0f / 15.0f) * totalShrinking))
+    {
+        _bat_collider->shrunkTimer += delta_time;
+        entity_manager::get()->get_entity("Bat")->get_trans().scale = glm::vec3(0.5f, 0.5f, 0.5f);
+    }
+    if (isShrunk == true && _bat_collider->shrunkTimer >= ((44.0f / 15.0f) * totalShrinking))
+    {
+        isShrunk = false;
+        _bat_collider->shrunkTimer = 0.0f;
+        _bat_collider->shrunk = false;
+    }
+
+    if (_bat_collider->shrunk == false)
+    {
+        isShrinking = false;
+        isShrunk = false;
+        entity_manager::get()->get_entity("Bat")->get_trans().scale = glm::vec3(0.5f, 0.5f, 0.5f);
+    }
+
+    // ** end of animation ** 
 }
 
 void physics_system::cap_speed(vec3& currentSpeed)
 {
     // limit movement
 
-    if (currentSpeed.x > maxSpeed) currentSpeed.x = maxSpeed;
-    if (currentSpeed.x < -maxSpeed) currentSpeed.x = -maxSpeed;
-    if (currentSpeed.y > maxSpeed) currentSpeed.y = maxSpeed;
-    if (currentSpeed.y < -maxSpeed) currentSpeed.y = -maxSpeed;
-    if (currentSpeed.z > maxSpeed) currentSpeed.z = maxSpeed;
-    if (currentSpeed.z < -maxSpeed) currentSpeed.z = -maxSpeed;
+    if (_bat_collider->speed == false)
+    {
+        if (currentSpeed.x > maxSpeed) currentSpeed.x = maxSpeed;
+        if (currentSpeed.x < -maxSpeed) currentSpeed.x = -maxSpeed;
+        if (currentSpeed.y > maxSpeed) currentSpeed.y = maxSpeed;
+        if (currentSpeed.y < -maxSpeed) currentSpeed.y = -maxSpeed;
+        if (currentSpeed.z > maxSpeed) currentSpeed.z = maxSpeed;
+        if (currentSpeed.z < -maxSpeed) currentSpeed.z = -maxSpeed;
+    }
+    else if (_bat_collider->speed == true)
+    {
+        float superSpeed = maxSpeed * 2;
+        if (currentSpeed.x > superSpeed) currentSpeed.x = superSpeed;
+        if (currentSpeed.x < -superSpeed) currentSpeed.x = -superSpeed;
+        if (currentSpeed.y > superSpeed) currentSpeed.y = superSpeed;
+        if (currentSpeed.y < -superSpeed) currentSpeed.y = -superSpeed;
+        if (currentSpeed.z > superSpeed) currentSpeed.z = superSpeed;
+        if (currentSpeed.z < -superSpeed) currentSpeed.z = -superSpeed;
+    }
 
 }
 

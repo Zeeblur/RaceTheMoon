@@ -444,25 +444,17 @@ namespace gl
 
 		};
 
-		//      // Colours
-			  //std::vector<glm::vec4> colours;
+	    // Colours
+		std::vector<glm::vec4> colours;
 
-			  //for (size_t i = 0; i < 6; i++)
-			  //{
-			  //	colours.push_back(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-			  //}
-
-			  //// Calculate the minimal and maximal
-	  //        mesh->min = mesh->positions[0];
-	  //        mesh->max = mesh->positions[0];
-	  //        for (auto &v : mesh->positions) {
-	  //        	mesh->min = glm::min(mesh->min, v);
-	  //        	mesh->max = glm::max(mesh->max, v);
-	  //        }
+		for (size_t i = 0; i < 6; i++)
+		{
+			colours.push_back(glm::vec4(0.80f, 0.8f, 0.8f, 1.0f));
+		}
 
 		mesh->positions = positions;
 		mesh->tex_coords = tex_coords;
-		//mesh->colours = colours;
+		mesh->colours = colours;
 
 		return mesh;
 	}
@@ -475,13 +467,13 @@ namespace gl
 		std::vector<glm::vec3> positions
 		{
 			// 1
-			glm::vec3(1000.0f, 0.0f, -5000.0f),
-			glm::vec3(-1000.0f,  0.0f, -5000.0f),
-			glm::vec3(-1000.0f,  0.0f, 100.0f),
+			glm::vec3(1000.0f, 0.0f, -400.0f),
+			glm::vec3(-1000.0f,  0.0f, -400.0f),
+			glm::vec3(-1000.0f,  0.0f, 0.0f),
 			// 2
-			glm::vec3(-1000.0f, 0.0f, 100.0f),
-			glm::vec3(1000.0f, 0.0f, 100.0f),
-			glm::vec3(1000.0f,0.0f, -5000.0f)
+			glm::vec3(-1000.0f, 0.0f, 0.0f),
+			glm::vec3(1000.0f, 0.0f, 0.0f),
+			glm::vec3(1000.0f,0.0f, -400.0f)
 
         };
 
@@ -627,7 +619,7 @@ namespace gl
 			// Normal is one of the six defined.  Divide index by 4 to get the value
 			normals.push_back(box_normals[i / 6]);
 			// Set the colour to be Red
-			colours.push_back(glm::vec4(0.7f, 0.7f, 0.7f, 1.0f));
+			colours.push_back(glm::vec4(0.8f, 0.8f, 0.8f, 1.0f));
 		}
 		// Set minimal and maximal
 		mesh->min = minimal;
@@ -665,6 +657,8 @@ namespace gl
 	{
 		// Type of geometry generated will be triangles
 		mesh_geom *mesh = new mesh_geom();
+
+        mesh->colliderType = 0;
 		//mesh->set_type(GL_TRIANGLES);
 		// Declare required buffers - positions, normals, texture coordinates and colour
 		std::vector<glm::vec3> positions;
@@ -751,7 +745,7 @@ namespace gl
 
 		// Add colour data
 		for (auto &v : positions)
-			colours.push_back(glm::vec4(0.7f, 0.7f, 0.7f, 1.0f));
+			colours.push_back(glm::vec4(0.8f, 0.8f, 0.8f, 1.0f));
 
 
 		mesh->positions = positions;
@@ -1034,8 +1028,14 @@ namespace gl
 		// Not best implementation, but works 
 		if (rd->effect->name == "text")
 		{
-			std::shared_ptr<text_component> tc = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity(rd->parent_name)->get_component("text"));
-			printText2D(tc.get()->_data->text.c_str(), rd->position.x, rd->position.y, 24);
+			if ((entity_manager::get()->get_entity(rd->parent_name)))
+			{
+				std::shared_ptr<text_component> tc = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity(rd->parent_name)->get_component("text"));
+				if(rd->position.z == 0)
+					printText2D(tc.get()->_data->text.c_str(), rd->position.x, rd->position.y, 24);
+				else
+					printText2D(tc.get()->_data->text.c_str(), rd->position.x, rd->position.y, rd->position.z);
+			}
 		}
 		auto e4 = glGetError();
 		// Check for any OpenGL errors

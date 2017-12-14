@@ -20,12 +20,14 @@ enum effectType
 struct render_component : public component
 {
 private:
-    std::shared_ptr<gl::render_data> _data;
 
+	std::shared_ptr<gl::render_data> _data;
     std::shared_ptr<entity> _parent;
 	GLuint programID;
 public:
 	render_component(std::shared_ptr<entity> e, std::shared_ptr<gl::render_data> data);
+
+	std::shared_ptr<gl::render_data> get_data();
 
 	bool initialise() override final;
 	

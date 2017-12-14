@@ -107,6 +107,9 @@ set(ASSIMP_BUILD_X_IMPORTER OFF CACHE BOOL "" FORCE)
 set(ASSIMP_BUILD_GLTF_IMPORTER OFF CACHE BOOL "" FORCE)
 set(ASSIMP_BUILD_3MF_IMPORTER OFF CACHE BOOL "" FORCE)
 set(BuildTests OFF CACHE BOOL "" FORCE)
+# mariadb-connector
+#set(GIT_EXECUTABLE ON CACHE BOOL "" FORCE)
+#set(WITH_UNITTEST OFF CACHE BOOL "" FORCE)
 #SFML
 set(SFML_BUILD_WINDOW OFF CACHE BOOL "" FORCE)
 set(SFML_BUILD_GRAPHICS OFF CACHE BOOL "" FORCE)
@@ -137,6 +140,18 @@ add_subdirectory("lib/sfml")
 target_include_directories(RaceTheMoon PUBLIC "lib/sfml/include")
 #target_include_directories(SFML PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/lib/sfml")
 install(TARGETS RaceTheMoon DESTINATION lib)
+#================================================
+# mysql-connector https://github.com/mysql/mysql-connector-cpp 894f875
+#add_subdirectory("lib/mysql-connector")
+#target_include_directories(RaceTheMoon PUBLIC "lib/mysql-connector")
+#target_include_directories(RaceTheMoon PUBLIC "lib/mysql-connector/include")
+#target_include_directories(RaceTheMoon PUBLIC "lib/mysql-connector/include")
+#================================================
+# mariadb-connector https://github.com/MariaDB/mariadb-connector-c 434b67e
+add_subdirectory("lib/mariadb-connector")
+#target_include_directories(RaceTheMoon PUBLIC "lib/mariadb-connector")
+target_include_directories(RaceTheMoon PUBLIC "lib/mariadb-connector/include")
+target_include_directories(RaceTheMoon PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/lib/mariadb-connector/include")
 #================================================
 # OpenGL
 FIND_PACKAGE( OpenGL REQUIRED)
@@ -190,6 +205,8 @@ target_link_libraries(RaceTheMoon
 	PUBLIC glfw
 	PUBLIC assimp
 	PUBLIC sfml-audio
+	#PUBLIC libconcpp
+	PUBLIC libmariadb
 	#optimized sfml-audio debug sfml-audio-d 
 )
 add_dependencies(RaceTheMoon
@@ -198,14 +215,48 @@ add_dependencies(RaceTheMoon
 
 #====================================================================
 
-set(deps glfw assimp ${GLEWLIB} sfml-audio)
+set(deps glfw assimp ${GLEWLIB} sfml-audio libmariadb) #libconcpp
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 else()
 	set(junk 
 		glm_dummy 
-		UpdateAssimpLibsDebugSymbolsAndDLLs 
+		UpdateAssimpLibsDebugSymbolsAndDLLs
+		cursor
+		async
+		auth_gssapi_client
+		basic-t
+		bulk1
+		cctap
+ 		charset
+		connection
+		dialog
+		dyncol
+		errors
+		features-10_2
+		fetch
+		IrrXML
+		logs
+		ma_getopt
+		mariadbclient
+		misc
+		mysql_clear_password
+		performance
+		ps
+		ps_bugs
+		ps_new
+		result
+		sha256_password
+		sp
+		sqlite3
+		t_aurora
+		t_conc173
+		thread
+		uninstall
+		view
+		zlib
+		zlibstatic
 	)
 	FOREACH(jnk ${junk})
 		#Hide junks in junk VS project folder

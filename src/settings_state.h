@@ -15,13 +15,27 @@ enum window_mode
 	fullscreen,
 };
 
+enum settings_selection
+{
+	resolution_button = 0,
+	window_mode_button = 1,
+	move_left_button = 2,
+	move_right_button = 3,
+	back_button = 4
+};
+
 // Settings state
 class settings_state : public engine_state
 {
+private:
+	settings_selection selection;
 public:
-	resolution current_resolution = _1024x768;
+	int left_move_key = -1;
+	int right_move_key = -1;
 
-	window_mode current_window_mode = windowed;
+	resolution current_resolution = _1920x1080;
+
+	window_mode current_window_mode = fullscreen;
 
 	void initialise();
 
@@ -32,4 +46,8 @@ public:
 	void on_update(float delta_time);
 
 	void on_exit();
+
+	
 };
+
+static int latest_key_press;

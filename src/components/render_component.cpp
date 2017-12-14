@@ -19,6 +19,11 @@ render_component::render_component(std::shared_ptr<entity> e, std::shared_ptr<gl
 	_data->visible = true;
 }
 
+std::shared_ptr<gl::render_data> render_component::get_data()
+{
+	return _data;
+}
+
 bool render_component::initialise()
 {
 	programID = gl::LoadShaders("res/shaders/simple.vert", "res/shaders/simple.frag");
@@ -38,6 +43,8 @@ void render_component::update(float delta_time)
 
 void render_component::render()
 {
+    _data->visible = get_visible();
+
 	if (_data->visible)
 	{
 		// "Generate" the transform matrix.

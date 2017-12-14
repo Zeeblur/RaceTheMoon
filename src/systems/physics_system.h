@@ -15,21 +15,21 @@ class physics_system : public subsystem
 {
 private:
    
+	std::vector<std::weak_ptr<collider_data>> _collider_data;
 
-	std::vector<std::shared_ptr<collider_data>> _collider_data;
+    // Shield bool for shieldpowerup, used to turn off bat collisions.
+    bool shield = false;
 
-    std::shared_ptr<collider_data> _bat_collider;
 
     physics_system();
 
-
-
 public:
+
+    std::shared_ptr<collider_data> _bat_collider;
 
 	std::vector<std::shared_ptr<physics_data>> _data;
 
     void cap_speed(glm::vec3& currentSpeed);
-
 
     // move scale is scaled by framerate
     float moveScale = 60.0f;
@@ -47,8 +47,7 @@ public:
 
 	std::shared_ptr<physics_component> build_component(std::shared_ptr<entity> e, std::shared_ptr<physics_data> d);
 
-	std::shared_ptr<collider_component> build_collider_component(std::shared_ptr<entity> e);
-
+    std::shared_ptr<collider_component> build_collider_component(std::shared_ptr<entity> e, colType c);
 
     bool initialise() override final;
 
@@ -67,3 +66,5 @@ public:
 
     float maxSpeed = 2.0f * moveScale;
 };
+
+static bool _hasShield;

@@ -20,3 +20,6 @@
 [submodule "lib/sfml"]
 	path = lib/sfml
 	url = https://github.com/SFML/SFML
+[submodule "lib/mariadb-connector"]
+	path = lib/mariadb-connector
+	url = https://github.com/MariaDB/mariadb-connector-c.git

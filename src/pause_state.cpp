@@ -2,7 +2,7 @@
 #include "entity_manager.h"
 #include "systems/clickable_system.h"
 #include <iostream>
-
+#include "engine_state_machine.h"
 void pause_state::initialise()
 {
 	int x_size = 0;
@@ -12,15 +12,15 @@ void pause_state::initialise()
 
 	// Pause text transform
 	transform_data paused_transform;
-	paused_transform.x = x_size / 2 - 175;
-	paused_transform.y = y_size - 250;
+	paused_transform.x = x_size / 2;
+	paused_transform.y = y_size - 50;
 	// Pause
 	auto paused_text = entity_manager::get()->create_entity("pause", state_type::PAUSE, paused_transform);
 	paused_text->add_component("render", renderer::get()->build_component(paused_text, glm::vec4(0.0f, 0.0f,  0.0f, 1.0f), "res/textures/play_button.png", "rectangle", "text", text));
 	paused_text->add_component("text", text_system::get()->build_component(paused_text, "PAUSED"));
 
 	transform_data back_transform;
-	back_transform.scale = glm::vec3(x_size / 1.25, y_size / 1.25, 1.0f);
+	back_transform.scale = glm::vec3(x_size * 0.5, y_size * 0.5, 1.0f);
 	back_transform.z = -1;
 	auto background = entity_manager::get()->create_entity("background", state_type::PAUSE, back_transform);
 
@@ -44,17 +44,19 @@ void pause_state::initialise()
 	int button_offset = 125;
 
 	// Continue button
-	auto button_continue = entity_manager::get()->create_entity("buttonContinue", state_type::PAUSE, continue_button_transform);
+	auto button_continue = entity_manager::get()->create_entity("continue_button", state_type::PAUSE, continue_button_transform);
 
-	button_continue->add_component("render", renderer::get()->build_component(button_continue, glm::vec4(0.0f, 0.0f,  0.0f, 1.0f), "res/textures/continue_button.png", "rectangle", "Gouraud", simple_texture));
+	button_continue->add_component("render", renderer::get()->build_component(button_continue, glm::vec4(0.0f, 0.0f,  0.0f, 1.0f), "res/textures/continue_button_selected.png", "rectangle", "Gouraud", simple_texture));
 	button_continue->add_component("clickable", clickable_system::get()->build_component(button_continue, glm::dvec2(0, 0), glm::dvec2(x_button_size, y_button_size)));
 	button_continue->add_component("camera", camera_system::get()->build_component(button_continue, camera_type::ORTHO));
 
 	// Menu button
-	auto button_menu = entity_manager::get()->create_entity("buttonMenu", state_type::PAUSE, menu_button_transform);
+	auto button_menu = entity_manager::get()->create_entity("menu_button", state_type::PAUSE, menu_button_transform);
 	button_menu->add_component("render", renderer::get()->build_component(button_menu, glm::vec4(0.0f, 0.0f,  0.0f, 1.0f), "res/textures/menu_button.png", "rectangle", "Gouraud", simple_texture));
 	button_menu->add_component("clickable", clickable_system::get()->build_component(button_menu, glm::dvec2(0, 0 + button_offset), glm::dvec2(x_button_size, y_button_size)));
 	button_menu->add_component("camera", camera_system::get()->build_component(button_menu, camera_type::ORTHO));
+
+	selection = pause_selection::continue_button;
 }
 
 void pause_state::on_reset()
@@ -75,7 +77,97 @@ void pause_state::on_enter()
 
 void pause_state::on_update(float delta_time)
 {
+	int x_size = 0, y_size = 0;
+	glfwGetWindowSize(glfw::window, &x_size, &y_size);
+	entity_manager::get()->get_entity("pause")->get_trans().x = x_size / 2;
+	entity_manager::get()->get_entity("pause")->get_trans().y = y_size - 50;
 
+	int present = glfwJoystickPresent(GLFW_JOYSTICK_1);
+
+	int count;
+	const unsigned char* axes = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
+	//std::cout << axes[10] << std::endl;
+	static char up_old_axis = GLFW_RELEASE;
+
+	// Handle input for up arrow
+	static int up_old_state = GLFW_RELEASE;
+	int up_state = glfwGetKey(glfw::window, GLFW_KEY_UP);
+
+	if ((up_state == GLFW_RELEASE && up_old_state == GLFW_PRESS) || (present && axes[10] == GLFW_RELEASE && up_old_axis == GLFW_PRESS))
+	{
+		switch (selection)
+		{
+		case continue_button:
+			selection = menu_button;
+			// Set selected texture
+			renderer::get()->change_texture(entity_manager::get()->get_entity("menu_button"), "res/textures/menu_button_selected.png");
+			// Set normal texture for other state
+			renderer::get()->change_texture(entity_manager::get()->get_entity("continue_button"), "res/textures/continue_button.png");
+			break;
+		case menu_button:
+			selection = continue_button;
+			// Set selected texture
+			renderer::get()->change_texture(entity_manager::get()->get_entity("continue_button"), "res/textures/continue_button_selected.png");
+			// Set normal texture for other state
+			renderer::get()->change_texture(entity_manager::get()->get_entity("menu_button"), "res/textures/menu_button.png");
+			break;
+		}
+		std::cout << selection << std::endl;
+	}
+
+
+	static char down_old_axis = GLFW_RELEASE;
+	// Handle input for down arrow
+	static int down_old_state = GLFW_RELEASE;
+	int down_state = glfwGetKey(glfw::window, GLFW_KEY_DOWN);
+
+	if ((down_state == GLFW_RELEASE && down_old_state == GLFW_PRESS) || (present && axes[12] == GLFW_RELEASE && down_old_axis == GLFW_PRESS))
+	{
+
+		switch (selection)
+		{
+		case menu_button:
+			selection = continue_button;
+			// Set selected texture
+			renderer::get()->change_texture(entity_manager::get()->get_entity("continue_button"), "res/textures/continue_button_selected.png");
+			// Set normal texture for other state
+			renderer::get()->change_texture(entity_manager::get()->get_entity("menu_button"), "res/textures/menu_button.png");
+			break;
+		case continue_button:
+			selection = menu_button;
+			// Set selected texture
+			renderer::get()->change_texture(entity_manager::get()->get_entity("menu_button"), "res/textures/menu_button_selected.png");
+			// Set normal texture for other state
+			renderer::get()->change_texture(entity_manager::get()->get_entity("continue_button"), "res/textures/continue_button.png");
+			break;
+		}
+		std::cout << selection << std::endl;
+	}
+
+	static char enter_joystick_old_state = GLFW_RELEASE;
+	static int enter_old_state = GLFW_RELEASE;
+	int enter_state = glfwGetKey(glfw::window, GLFW_KEY_ENTER);
+	if (enter_state == GLFW_RELEASE && enter_old_state == GLFW_PRESS || (present && axes[0] == GLFW_RELEASE && enter_joystick_old_state == GLFW_PRESS))
+	{
+		switch (selection)
+		{
+		case continue_button:
+			engine_state_machine::get()->change_state("game_state", false);
+			break;
+		case menu_button:
+			engine_state_machine::get()->change_state("menu_state", true);
+			break;
+		}
+	}
+	enter_old_state = enter_state;
+	down_old_state = down_state;
+	up_old_state = up_state;
+	if (present)
+	{
+		up_old_axis = axes[10];
+		enter_joystick_old_state = axes[0];
+		down_old_axis = axes[12];
+	}
 }
 
 void pause_state::on_exit()

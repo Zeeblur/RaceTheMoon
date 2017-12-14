@@ -4,8 +4,14 @@
 // Game over state
 class game_over_state : public engine_state
 {
+private:
+	std::vector<std::string> high_scores;
+	
 public:
+
 	void initialise();
+
+	void display_high_scores();
 
 	void on_reset();
 
@@ -15,3 +21,6 @@ public:
 
 	void on_exit();
 };
+static std::vector<char> name;
+static int current_score = 0;
+static bool my_sql_error = false;

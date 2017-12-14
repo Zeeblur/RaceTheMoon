@@ -11,7 +11,7 @@ namespace glfw
 {
     GLFWwindow* window;
 
-    int runWindow()
+    int runWindow(int resX, int resY, bool windowed)
     {
         // Initialise GLFW
         if (!glfwInit())
@@ -36,7 +36,7 @@ namespace glfw
         glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 
         // Open a window and create its OpenGL context
-        window = glfwCreateWindow(1024, 768, "Race The Moon", NULL, NULL);
+        window = glfwCreateWindow(resX, resY, "Race The Moon", NULL, NULL);
         if (window == NULL) {
             fprintf(stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n");
             getchar();
@@ -44,6 +44,11 @@ namespace glfw
             return -1;
         }
         glfwMakeContextCurrent(window);
+
+		if (windowed)
+			glfwSetWindowMonitor(glfw::window, NULL, ((1920 - resX) / 2), ((1080 - resY) / 2), resX, resY, GLFW_DONT_CARE);
+		else
+			glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, resX, resY, GLFW_DONT_CARE);
 
         glewExperimental = GL_TRUE;
         // Initialize GLEW
@@ -57,7 +62,7 @@ namespace glfw
         auto f = glGetError();
 		auto g = glGetError();
 
-        glViewport(0, 0, 1024, 768);
+        glViewport(0, 0, resX, resY);
 
         // Ensure we can capture the escape key being pressed below
         glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
@@ -70,4 +75,9 @@ namespace glfw
 
     }
 
+	void closeWindow()
+	{
+
+	}
+	
 }

@@ -1,4 +1,4 @@
-#version 330 core
+﻿#version 330 core
 
 // Incoming vertex colour
 in vec4 frag_colour;
@@ -53,8 +53,7 @@ void main()
 
     // calculate view direction & half vector
 	float lengthy = length(eye_pos - vertex_pos);
-	lengthy = 1/lengthy;
-	lengthy = max(0.0, min(1.0, lengthy*200));
+	float opacity = clamp(lengthy / 2000, 0, 1);
     vec3 view_dir = normalize(eye_pos - vertex_pos);
     vec3 halfV = normalize(view_dir + dir_light.light_dir);
 
@@ -73,5 +72,5 @@ void main()
 
     out_colour = primary*tex_colour + specular;
     //out_colour = vec4(k,k,k, 1.0);
-	out_colour.a = lengthy;
+	out_colour.a = 1.0 - opacity;
 }

@@ -39,12 +39,12 @@ void score_system::hurt()
 	{
 		d->health -= 10;
 
-		if (d->health == 0)
+		if (d->health <= 0)
 		{
 			//stop game
-			engine_state_machine::get()->change_state("menu_state");
+			engine_state_machine::get()->change_state("game_over_state", true);
 			std::cout << "You died!!! score= " << seconds + d->score << std::endl;
-			d->score = 0;
+			//d->score = 0;
 			d->health = 110;
 		}
 	}
@@ -59,6 +59,14 @@ void score_system::addScore()
 	}
 }
 
+void score_system::addPointsPowerUp()
+{
+    for (auto &d : _data)
+    {
+        d->score += 1000;
+    }
+}
+
 void score_system::update(float delta_time)
 {
 	totalTime += (delta_time);
@@ -67,6 +75,7 @@ void score_system::update(float delta_time)
 
 	for (auto &s : _data)
 	{
+		s->score += seconds;
 		std::cout << "Time is now: " << seconds << std::endl;
 		std::cout << "Score is now: " << s->score << std::endl;
 		std::cout << "Health : " << s->health << std::endl;
