@@ -45,7 +45,9 @@ void score_system::hurt()
 			engine_state_machine::get()->change_state("game_over_state", true);
 			std::cout << "You died!!! score= " << seconds + d->score << std::endl;
 			//d->score = 0;
-			d->health = 110;
+			d->health = 110; 
+            auto bat = entity_manager::get()->get_entity("Bat");
+            bat->get_trans().z = 0.0f;
 		}
 	}
 
