@@ -98,7 +98,7 @@ void handle_remap_joystick_enter()
 	int present = glfwJoystickPresent(GLFW_JOYSTICK_1);
 	if (present)
 	{
-		glfwSetKeyCallback(glfw::window, key_callback);
+		//glfwSetKeyCallback(glfw::window, key_callback);
 
 
 		// Update prompt
@@ -110,8 +110,8 @@ void handle_remap_joystick_enter()
 		{
 			int count;
 			const unsigned char* axes = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
-			int button = -1;
-			static int old_state = GLFW_RELEASE;
+			static int button = -1;
+			static char old_state = GLFW_RELEASE;
 			for (size_t i = 0; i < count; i++)
 			{
 				if (axes[i] == GLFW_PRESS)
@@ -123,7 +123,7 @@ void handle_remap_joystick_enter()
 			// Check for events
 			glfwPollEvents();
 
-			if (button != -1)
+			if (button != -1 && axes[button] == GLFW_RELEASE && old_state == GLFW_PRESS)
 			{
 				if (button == 0)
 					renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/A.png");
@@ -139,12 +139,13 @@ void handle_remap_joystick_enter()
 				input_handler::get()->glfw_joystick_enter = button;
 				std::cout << "After setting: " << input_handler::get()->glfw_joystick_enter << std::endl;
 				// Remove actuall callback
-				glfwSetKeyCallback(glfw::window, key_callback_fake);
+				//glfwSetKeyCallback(glfw::window, key_callback_fake);
 				std::shared_ptr<text_component> tc = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity("help_text")->get_component("text"));
 				tc->_data->text = " ";
+				button = -1;
 				break;
 			}
-			//old_state = 
+			old_state = axes[button];
 		}
 	}
 }
