@@ -24,7 +24,7 @@ private:
 	std::map<sound_id, std::shared_ptr<sf::SoundBuffer>> buffers;
 	std::list<sf::Sound> sounds;
 	sf::Music music;
-	float volume = 0.0f;
+	float volume = 100.0f;
 public:
 	
 	audio_system();

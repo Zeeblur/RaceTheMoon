@@ -70,33 +70,48 @@ void render_component::render()
 
 		int width, height;
 		glfwGetWindowSize(glfw::window, &width, &height);
-		mat4 view_proj_mat;
+		mat4 proj;
+		mat4 view;
 		vec3 eye_pos;
 
 		if (camera != nullptr)
 		{
-			if (camera->get_data()->type == camera_type::CHASE)
-				view_proj_mat = camera->get_projection() * camera->get_view();
+			if (camera->get_data()->type == camera_type::CHASE) {
+				proj = camera->get_projection();
+				view = camera->get_view();
+			}
 			else
-				view_proj_mat = glm::ortho(-0.5f * (float)width, 0.5f * (float)width, -0.5f * (float)height, 0.5f * (float)height, -1000.0f, 1000.0f);
-		
+			{
+				proj = glm::ortho(-0.5f * (float)width, 0.5f * (float)width, -0.5f * (float)height, 0.5f * (float)height, -1000.0f, 1000.0f);
+				view = mat4(1.0f);
+			}
+
 			eye_pos = camera->get_data()->cam_pos;
 		}
 		else
 		{
-			view_proj_mat = camera_system::get()->player_cam_MV;
+			proj = camera_system::get()->player_cam_P;
+			view = camera_system::get()->player_cam_V;
 			eye_pos = camera_system::get()->player_cam_pos;
 		}
 
-		auto MVP = view_proj_mat * model;
+		auto MVP = proj * view * model;
 
 		
 		// create render job here
-
+		_data->MV = view * model;
 		_data->MVP = MVP;
 		_data->cam_pos = eye_pos;
+		_data->N = rotation;
 
-		renderer::get()->_dataList.push_back(_data);
+		if (_data->effect->name == "text")
+		{
+			renderer::get()->_dataText.push_back(_data);
+		}
+		else
+		{
+			renderer::get()->_dataList.push_back(_data);
+		}
 		
 	}
 }

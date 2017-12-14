@@ -750,7 +750,7 @@ namespace gl
 
 		mesh->positions = positions;
 		mesh->tex_coords = tex_coords;
-		//mesh->colours = colours;
+		mesh->normals = normals;
 
 		return mesh;
 	}
@@ -861,6 +861,12 @@ namespace gl
 			// Throw exception
 			throw std::runtime_error("Error using directional light with renderer");
 		} 
+
+
+		idx = glGetUniformLocation(programID, "light_pos");
+		if (idx != -1)
+			glUniform3fv(idx, 1, glm::value_ptr(light->_position));
+
 
 		// Check for light position
 		idx = glGetUniformLocation(programID, "dir_light.position");
@@ -1007,7 +1013,6 @@ namespace gl
 		loc = glGetUniformLocation(programID, "eye_pos");
 		if (loc != -1)
 			glUniform3fv(loc, 1, glm::value_ptr(rd->cam_pos));
-
 		// bind the matrices
 
 		loc = glGetUniformLocation(programID, "MVP");
@@ -1018,6 +1023,10 @@ namespace gl
 		if (loc != -1)
 			glUniformMatrix4fv(loc, 1, GL_FALSE, value_ptr(rd->M));
 
+		loc = glGetUniformLocation(programID, "MV");
+		if (loc != -1)
+			glUniformMatrix4fv(loc, 1, GL_FALSE, value_ptr(rd->MV));
+
 		loc = glGetUniformLocation(programID, "N");
 		if (loc != -1)
 			glUniformMatrix3fv(loc, 1, GL_FALSE, value_ptr(rd->N));
@@ -1025,18 +1034,25 @@ namespace gl
 		auto e3 = glGetError();
 		// Bind the vertex array object for the
 		glBindVertexArray(om->vao);
+
 		// Not best implementation, but works 
 		if (rd->effect->name == "text")
 		{
 			if ((entity_manager::get()->get_entity(rd->parent_name)))
 			{
 				std::shared_ptr<text_component> tc = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity(rd->parent_name)->get_component("text"));
-				if(rd->position.z == 0)
+				if (rd->position.z == 0)
 					printText2D(tc.get()->_data->text.c_str(), rd->position.x, rd->position.y, 24);
 				else
 					printText2D(tc.get()->_data->text.c_str(), rd->position.x, rd->position.y, rd->position.z);
+
+				return;
 			}
 		}
+
+
+
+
 		auto e4 = glGetError();
 		// Check for any OpenGL errors
 		if (gl::CHECK_GL_ERROR)

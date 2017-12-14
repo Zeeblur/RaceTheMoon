@@ -6,6 +6,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <functional>
 
 
 #define CHECK_GL_ERROR CheckGL(__LINE__, __FILE__)
@@ -152,6 +153,8 @@ void renderer::render()
 	
 	auto err2 = glGetError();
 
+	std::sort(_dataList.begin(), _dataList.end());
+
 	for (auto &r : _dataList)
     {
         if (!r->visible)
@@ -162,10 +165,21 @@ void renderer::render()
 		glBindVertexArray(0);
 	}
 
+	for (auto &r : _dataText)
+	{
+		if (!r->visible)
+			continue;
+
+		// bind effect
+		gl::render(r);
+		glBindVertexArray(0);
+	}
+
 	glfwPollEvents();
 
     glfwSwapBuffers(glfw::window);
 	_dataList.clear();
+	_dataText.clear();
 }
 
 void renderer::unload_content()

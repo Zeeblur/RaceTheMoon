@@ -52,6 +52,8 @@ void main()
     vec4 diffuse = mat.diffuse_reflection * vec4(dir_light.light_colour, 1.0) * k;
 
     // calculate view direction & half vector
+	float lengthy = length(eye_pos - vertex_pos);
+	float opacity = clamp(lengthy / 2000, 0, 1);
     vec3 view_dir = normalize(eye_pos - vertex_pos);
     vec3 halfV = normalize(view_dir + dir_light.light_dir);
 
@@ -70,5 +72,5 @@ void main()
 
     out_colour = primary*tex_colour + specular;
     //out_colour = vec4(k,k,k, 1.0);
-	out_colour.a = 1.0;
+	out_colour.a = 1.0;// - opacity;
 }
