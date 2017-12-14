@@ -35,7 +35,7 @@ void camera_component::set_projection_view(std::shared_ptr<camera_projection> da
 		break;
 	case ORTHO:
 		_projection = glm::ortho(_data->left, _data->left*-1.0f, _data->bottom, _data->bottom * -1.0f, _data->near, _data->far);		
-		_data->model_view = _projection;
+		_data->proj = _projection;
 		break;
 	}
 
@@ -74,6 +74,7 @@ void camera_component::update(float delta_time)
 	// Calculate view matrix
 	_view = glm::lookAt(desired_position, _target, _up);
 
-	_data->model_view = _projection * _view;
+	_data->proj = _projection;
+	_data->view = _view;
 	_data->cam_pos = desired_position;
 }

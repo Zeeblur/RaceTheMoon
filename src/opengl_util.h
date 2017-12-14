@@ -118,6 +118,7 @@ namespace gl
 		std::string shader;// = "Phong";
 		glm::vec3 cam_pos;
 		glm::mat4 M;
+		glm::mat4 MV;
 		glm::mat3 N;
 		glm::mat4 MVP;
 		glm::vec3 position;
@@ -133,6 +134,11 @@ namespace gl
 
         // reference to material obj
         gl::material_data matData;
+
+		bool operator > (const render_data& other) const
+		{		
+			return (M.length > other.M.length);
+		}
 	};
 
     // store vao/vbos for obj
