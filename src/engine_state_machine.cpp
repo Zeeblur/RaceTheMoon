@@ -33,8 +33,8 @@ void engine_state_machine::change_state(const std::string &name, bool reset)
 				_current_state->on_exit();
 			_current_state = found->second;
 
-			if (reset)
-				_current_state->on_reset();
+            if (reset)
+                _current_state->on_reset();
 
 			_current_state->on_enter();
 			_current_state_name = name;
