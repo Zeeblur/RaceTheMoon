@@ -149,7 +149,7 @@ void controls_state::initialise()
 
 	transform_data back_transform;
 	back_transform.scale = glm::vec3(x_size * 0.5, y_size * 0.5, 1.0f);
-	back_transform.z = -10;
+	back_transform.z = -500;
 	auto background = entity_manager::get()->create_entity("background", state_type::CONTROLS, back_transform);
 
 	background->add_component("render", renderer::get()->build_component(background, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/race_the_moon.png", "rectangle", "Gouraud", simple_texture));
@@ -220,30 +220,6 @@ void controls_state::initialise()
 	back_button->add_component("camera", camera_system::get()->build_component(back_button, camera_type::ORTHO));
 	back_button->add_component("clickable", clickable_system::get()->build_component(back_button, vec2(back_button_transform.x, -back_button_transform.y), back_button_transform.scale));
 
-	//// menu left trans
-	//transform_data menu_left_transform;
-	//menu_left_transform.scale = glm::vec3(100, 30, 1.0f);
-	//menu_left_transform.x = -30 - 400;
-	//menu_left_transform.y = -180;
-
-	//// menu left
-	//auto menu_left = entity_manager::get()->create_entity("menuMoveLeft", state_type::CONTROLS, menu_left_transform);
-	//menu_left->add_component("render", renderer::get()->build_component(menu_left, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/move_right.png", "rectangle", "Gouraud", simple_texture));
-	//menu_left->add_component("camera", camera_system::get()->build_component(menu_left, camera_type::ORTHO));
-
-	//// menu left trans
-	//transform_data menu_right_transform;
-	//menu_right_transform.scale = glm::vec3(100, 30, 1.0f);
-	//menu_right_transform.x = -30 - 400;
-	//menu_right_transform.y = -240;
-
-	//// menu left
-	//auto menu_right = entity_manager::get()->create_entity("menuMoveLeft", state_type::CONTROLS, menu_right_transform);
-	//menu_right->add_component("render", renderer::get()->build_component(menu_right, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/move_right.png", "rectangle", "Gouraud", simple_texture));
-	//menu_right->add_component("camera", camera_system::get()->build_component(menu_right, camera_type::ORTHO));
-
-	// ============================================================
-
 	// key move left trans
 	transform_data key_move_left_transform;
 	key_move_left_transform.scale = glm::vec3(15, 15, 1.0f);
@@ -299,29 +275,6 @@ void controls_state::initialise()
 	key_menu_enter->add_component("clickable", clickable_system::get()->build_component(key_menu_enter, glm::dvec2(key_menu_enter_transform.x, -key_menu_enter_transform.y), glm::dvec2(15, 15)));
 	key_menu_enter->add_component("render", renderer::get()->build_component(key_menu_enter, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/letters/question_mark.png", "rectangle", "Gouraud", simple_texture));
 	key_menu_enter->add_component("camera", camera_system::get()->build_component(key_menu_enter, camera_type::ORTHO));
-
-	//// key menu move left trans
-	//transform_data key_menu_left_transform;
-	//key_menu_left_transform.scale = glm::vec3(15, 15, 1.0f);
-	//key_menu_left_transform.x = 90 - 400;
-	//key_menu_left_transform.y = -180;
-
-	//// key menu move left
-	//auto key_menu_left = entity_manager::get()->create_entity("keyMenuMoveLeft", state_type::CONTROLS, key_menu_left_transform);
-	//key_menu_left->add_component("clickable", clickable_system::get()->build_component(key_menu_left, glm::dvec2(key_menu_left_transform.x, -key_menu_left_transform.y), glm::dvec2(15, 15)));
-	//key_menu_left->add_component("render", renderer::get()->build_component(key_menu_left, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/letters/question_mark.png", "rectangle", "Gouraud", simple_texture));
-	//key_menu_left->add_component("camera", camera_system::get()->build_component(key_menu_left, camera_type::ORTHO));
-
-	//// Controls trans
-	//transform_data controls_transform;
-	//controls_transform.scale = glm::vec3(100, 30, 1.0f);
-	//controls_transform.x = 0;
-	//controls_transform.y = 0;
-
-	//// Controls
-	//auto controls = entity_manager::get()->create_entity("controls", state_type::CONTROLS, controls_transform);
-	//controls->add_component("render", renderer::get()->build_component(controls, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/controls.png", "rectangle", "Gouraud", simple_texture));
-	//controls->add_component("camera", camera_system::get()->build_component(controls, camera_type::ORTHO));
 
 	// Keyboard trans
 	transform_data keyboard_transform;

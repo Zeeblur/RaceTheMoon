@@ -23,7 +23,7 @@ void settings_state::initialise()
 
 	transform_data back_transform;
 	back_transform.scale = glm::vec3(x_size * 0.5 , y_size * 0.5, 1.0f);
-	back_transform.z = -10;
+	back_transform.z = -500;
 	auto background = entity_manager::get()->create_entity("background", state_type::SETTINGS, back_transform);
 
 	background->add_component("render", renderer::get()->build_component(background, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/race_the_moon.png", "rectangle", "Gouraud", simple_texture));
@@ -202,7 +202,7 @@ void determine_screen_res(resolution &res)
 		glfwSetWindowSize(glfw::window, 1280, 720);
         glfwSetWindowPos(glfw::window, 320, 180);
 		renderer::get()->change_texture(entity_manager::get()->get_entity("resolutionValue"), "res/textures/1280x720.png");
-		engine::get()->resPref = "_128x720";
+		engine::get()->resPref = "_1280x720";
 		break;
 	case _1600x1200:
 		glfwSetWindowSize(glfw::window, 1600, 1200);
