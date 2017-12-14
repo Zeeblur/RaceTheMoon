@@ -17,6 +17,6 @@ uniform sampler2D tex;
 
 void main()
 {
-	out_colour = texture(tex, tex_coord);
+	out_colour = texture2D(tex, tex_coord);
 	//out_colour.a = 1.0f;
 }

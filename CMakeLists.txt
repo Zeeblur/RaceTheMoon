@@ -222,7 +222,41 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 else()
 	set(junk 
 		glm_dummy 
-		UpdateAssimpLibsDebugSymbolsAndDLLs 
+		UpdateAssimpLibsDebugSymbolsAndDLLs
+		cursor
+		async
+		auth_gssapi_client
+		basic-t
+		bulk1
+		cctap
+ 		charset
+		connection
+		dialog
+		dyncol
+		errors
+		features-10_2
+		fetch
+		IrrXML
+		logs
+		ma_getopt
+		mariadbclient
+		misc
+		mysql_clear_password
+		performance
+		ps
+		ps_bugs
+		ps_new
+		result
+		sha256_password
+		sp
+		sqlite3
+		t_aurora
+		t_conc173
+		thread
+		uninstall
+		view
+		zlib
+		zlibstatic
 	)
 	FOREACH(jnk ${junk})
 		#Hide junks in junk VS project folder

@@ -51,21 +51,7 @@ void handle_remap_key_left()
 			else
 				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/question_mark.png");
 			std::ofstream user_pref_file;
-			// Open file and clear
-			user_pref_file.open("res/buttons.txt", std::ofstream::out | std::ofstream::trunc);
-			if (user_pref_file.is_open())
-			{
-				// Add new button and old buttons
-				user_pref_file << "Left: " << latest_key_press << "\n";
-				user_pref_file << "Right: " << input_handler::get()->glfw_button_right << "\n";
-				user_pref_file << "Front: " << input_handler::get()->glfw_button_forward << "\n";
-				user_pref_file << "Back: " << input_handler::get()->glfw_button_backward << "\n";
-			}
-			// Close
-			user_pref_file.close();
-			// Re-load input keys
-			input_handler::get()->load_input_settings();
-			// Remove actuall callback
+			input_handler::get()->glfw_button_left = latest_key_press;
 			glfwSetKeyCallback(glfw::window, key_callback_fake);
 			break;
 		}
@@ -97,21 +83,8 @@ void handle_remap_key_right()
 				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/" + letter + ".png");
 			else
 				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/question_mark.png");
-			std::ofstream user_pref_file;
-			// Open file and clear
-			user_pref_file.open("res/buttons.txt", std::ofstream::out | std::ofstream::trunc);
-			if (user_pref_file.is_open())
-			{
-				// Add new button and old buttons
-				user_pref_file << "Left: " << input_handler::get()->glfw_button_left << "\n";
-				user_pref_file << "Right: " << latest_key_press << "\n";
-				user_pref_file << "Front: " << input_handler::get()->glfw_button_forward << "\n";
-				user_pref_file << "Back: " << input_handler::get()->glfw_button_backward << "\n";
-			}
-			// Close
-			user_pref_file.close();
-			// Re-load input keys
-			input_handler::get()->load_input_settings();
+
+			input_handler::get()->glfw_button_right = latest_key_press;
 			// Remove actuall callback
 			glfwSetKeyCallback(glfw::window, key_callback_fake);
 			break;
@@ -120,8 +93,53 @@ void handle_remap_key_right()
 	}
 }
 
+void handle_remap_joystick_enter()
+{
+	glfwSetKeyCallback(glfw::window, key_callback);
+
+
+	// Update prompt
+	std::shared_ptr<text_component> tc = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity("help_text")->get_component("text"));
+	tc->_data->text = "Assign key, ESC to cancel...";
+	// Force render before going into the while loop.
+	renderer::get()->render();
+	while (true)
+	{
+		int present = glfwJoystickPresent(GLFW_JOYSTICK_1);
+		int count;
+		const unsigned char* axes = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
+		int button = -1;
+		static int old_state = GLFW_RELEASE;
+		for (size_t i = 0; i < count; i++)
+		{
+			if (axes[i] == GLFW_PRESS)
+			{
+				button = i;
+				std::cout << " ====== " << i << std::endl;
+			}
+		}
+		// Check for events
+		glfwPollEvents();
+
+		if (button != -1)
+		{
+			renderer::get()->change_texture(entity_manager::get()->get_entity("keyMenuEnterJoystick"), "res/textures/letters/question_mark.png");
+			std::cout << "Before setting: " << input_handler::get()->glfw_joystick_enter << std::endl;
+			input_handler::get()->glfw_joystick_enter = button;
+			std::cout << "After setting: " << input_handler::get()->glfw_joystick_enter << std::endl;
+			// Remove actuall callback
+			glfwSetKeyCallback(glfw::window, key_callback_fake);
+			std::shared_ptr<text_component> tc = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity("help_text")->get_component("text"));
+			tc->_data->text = " ";
+			break;
+		}
+		//old_state = 
+	}
+}
+
 void controls_state::initialise()
 {
+	latest_key_press = -1;
 	initText2D("res/textures/myriad.png");
 
 	int x_size = 0;
@@ -190,6 +208,17 @@ void controls_state::initialise()
 	menu_enter_joystick->add_component("render", renderer::get()->build_component(menu_enter_joystick, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/move_right.png", "rectangle", "Gouraud", simple_texture));
 	menu_enter_joystick->add_component("camera", camera_system::get()->build_component(menu_enter_joystick, camera_type::ORTHO));
 
+	// Back button transform
+	transform_data back_button_transform;
+	back_button_transform.x = 0;
+	back_button_transform.y = -270;
+	back_button_transform.scale.x = 100;
+	back_button_transform.scale.y = 50;
+	// Back button
+	auto back_button = entity_manager::get()->create_entity("controls_back_button", state_type::CONTROLS, back_button_transform);
+	back_button->add_component("render", renderer::get()->build_component(back_button, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/back_button.png", "rectangle", "Gouraud", simple_texture));
+	back_button->add_component("camera", camera_system::get()->build_component(back_button, camera_type::ORTHO));
+	back_button->add_component("clickable", clickable_system::get()->build_component(back_button, vec2(back_button_transform.x, -back_button_transform.y), back_button_transform.scale));
 
 	//// menu left trans
 	//transform_data menu_left_transform;
@@ -315,7 +344,14 @@ void controls_state::initialise()
 	auto joystick = entity_manager::get()->create_entity("joystick", state_type::CONTROLS, joystick_transform);
 	joystick->add_component("render", renderer::get()->build_component(joystick, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/controls.png", "rectangle", "Gouraud", simple_texture));
 	joystick->add_component("camera", camera_system::get()->build_component(joystick, camera_type::ORTHO));
-	
+
+	transform_data text_transform;
+	text_transform.x = 10;
+	text_transform.y = 10;
+	auto help_text = entity_manager::get()->create_entity("help_text", state_type::CONTROLS, text_transform);
+	help_text->add_component("render", renderer::get()->build_component(help_text, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), "res/textures/exit_button.png", "rectangle", "text", text));
+	help_text->add_component("text", text_system::get()->build_component(help_text, " "));
+
 }
 
 void controls_state::on_reset()
@@ -359,7 +395,7 @@ void controls_state::on_update(float delta_time)
 	{
 		switch (selection)
 		{
-		case settings_button_back:
+		case controls_back_button:
 			engine_state_machine::get()->change_state("settings_state", true);
 			break;
 		case move_left_button:
@@ -383,7 +419,12 @@ void controls_state::on_update(float delta_time)
 		handle_remap_key_right();
 		cs->clear_clicked_component_name();
 	}
-
+	else if (cs->get_clicked_component_name() == "keyMenuEnterJoystick")
+	{
+		handle_remap_joystick_enter();
+		//handle_remap_key_enter();
+		cs->clear_clicked_component_name();
+	}
 
 }
 

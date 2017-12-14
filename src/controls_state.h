@@ -5,7 +5,7 @@ enum controls_selection
 {
 	move_left_button,
 	move_right_button,
-	settings_button_back
+	controls_back_button
 };
 
 // Settings state

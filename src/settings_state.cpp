@@ -163,15 +163,6 @@ void settings_state::initialise()
 	window_mode_button_left->add_component("render", renderer::get()->build_component(window_mode_button_left, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/arrow_left.png", "rectangle", "Gouraud", simple_texture));
 	window_mode_button_left->add_component("camera", camera_system::get()->build_component(window_mode_button_left, camera_type::ORTHO));
 
-
-
-	transform_data text_transform;
-	text_transform.x = 10;
-	text_transform.y = 10;
-	auto help_text = entity_manager::get()->create_entity("help_text", state_type::SETTINGS, text_transform);
-	help_text->add_component("render", renderer::get()->build_component(help_text, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), "res/textures/exit_button.png", "rectangle", "text", text));
-	help_text->add_component("text", text_system::get()->build_component(help_text, " "));
-
 	selection = resolution_button;
 }
 
@@ -205,27 +196,32 @@ void determine_screen_res(resolution &res)
 		glfwSetWindowSize(glfw::window, 1024, 768);
         glfwSetWindowPos(glfw::window, 448, 156);
 		renderer::get()->change_texture(entity_manager::get()->get_entity("resolutionValue"), "res/textures/1024x768.png");
+		engine::get()->resPref = "_1024x768";
 		break;
 	case _1280x720:
 		glfwSetWindowSize(glfw::window, 1280, 720);
         glfwSetWindowPos(glfw::window, 320, 180);
 		renderer::get()->change_texture(entity_manager::get()->get_entity("resolutionValue"), "res/textures/1280x720.png");
+		engine::get()->resPref = "_128x720";
 		break;
 	case _1600x1200:
 		glfwSetWindowSize(glfw::window, 1600, 1200);
         glfwSetWindowPos(glfw::window, 160, 0);
 		renderer::get()->change_texture(entity_manager::get()->get_entity("resolutionValue"), "res/textures/1600x1200.png");
+		engine::get()->resPref = "_1600x1200";
 		break;
 	case _1920x1080:
 		glfwSetWindowSize(glfw::window, 1920, 1080);
         glfwSetWindowPos(glfw::window, 0, 0);
 		renderer::get()->change_texture(entity_manager::get()->get_entity("resolutionValue"), "res/textures/1920x1080.png");
+		engine::get()->resPref = "_1920x1080";
 		break;
 	}
 }
 
 void determine_window_mode(window_mode &window_mode)
 {
+	
     int xsize = 0;
     int ysize = 0;
 
@@ -261,7 +257,7 @@ void settings_state::on_update(float delta_time)
 	const unsigned char* axes = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
 	//std::cout << axes[10] << std::endl;
 	static char up_old_axis = GLFW_RELEASE;
-	std::cout << count << std::endl;
+	//std::cout << count << std::endl;
 	// Handle input for up arrow
 	static int up_old_state = GLFW_RELEASE;
 	int up_state = glfwGetKey(glfw::window, input_handler::get()->glfw_button_navigation_up);
@@ -377,7 +373,7 @@ void settings_state::on_update(float delta_time)
 			renderer::get()->change_texture(entity_manager::get()->get_entity("controls_button"), "res/textures/controls_button.png");
 			break;
 		}
-		std::cout << selection << std::endl;
+		//std::cout << selection << std::endl;
 	}
 	
 
@@ -484,7 +480,7 @@ void settings_state::on_update(float delta_time)
 
 	static char enter_joystick_old_state = GLFW_RELEASE;
 	static int enter_old_state = GLFW_RELEASE;
-	int enter_state = glfwGetKey(glfw::window, GLFW_KEY_ENTER);
+	int enter_state = glfwGetKey(glfw::window, input_handler::get()->glfw_joystick_enter);
 	if (enter_state == GLFW_RELEASE && enter_old_state == GLFW_PRESS || (present && axes[input_handler::get()->glfw_joystick_enter] == GLFW_RELEASE && enter_joystick_old_state == GLFW_PRESS))
 	{
 		switch (selection)

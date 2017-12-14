@@ -70,6 +70,8 @@ public:
     // This is the publically visible shutdown method.
     virtual void shutdown() = 0;
 
+    virtual void reset(){};
+
     virtual void hurt(){};
 
     virtual void addPointsPowerUp(){};

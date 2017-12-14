@@ -48,6 +48,8 @@ public:
 
 	void render() override final;
 
+    void reset();
+
 	void unload_content() override final;
 
 	void shutdown() override final;

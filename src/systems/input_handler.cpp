@@ -50,48 +50,11 @@ bool input_handler::initialise()
 
 void input_handler::load_input_settings()
 {
+
 	std::ifstream user_pref_file;
 
 	user_pref_file.open("res/buttons.txt");
-	if (!user_pref_file)
-	{
-		// Close file, not found
-		user_pref_file.close();
-		// File not found, create new one with default settings
-		std::ofstream user_pref_file_out("res/buttons.txt");
-		if (user_pref_file_out.is_open())
-		{
-			user_pref_file_out << "Left: " << GLFW_KEY_A << "\n";
-			user_pref_file_out << "Right: " << GLFW_KEY_D << "\n";
-			user_pref_file_out << "Front: " << GLFW_KEY_W << "\n";
-			user_pref_file_out << "Back: " << GLFW_KEY_S << "\n";
-			user_pref_file_out << "NavigationUp: " << GLFW_KEY_UP << "\n";
-			user_pref_file_out << "NavigationDown: " << GLFW_KEY_DOWN << "\n";
-			user_pref_file_out << "NavigationLeft: " << GLFW_KEY_LEFT << "\n";
-			user_pref_file_out << "NavigationRight: " << GLFW_KEY_RIGHT << "\n";
-			user_pref_file_out << "JoystickEnter: " << 0 << "\n"; 
-			user_pref_file_out << "JoystickUp: " << 10 << "\n";
-			user_pref_file_out << "JoystickDown: " << 12 << "\n";
-			user_pref_file_out << "JoystickLeft: " << 11 << "\n"; // is this right?
-			user_pref_file_out << "JoystickRight: " << 13 << "\n"; // is this right?
-
-		}
-		// Assign defaults
-		glfw_button_left = GLFW_KEY_A;
-		glfw_button_right = GLFW_KEY_D;
-		glfw_button_forward = GLFW_KEY_W;
-		glfw_button_backward = GLFW_KEY_S;
-		glfw_button_navigation_up = GLFW_KEY_UP;
-		glfw_button_navigation_down = GLFW_KEY_DOWN;
-		glfw_joystick_enter = 0;
-		glfw_joystick_up = 10;
-		glfw_joystick_left = 11;
-		glfw_joystick_down = 12;
-		glfw_joystick_right = 13;
-		
-		// Close file, finished writing
-		user_pref_file_out.close();
-	}
+	
 	std::string input = "";
 	// Load in keys from file
 	while (user_pref_file >> input)

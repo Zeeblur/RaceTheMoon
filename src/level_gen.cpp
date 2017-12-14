@@ -34,8 +34,8 @@ bool level_gen::load_content() { return true; }
 void level_gen::update(float delta_time)
 {
 	// remove block that has passed
-	auto pos = entity_manager::get()->get_entity("Bat")->get_trans().z;
-
+    auto pos = entity_manager::get()->get_entity("Bat")->get_trans().z;
+   
 	if (pos < currentBlock-200)
 	{
 		std::cout << "passed block: " << currentBlock << std::endl;
@@ -57,24 +57,26 @@ void level_gen::update(float delta_time)
 }
 
 void level_gen::render() {}
-void level_gen::unload_content() 
+void level_gen::reset()
 {
     // level gen reset attempt - Beej
-    /*std::cout << "currentBlock = " << currentBlock << std::endl;
-    if (!puzzleBlocks.size() == 0 && currentBlock < -1600)
+    
+    for (int i = 0; i <= (-currentBlock) + 1600; i += 400)
     {
-        for (int i = -currentBlock; i <= 1200-currentBlock; i += 400)
+        if (!puzzleBlocks[-i].size() == 0)
         {
             for (auto &e : puzzleBlocks[-i])
             {
-                std::cout << "i = " << -i << std::endl;
                 entity_manager::get()->delete_entity(e._Get()->get_name());
             }
+            puzzleBlocks[-i].clear();
         }
-        currentBlock = -400;
-        initialise();
-    }*/
+    }
+
+    currentBlock = -400;
+    initialise();
 }
+void level_gen::unload_content() {}
 void level_gen::shutdown() {}
 
 void level_gen::addWaterfallPuzzle(int blockIdx)

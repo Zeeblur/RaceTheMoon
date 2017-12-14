@@ -33,8 +33,8 @@ void engine_state_machine::change_state(const std::string &name, bool reset)
 				_current_state->on_exit();
 			_current_state = found->second;
 
-			if (reset)
-				_current_state->on_reset();
+            if (reset)
+                _current_state->on_reset();
 
 			_current_state->on_enter();
 			_current_state_name = name;
@@ -134,6 +134,15 @@ void engine_state_machine::update(float delta_time)
 			cs->clear_clicked_component_name();
 		}
 	}
+	else if (engine_state_machine::get()->get_current_state_type() == state_type::CONTROLS)
+	{
+		std::shared_ptr<clickable_system> cs = std::static_pointer_cast<clickable_system>(engine::get()->get_subsystem("clickable_system"));
+		if (cs->get_clicked_component_name() == "controls_back_button")
+		{
+			engine_state_machine::get()->change_state("settings_state");
+			cs->clear_clicked_component_name();
+		}
+	}
 	static int escape_old_state = GLFW_RELEASE;
 	int escape_state = glfwGetKey(glfw::window, GLFW_KEY_ESCAPE);
 
@@ -158,48 +167,6 @@ void engine_state_machine::update(float delta_time)
 		}
 	}
 	escape_old_state = escape_state;
-
-	//static int enter_old_state = GLFW_RELEASE;
-	//int enter_state = glfwGetKey(glfw::window, GLFW_KEY_ENTER);
-
-	//if (enter_state == GLFW_RELEASE && enter_old_state == GLFW_PRESS)
-	//{
-	//	switch (engine_state_machine::get()->get_current_state_type())
-	//	{
-	//		// Go from menu state to game state RESETTING GAME
-	//	case state_type::MENU:
-	//		engine_state_machine::get()->change_state("game_state", true);
-	//		break;
-	//	case state_type::GAME_OVER:
-	//		engine_state_machine::get()->change_state("menu_state");
-	//		break;
-	//	default:
-	//		// do nothing
-	//		break;
-	//	}
-	//}
-	//enter_old_state = enter_state;
-
-	//static int backspace_old_state = GLFW_RELEASE;
-	//int backspace_state = glfwGetKey(glfw::window, GLFW_KEY_BACKSPACE);
-
-	//if (backspace_state == GLFW_RELEASE && backspace_old_state == GLFW_PRESS)
-	//{
-	//	switch (engine_state_machine::get()->get_current_state_type())
-	//	{
-	//		// Go from pause state to menu state
-	//	case state_type::PAUSE:
-	//		engine_state_machine::get()->change_state("menu_state");
-	//		break;
-	//	case state_type::GAME_OVER:
-	//		engine_state_machine::get()->change_state("menu_state");
-	//		break;
-	//	default:
-	//		// do nothing
-	//		break;
-	//	}
-	//}
-	//backspace_old_state = backspace_state;
 
 	if (_current_state != nullptr)
 		_current_state->on_update(delta_time);

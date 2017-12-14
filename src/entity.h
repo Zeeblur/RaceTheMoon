@@ -88,6 +88,7 @@ public:
         std::cout << "Entity " << _id << " unloading content" << std::endl;
         for (auto &c : _components)
             c.second->unload_content();
+
     }
 
     inline void shutdown()

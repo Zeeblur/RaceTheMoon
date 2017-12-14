@@ -111,7 +111,7 @@ void menu_state::on_update(float delta_time)
 	static int up_old_state = GLFW_RELEASE;
 	int up_state = glfwGetKey(glfw::window, GLFW_KEY_UP);
 
-	if ((up_state == GLFW_RELEASE && up_old_state == GLFW_PRESS) || (present && axes[10] == GLFW_RELEASE && up_old_axis == GLFW_PRESS))
+	if ((up_state == GLFW_RELEASE && up_old_state == GLFW_PRESS) || (present && axes[input_handler::get()->glfw_joystick_up] == GLFW_RELEASE && up_old_axis == GLFW_PRESS))
 	{
 		switch (selection)
 		{
@@ -149,7 +149,7 @@ void menu_state::on_update(float delta_time)
 	static int down_old_state = GLFW_RELEASE;
 	int down_state = glfwGetKey(glfw::window, GLFW_KEY_DOWN);
 
-	if ((down_state == GLFW_RELEASE && down_old_state == GLFW_PRESS) || (present && axes[12] == GLFW_RELEASE && down_old_axis == GLFW_PRESS))
+	if ((down_state == GLFW_RELEASE && down_old_state == GLFW_PRESS) || (present && axes[input_handler::get()->glfw_joystick_down] == GLFW_RELEASE && down_old_axis == GLFW_PRESS))
 	{
 
 		switch (selection)
@@ -186,7 +186,7 @@ void menu_state::on_update(float delta_time)
 	static char enter_joystick_old_state = GLFW_RELEASE;
 	static int enter_old_state = GLFW_RELEASE;
 	int enter_state = glfwGetKey(glfw::window, GLFW_KEY_ENTER);
-	if (enter_state == GLFW_RELEASE && enter_old_state == GLFW_PRESS || (present && axes[0] == GLFW_RELEASE && enter_joystick_old_state == GLFW_PRESS))
+	if (enter_state == GLFW_RELEASE && enter_old_state == GLFW_PRESS || (present && axes[input_handler::get()->glfw_joystick_enter] == GLFW_RELEASE && enter_joystick_old_state == GLFW_PRESS))
 	{
 		switch (selection)
 		{
@@ -208,9 +208,9 @@ void menu_state::on_update(float delta_time)
 
 	if (present)
 	{
-		up_old_axis = axes[10];
-		down_old_axis = axes[12];
-		enter_joystick_old_state = axes[0];
+		up_old_axis = axes[input_handler::get()->glfw_joystick_up];
+		down_old_axis = axes[input_handler::get()->glfw_joystick_down];
+		enter_joystick_old_state = axes[input_handler::get()->glfw_joystick_enter];
 	}
 	
 }

@@ -43,6 +43,8 @@ void render_component::update(float delta_time)
 
 void render_component::render()
 {
+    _data->visible = get_visible();
+
 	if (_data->visible)
 	{
 		// "Generate" the transform matrix.

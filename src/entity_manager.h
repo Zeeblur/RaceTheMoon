@@ -133,8 +133,11 @@ public:
         std::cout << "Entity manager unloading content" << std::endl;
         for (auto &entLists : _entities)
         {
-            for (auto &e : entLists)
-                e.second->unload_content();
+			for (auto &e : entLists)
+			{
+				if (e.second)
+					e.second->unload_content();
+			}
         }
     }
 
@@ -143,8 +146,13 @@ public:
         std::cout << "Entity manager shutting down" << std::endl;
         for (auto &entLists : _entities)
         {
-            for (auto &e : entLists)
-                e.second->shutdown();
+			for (auto &e : entLists)
+			{
+				if (e.second)
+				{
+					e.second->shutdown();
+				}
+			}
         }
         // Clear the entity map
 
