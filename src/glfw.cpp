@@ -68,7 +68,11 @@ namespace glfw
         glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
         // Dark blue background
+<<<<<<< HEAD
         glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+=======
+        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+>>>>>>> score
 		auto e = glGetError();
 
         return 0;

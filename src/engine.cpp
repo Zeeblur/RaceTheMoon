@@ -3,10 +3,11 @@
 
 #include <iostream>
 #include <chrono>
-#include <fstream>
+
 #include "settings_state.h"
-
-
+#include <sstream>
+#include <iomanip>
+#include <fstream>
 using namespace glfw;
 
 void engine::add_subsystem(const std::string &name, std::shared_ptr<subsystem> sys)
@@ -30,6 +31,37 @@ void engine::run()
     initSubsystems();
     mainLoop();
     cleanup();
+}
+
+void engine::save_preferences()
+{
+	std::ofstream user_pref_file;
+	// Open file and clear
+	user_pref_file.open("res/buttons.txt", std::ofstream::out | std::ofstream::trunc);
+	if (user_pref_file.is_open())
+	{
+		// Add new button and old buttons
+		user_pref_file << "Left: " << input_handler::get()->glfw_button_forward << "\n";
+		user_pref_file << "Right: " << input_handler::get()->glfw_button_right << "\n";
+		user_pref_file << "Front: " << input_handler::get()->glfw_button_forward << "\n";
+		user_pref_file << "Back: " << input_handler::get()->glfw_button_backward << "\n";
+		// =======================================================================================
+		user_pref_file << "NavigationUp: " << input_handler::get()->glfw_button_navigation_up << "\n";
+		user_pref_file << "NavigationDown: " << input_handler::get()->glfw_button_navigation_down << "\n";
+		user_pref_file << "NavigationLeft: " << input_handler::get()->glfw_button_navigation_left << "\n";
+		user_pref_file << "NavigationRight: " << input_handler::get()->glfw_button_navigation_right << "\n";
+		user_pref_file << "JoystickEnter: " << input_handler::get()->glfw_joystick_enter << "\n";
+		user_pref_file << "JoystickUp: " << input_handler::get()->glfw_joystick_up << "\n";
+		user_pref_file << "JoystickDown: " << input_handler::get()->glfw_joystick_down << "\n";
+		user_pref_file << "JoystickLeft: " << input_handler::get()->glfw_joystick_left << "\n";
+		user_pref_file << "JoystickRight: " << input_handler::get()->glfw_joystick_right << "\n";
+		// =======================================================================================
+		user_pref_file << "Resolution: " << resPref << "\n";
+		user_pref_file << "Windowed: " << windowPref << "\n";
+
+	}
+	// Close
+	user_pref_file.close();
 }
 
 void engine::initWindowMan()
@@ -67,9 +99,6 @@ void engine::initWindowMan()
 		user_pref_file_out.close();
 	}
 
-	std::string resPref;
-	std::string windowPref;
-
 	std::string input = "";
 	// Load in keys from file
 	while (user_pref_file >> input)
@@ -93,7 +122,7 @@ void engine::initWindowMan()
 		current_window_mode = false;
 
 	// set res
-	int resX, resY;
+	int resX = 0, resY = 0;
 
 	if (resPref == "_1024x768")
 	{

@@ -12,7 +12,7 @@ void pause_state::initialise()
 
 	// Pause text transform
 	transform_data paused_transform;
-	paused_transform.x = x_size / 2;
+	paused_transform.x = x_size / 2 - 100;
 	paused_transform.y = y_size - 50;
 	// Pause
 	auto paused_text = entity_manager::get()->create_entity("pause", state_type::PAUSE, paused_transform);
@@ -79,7 +79,7 @@ void pause_state::on_update(float delta_time)
 {
 	int x_size = 0, y_size = 0;
 	glfwGetWindowSize(glfw::window, &x_size, &y_size);
-	entity_manager::get()->get_entity("pause")->get_trans().x = x_size / 2;
+	entity_manager::get()->get_entity("pause")->get_trans().x = x_size / 2 - 100;
 	entity_manager::get()->get_entity("pause")->get_trans().y = y_size - 50;
 
 	int present = glfwJoystickPresent(GLFW_JOYSTICK_1);
@@ -93,7 +93,7 @@ void pause_state::on_update(float delta_time)
 	static int up_old_state = GLFW_RELEASE;
 	int up_state = glfwGetKey(glfw::window, GLFW_KEY_UP);
 
-	if ((up_state == GLFW_RELEASE && up_old_state == GLFW_PRESS) || (present && axes[10] == GLFW_RELEASE && up_old_axis == GLFW_PRESS))
+	if ((up_state == GLFW_RELEASE && up_old_state == GLFW_PRESS) || (present && axes[input_handler::get()->glfw_joystick_up] == GLFW_RELEASE && up_old_axis == GLFW_PRESS))
 	{
 		switch (selection)
 		{
@@ -121,7 +121,7 @@ void pause_state::on_update(float delta_time)
 	static int down_old_state = GLFW_RELEASE;
 	int down_state = glfwGetKey(glfw::window, GLFW_KEY_DOWN);
 
-	if ((down_state == GLFW_RELEASE && down_old_state == GLFW_PRESS) || (present && axes[12] == GLFW_RELEASE && down_old_axis == GLFW_PRESS))
+	if ((down_state == GLFW_RELEASE && down_old_state == GLFW_PRESS) || (present && axes[input_handler::get()->glfw_joystick_down] == GLFW_RELEASE && down_old_axis == GLFW_PRESS))
 	{
 
 		switch (selection)
@@ -147,7 +147,7 @@ void pause_state::on_update(float delta_time)
 	static char enter_joystick_old_state = GLFW_RELEASE;
 	static int enter_old_state = GLFW_RELEASE;
 	int enter_state = glfwGetKey(glfw::window, GLFW_KEY_ENTER);
-	if (enter_state == GLFW_RELEASE && enter_old_state == GLFW_PRESS || (present && axes[0] == GLFW_RELEASE && enter_joystick_old_state == GLFW_PRESS))
+	if (enter_state == GLFW_RELEASE && enter_old_state == GLFW_PRESS || (present && axes[input_handler::get()->glfw_joystick_enter] == GLFW_RELEASE && enter_joystick_old_state == GLFW_PRESS))
 	{
 		switch (selection)
 		{
@@ -164,9 +164,9 @@ void pause_state::on_update(float delta_time)
 	up_old_state = up_state;
 	if (present)
 	{
-		up_old_axis = axes[10];
-		enter_joystick_old_state = axes[0];
-		down_old_axis = axes[12];
+		up_old_axis = axes[input_handler::get()->glfw_joystick_up];
+		enter_joystick_old_state = axes[input_handler::get()->glfw_joystick_enter];
+		down_old_axis = axes[input_handler::get()->glfw_joystick_down];
 	}
 }
 

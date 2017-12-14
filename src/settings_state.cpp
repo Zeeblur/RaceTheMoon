@@ -7,28 +7,12 @@
 #include <iomanip>
 #include <fstream>
 #include "engine_state_machine.h"
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-	//latest_key_press = -1;
 
-	if (action == GLFW_PRESS)
-	{
-		latest_key_press = key;
-		std::cout << "pressed" << std::endl;
-		std::shared_ptr<text_component> tc = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity("help_text")->get_component("text"));
-		tc->_data->text = " ";
-	}
-}
-
-void key_callback_fake(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-	latest_key_press = -1;
-}
 
 void settings_state::initialise()
 {
 
-	latest_key_press = -1;
+	//latest_key_press = -1;
 
 	initText2D("res/textures/myriad.png");
 
@@ -56,6 +40,18 @@ void settings_state::initialise()
 	back_button->add_component("render", renderer::get()->build_component(back_button, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/back_button.png", "rectangle", "Gouraud", simple_texture));
 	back_button->add_component("camera", camera_system::get()->build_component(back_button, camera_type::ORTHO));
 	back_button->add_component("clickable", clickable_system::get()->build_component(back_button, vec2(back_button_transform.x, -back_button_transform.y), back_button_transform.scale));
+
+	// Controls button transform
+	transform_data controls_button_transform;
+	controls_button_transform.x = 0;
+	controls_button_transform.y = -150;
+	controls_button_transform.scale.x = 100;
+	controls_button_transform.scale.y = 50;
+	// Controls button
+	auto controls_button = entity_manager::get()->create_entity("controls_button", state_type::SETTINGS, controls_button_transform);
+	controls_button->add_component("render", renderer::get()->build_component(controls_button, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/back_button.png", "rectangle", "Gouraud", simple_texture));
+	controls_button->add_component("camera", camera_system::get()->build_component(controls_button, camera_type::ORTHO));
+	controls_button->add_component("clickable", clickable_system::get()->build_component(controls_button, vec2(controls_button_transform.x, -controls_button_transform.y), controls_button_transform.scale));
 
 	// Resolution value transform
 	transform_data resolution_value_transform;
@@ -104,7 +100,7 @@ void settings_state::initialise()
 
 	// Title transform
 	transform_data title_transform;
-	title_transform.x = x_size / 2;
+	title_transform.x = x_size / 2 - 100;
 	title_transform.y = y_size - 50;
 	// Title
 	auto title = entity_manager::get()->create_entity("Title", state_type::SETTINGS, title_transform);
@@ -167,78 +163,6 @@ void settings_state::initialise()
 	window_mode_button_left->add_component("render", renderer::get()->build_component(window_mode_button_left, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/arrow_left.png", "rectangle", "Gouraud", simple_texture));
 	window_mode_button_left->add_component("camera", camera_system::get()->build_component(window_mode_button_left, camera_type::ORTHO));
 
-	// move left trans
-	transform_data move_left_transform;
-	move_left_transform.scale = glm::vec3(100, 30, 1.0f);
-	move_left_transform.x = -30;
-	move_left_transform.y = -60;
-
-	// move left
-	auto move_left = entity_manager::get()->create_entity("moveLeft", state_type::SETTINGS, move_left_transform);
-	move_left->add_component("render", renderer::get()->build_component(move_left, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/move_left.png", "rectangle", "Gouraud", simple_texture));
-	move_left->add_component("camera", camera_system::get()->build_component(move_left, camera_type::ORTHO));
-
-	// move right trans
-	transform_data move_right_transform;
-	move_right_transform.scale = glm::vec3(100, 30, 1.0f);
-	move_right_transform.x = -30;
-	move_right_transform.y = -120;
-
-	// move right
-	auto move_right = entity_manager::get()->create_entity("moveRight", state_type::SETTINGS, move_right_transform);
-	move_right->add_component("render", renderer::get()->build_component(move_right, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/move_right.png", "rectangle", "Gouraud", simple_texture));
-	move_right->add_component("camera", camera_system::get()->build_component(move_right, camera_type::ORTHO));
-
-	// key move left trans
-	transform_data key_move_left_transform;
-	key_move_left_transform.scale = glm::vec3(15, 15, 1.0f);
-	key_move_left_transform.x = 90;
-	key_move_left_transform.y = -60;
-
-	std::string letter_left;
-	letter_left = (char)input_handler::get()->glfw_button_left;
-	std::string path_left = "res/textures/letters/" + letter_left + ".png";
-
-	// key move left
-	auto key_move_left = entity_manager::get()->create_entity("keyMoveLeft", state_type::SETTINGS, key_move_left_transform);
-	key_move_left->add_component("clickable", clickable_system::get()->build_component(key_move_left, glm::dvec2(key_move_left_transform.x, -key_move_left_transform.y), glm::dvec2(15, 15)));
-	key_move_left->add_component("render", renderer::get()->build_component(key_move_left, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), path_left, "rectangle", "Gouraud", simple_texture));
-	key_move_left->add_component("camera", camera_system::get()->build_component(key_move_left, camera_type::ORTHO));
-
-	// key move right trans
-	transform_data key_move_right_transform;
-	key_move_right_transform.scale = glm::vec3(15, 15, 1.0f);
-	key_move_right_transform.x = 90;
-	key_move_right_transform.y = -120;
-
-	std::string letter_right;
-	letter_right = (char)input_handler::get()->glfw_button_right;
-	std::string path_right = "res/textures/letters/" + letter_right + ".png";
-
-	// key move right
-	auto key_move_right = entity_manager::get()->create_entity("keyMoveRight", state_type::SETTINGS, key_move_right_transform);
-	key_move_right->add_component("clickable", clickable_system::get()->build_component(key_move_right, glm::dvec2(key_move_right_transform.x, -key_move_right_transform.y), glm::dvec2(15, 15)));
-	key_move_right->add_component("render", renderer::get()->build_component(key_move_right, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), path_right, "rectangle", "Gouraud", simple_texture));
-	key_move_right->add_component("camera", camera_system::get()->build_component(key_move_right, camera_type::ORTHO));
-
-	// Controls trans
-	transform_data controls_transform;
-	controls_transform.scale = glm::vec3(100, 30, 1.0f);
-	controls_transform.x = 0;
-	controls_transform.y = 0;
-
-	// Controls
-	auto controls = entity_manager::get()->create_entity("controls", state_type::SETTINGS, controls_transform);
-	controls->add_component("render", renderer::get()->build_component(controls, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/controls.png", "rectangle", "Gouraud", simple_texture));
-	controls->add_component("camera", camera_system::get()->build_component(controls, camera_type::ORTHO));
-
-	transform_data text_transform;
-	text_transform.x = 10;
-	text_transform.y = 10;
-	auto help_text = entity_manager::get()->create_entity("help_text", state_type::SETTINGS, text_transform);
-	help_text->add_component("render", renderer::get()->build_component(help_text, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), "res/textures/exit_button.png", "rectangle", "text", text));
-	help_text->add_component("text", text_system::get()->build_component(help_text, " "));
-
 	selection = resolution_button;
 }
 
@@ -272,21 +196,25 @@ void determine_screen_res(resolution &res)
 		glfwSetWindowSize(glfw::window, 1024, 768);
         glfwSetWindowPos(glfw::window, 448, 156);
 		renderer::get()->change_texture(entity_manager::get()->get_entity("resolutionValue"), "res/textures/1024x768.png");
+		engine::get()->resPref = "_1024x768";
 		break;
 	case _1280x720:
 		glfwSetWindowSize(glfw::window, 1280, 720);
         glfwSetWindowPos(glfw::window, 320, 180);
 		renderer::get()->change_texture(entity_manager::get()->get_entity("resolutionValue"), "res/textures/1280x720.png");
+		engine::get()->resPref = "_128x720";
 		break;
 	case _1600x1200:
 		glfwSetWindowSize(glfw::window, 1600, 1200);
         glfwSetWindowPos(glfw::window, 160, 0);
 		renderer::get()->change_texture(entity_manager::get()->get_entity("resolutionValue"), "res/textures/1600x1200.png");
+		engine::get()->resPref = "_1600x1200";
 		break;
 	case _1920x1080:
 		glfwSetWindowSize(glfw::window, 1920, 1080);
         glfwSetWindowPos(glfw::window, 0, 0);
 		renderer::get()->change_texture(entity_manager::get()->get_entity("resolutionValue"), "res/textures/1920x1080.png");
+		engine::get()->resPref = "_1920x1080";
 		break;
 	}
 }
@@ -304,113 +232,23 @@ void determine_window_mode(window_mode &window_mode)
 	case fullscreen:
 		// Handle logic for fullscreen
         glfwSetWindowMonitor(glfw::window, glfwGetPrimaryMonitor(), 0, 0, xsize, ysize, GLFW_DONT_CARE);
+		renderer::get()->change_texture(entity_manager::get()->get_entity("windowModeValue"), "res/textures/fullscreen.png");
 		break;
 	case windowed:
 		// Handle logic for windowed
         glfwSetWindowMonitor(glfw::window, NULL, ((1920 - xsize) / 2), ((1080 - ysize) / 2), xsize, ysize, GLFW_DONT_CARE);
+		renderer::get()->change_texture(entity_manager::get()->get_entity("windowModeValue"), "res/textures/windowed.png");
 		break;
 	}
 }
 
-void handle_remap_key_left()
-{
-	glfwSetKeyCallback(glfw::window, key_callback);
-	// Update prompt
-	std::shared_ptr<text_component> tc = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity("help_text")->get_component("text"));
-	tc->_data->text = "Assign key, ESC to cancel...";
-	// Force render before going into the while loop.
-	renderer::get()->render();
-	while (true)
-	{
-		// Check for events
-		glfwPollEvents();
-		if (latest_key_press != -1)
-		{
-			if (latest_key_press == GLFW_KEY_ESCAPE)
-				break;
-			std::string letter;
-			letter = (char)latest_key_press;
-			std::cout << "res/textures/letters/" + letter + ".png" << std::endl;
-			// Update texture to new letter
-			if (latest_key_press >= 65 && latest_key_press <= 90)
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/" + letter + ".png");
-			else
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/question_mark.png");
-			std::ofstream user_pref_file;
-			// Open file and clear
-			user_pref_file.open("res/buttons.txt", std::ofstream::out | std::ofstream::trunc);
-			if (user_pref_file.is_open())
-			{
-				// Add new button and old buttons
-				user_pref_file << "Left: " << latest_key_press << "\n";
-				user_pref_file << "Right: " << input_handler::get()->glfw_button_right << "\n";
-				user_pref_file << "Front: " << input_handler::get()->glfw_button_forward << "\n";
-				user_pref_file << "Back: " << input_handler::get()->glfw_button_backward << "\n";
-			}
-			// Close
-			user_pref_file.close();
-			// Re-load input keys
-			input_handler::get()->load_input_settings();
-			// Remove actuall callback
-			glfwSetKeyCallback(glfw::window, key_callback_fake);
-			break;
-		}
-	}
-}
 
-void handle_remap_key_right()
-{
-	glfwSetKeyCallback(glfw::window, key_callback);
-	// Update prompt
-	std::shared_ptr<text_component> tc = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity("help_text")->get_component("text"));
-	tc->_data->text = "Assign key, ESC to cancel...";
-	// Force render before going into the while loop.
-	renderer::get()->render();
-	while (true)
-	{
-		// Check for events
-		glfwPollEvents();
-
-		if (latest_key_press != -1)
-		{
-			if (latest_key_press == GLFW_KEY_ESCAPE)
-				break;
-			std::string letter;
-			letter = (char)latest_key_press;
-			std::cout << "res/textures/letters/" + letter + ".png" << std::endl;
-			// Update texture to new letter
-			if (latest_key_press >= 65 && latest_key_press <= 90)
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/" + letter + ".png");
-			else
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/question_mark.png");
-			std::ofstream user_pref_file;
-			// Open file and clear
-			user_pref_file.open("res/buttons.txt", std::ofstream::out | std::ofstream::trunc);
-			if (user_pref_file.is_open())
-			{
-				// Add new button and old buttons
-				user_pref_file << "Left: " << input_handler::get()->glfw_button_left << "\n";
-				user_pref_file << "Right: " << latest_key_press << "\n";
-				user_pref_file << "Front: " << input_handler::get()->glfw_button_forward << "\n";
-				user_pref_file << "Back: " << input_handler::get()->glfw_button_backward << "\n";
-			}
-			// Close
-			user_pref_file.close();
-			// Re-load input keys
-			input_handler::get()->load_input_settings();
-			// Remove actuall callback
-			glfwSetKeyCallback(glfw::window, key_callback_fake);
-			break;
-		}
-
-	}
-}
 
 void settings_state::on_update(float delta_time)
 {
 	int x_size = 0, y_size = 0;
 	glfwGetWindowSize(glfw::window, &x_size, &y_size);
-	entity_manager::get()->get_entity("Title")->get_trans().x = x_size / 2;
+	entity_manager::get()->get_entity("Title")->get_trans().x = x_size / 2 - 100;
 	entity_manager::get()->get_entity("Title")->get_trans().y = y_size - 50;
 
 	int present = glfwJoystickPresent(GLFW_JOYSTICK_1);
@@ -419,7 +257,7 @@ void settings_state::on_update(float delta_time)
 	const unsigned char* axes = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
 	//std::cout << axes[10] << std::endl;
 	static char up_old_axis = GLFW_RELEASE;
-
+	//std::cout << count << std::endl;
 	// Handle input for up arrow
 	static int up_old_state = GLFW_RELEASE;
 	int up_state = glfwGetKey(glfw::window, input_handler::get()->glfw_button_navigation_up);
@@ -433,46 +271,35 @@ void settings_state::on_update(float delta_time)
 		switch (selection)
 		{
 		case back_button:
-			selection = move_right_button;
-			// Update texture to new letter
-			if (input_handler::get()->glfw_button_right >= 65 && input_handler::get()->glfw_button_right <= 90)
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/" + letter_right + "_selected.png");
-			else
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/question_mark_selected.png");
-
+			selection = controls_button;
+			// Set selected textures
+			renderer::get()->change_texture(entity_manager::get()->get_entity("controls_button"), "res/textures/controls_button_selected.png");
 			// Set normal textures for other states
 			renderer::get()->change_texture(entity_manager::get()->get_entity("resolution_arrow_left"), "res/textures/arrow_left.png");
 			renderer::get()->change_texture(entity_manager::get()->get_entity("resolution_arrow_right"), "res/textures/arrow_right.png");
 			renderer::get()->change_texture(entity_manager::get()->get_entity("window_mode_arrow_left"), "res/textures/arrow_left.png");
 			renderer::get()->change_texture(entity_manager::get()->get_entity("window_mode_arrow_right"), "res/textures/arrow_right.png");
 			renderer::get()->change_texture(entity_manager::get()->get_entity("back_button"), "res/textures/back_button.png");
-
-			if (input_handler::get()->glfw_button_right >= 65 && input_handler::get()->glfw_button_right <= 90)
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/" + letter_left + ".png");
-			else
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/question_mark.png");
 			break;
-		case move_right_button:
-			selection = move_left_button;
-	
-			// Update texture to new letter
-			if (input_handler::get()->glfw_button_left >= 65 && input_handler::get()->glfw_button_left <= 90)
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/" + letter_left + "_selected.png");
-			else
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/question_mark_selected.png");
-			// Set normal textures for other states
-			renderer::get()->change_texture(entity_manager::get()->get_entity("resolution_arrow_left"), "res/textures/arrow_left.png");
-			renderer::get()->change_texture(entity_manager::get()->get_entity("resolution_arrow_right"), "res/textures/arrow_right.png");
-			renderer::get()->change_texture(entity_manager::get()->get_entity("window_mode_arrow_left"), "res/textures/arrow_left.png");
-			renderer::get()->change_texture(entity_manager::get()->get_entity("window_mode_arrow_right"), "res/textures/arrow_right.png");
-			renderer::get()->change_texture(entity_manager::get()->get_entity("back_button"), "res/textures/back_button.png");
+			//selection = move_right_button;
+			//// Update texture to new letter
+			//if (input_handler::get()->glfw_button_right >= 65 && input_handler::get()->glfw_button_right <= 90)
+			//	renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/" + letter_right + "_selected.png");
+			//else
+			//	renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/question_mark_selected.png");
 
-			if (input_handler::get()->glfw_button_right >= 65 && input_handler::get()->glfw_button_right <= 90)
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/" + letter_right + ".png");
-			else
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/question_mark.png");
-			break;
-		case move_left_button:
+			//// Set normal textures for other states
+			//renderer::get()->change_texture(entity_manager::get()->get_entity("resolution_arrow_left"), "res/textures/arrow_left.png");
+			//renderer::get()->change_texture(entity_manager::get()->get_entity("resolution_arrow_right"), "res/textures/arrow_right.png");
+			//renderer::get()->change_texture(entity_manager::get()->get_entity("window_mode_arrow_left"), "res/textures/arrow_left.png");
+			//renderer::get()->change_texture(entity_manager::get()->get_entity("window_mode_arrow_right"), "res/textures/arrow_right.png");
+			//renderer::get()->change_texture(entity_manager::get()->get_entity("back_button"), "res/textures/back_button.png");
+
+			//if (input_handler::get()->glfw_button_right >= 65 && input_handler::get()->glfw_button_right <= 90)
+			//	renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/" + letter_left + ".png");
+			//else
+			//	renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/question_mark.png");
+		case controls_button:
 			selection = window_mode_button;
 			// Set selected textures
 			renderer::get()->change_texture(entity_manager::get()->get_entity("window_mode_arrow_left"), "res/textures/arrow_left_selected.png");
@@ -481,16 +308,48 @@ void settings_state::on_update(float delta_time)
 			renderer::get()->change_texture(entity_manager::get()->get_entity("resolution_arrow_left"), "res/textures/arrow_left.png");
 			renderer::get()->change_texture(entity_manager::get()->get_entity("resolution_arrow_right"), "res/textures/arrow_right.png");
 			renderer::get()->change_texture(entity_manager::get()->get_entity("back_button"), "res/textures/back_button.png");
+			renderer::get()->change_texture(entity_manager::get()->get_entity("controls_button"), "res/textures/controls_button.png");
 
-			if (input_handler::get()->glfw_button_right >= 65 && input_handler::get()->glfw_button_right <= 90)
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/" + letter_right + ".png");
-			else
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/question_mark.png");
-			if (input_handler::get()->glfw_button_left >= 65 && input_handler::get()->glfw_button_left <= 90)
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/" + letter_left + ".png");
-			else
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/question_mark.png");
 			break;
+		//case move_right_button:
+		//	selection = move_left_button;
+	
+		//	// Update texture to new letter
+		//	if (input_handler::get()->glfw_button_left >= 65 && input_handler::get()->glfw_button_left <= 90)
+		//		renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/" + letter_left + "_selected.png");
+		//	else
+		//		renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/question_mark_selected.png");
+		//	// Set normal textures for other states
+		//	renderer::get()->change_texture(entity_manager::get()->get_entity("resolution_arrow_left"), "res/textures/arrow_left.png");
+		//	renderer::get()->change_texture(entity_manager::get()->get_entity("resolution_arrow_right"), "res/textures/arrow_right.png");
+		//	renderer::get()->change_texture(entity_manager::get()->get_entity("window_mode_arrow_left"), "res/textures/arrow_left.png");
+		//	renderer::get()->change_texture(entity_manager::get()->get_entity("window_mode_arrow_right"), "res/textures/arrow_right.png");
+		//	renderer::get()->change_texture(entity_manager::get()->get_entity("back_button"), "res/textures/back_button.png");
+
+		//	if (input_handler::get()->glfw_button_right >= 65 && input_handler::get()->glfw_button_right <= 90)
+		//		renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/" + letter_right + ".png");
+		//	else
+		//		renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/question_mark.png");
+		//	break;
+		//case move_left_button:
+		//	selection = window_mode_button;
+		//	// Set selected textures
+		//	renderer::get()->change_texture(entity_manager::get()->get_entity("window_mode_arrow_left"), "res/textures/arrow_left_selected.png");
+		//	renderer::get()->change_texture(entity_manager::get()->get_entity("window_mode_arrow_right"), "res/textures/arrow_right_selected.png");
+		//	// Set normal textures for other states
+		//	renderer::get()->change_texture(entity_manager::get()->get_entity("resolution_arrow_left"), "res/textures/arrow_left.png");
+		//	renderer::get()->change_texture(entity_manager::get()->get_entity("resolution_arrow_right"), "res/textures/arrow_right.png");
+		//	renderer::get()->change_texture(entity_manager::get()->get_entity("back_button"), "res/textures/back_button.png");
+
+		//	if (input_handler::get()->glfw_button_right >= 65 && input_handler::get()->glfw_button_right <= 90)
+		//		renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/" + letter_right + ".png");
+		//	else
+		//		renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/question_mark.png");
+		//	if (input_handler::get()->glfw_button_left >= 65 && input_handler::get()->glfw_button_left <= 90)
+		//		renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/" + letter_left + ".png");
+		//	else
+		//		renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/question_mark.png");
+		//	break;
 		case window_mode_button:
 			selection = resolution_button;
 			// Set selected textures
@@ -500,15 +359,7 @@ void settings_state::on_update(float delta_time)
 			renderer::get()->change_texture(entity_manager::get()->get_entity("window_mode_arrow_left"), "res/textures/arrow_left.png");
 			renderer::get()->change_texture(entity_manager::get()->get_entity("window_mode_arrow_right"), "res/textures/arrow_right.png");
 			renderer::get()->change_texture(entity_manager::get()->get_entity("back_button"), "res/textures/back_button.png");
-
-			if (input_handler::get()->glfw_button_right >= 65 && input_handler::get()->glfw_button_right <= 90)
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/" + letter_right + ".png");
-			else
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/question_mark.png");
-			if (input_handler::get()->glfw_button_left >= 65 && input_handler::get()->glfw_button_left <= 90)
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/" + letter_left + ".png");
-			else
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/question_mark.png");
+			renderer::get()->change_texture(entity_manager::get()->get_entity("controls_button"), "res/textures/controls_button.png");
 			break;
 		case resolution_button:
 			selection = back_button;
@@ -519,18 +370,10 @@ void settings_state::on_update(float delta_time)
 			renderer::get()->change_texture(entity_manager::get()->get_entity("resolution_arrow_right"), "res/textures/arrow_right.png");
 			renderer::get()->change_texture(entity_manager::get()->get_entity("window_mode_arrow_left"), "res/textures/arrow_left.png");
 			renderer::get()->change_texture(entity_manager::get()->get_entity("window_mode_arrow_right"), "res/textures/arrow_right.png");
-
-			if (input_handler::get()->glfw_button_right >= 65 && input_handler::get()->glfw_button_right <= 90)
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/" + letter_right + ".png");
-			else
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/question_mark.png");
-			if (input_handler::get()->glfw_button_left >= 65 && input_handler::get()->glfw_button_left <= 90)
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/" + letter_left + ".png");
-			else
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/question_mark.png");
+			renderer::get()->change_texture(entity_manager::get()->get_entity("controls_button"), "res/textures/controls_button.png");
 			break;
 		}
-		std::cout << selection << std::endl;
+		//std::cout << selection << std::endl;
 	}
 	
 
@@ -557,54 +400,19 @@ void settings_state::on_update(float delta_time)
 			renderer::get()->change_texture(entity_manager::get()->get_entity("resolution_arrow_right"), "res/textures/arrow_right.png");
 			renderer::get()->change_texture(entity_manager::get()->get_entity("back_button"), "res/textures/back_button.png");
 
-			if (input_handler::get()->glfw_button_right >= 65 && input_handler::get()->glfw_button_right <= 90)
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/" + letter_right + ".png");
-			else
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/question_mark.png");
-			if (input_handler::get()->glfw_button_left >= 65 && input_handler::get()->glfw_button_left <= 90)
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/" + letter_left + ".png");
-			else
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/question_mark.png");
 			break;
 		case window_mode_button:
-			selection = move_left_button;
-			// Update texture to new letter
-			if (input_handler::get()->glfw_button_left >= 65 && input_handler::get()->glfw_button_left <= 90)
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/" + letter_left + "_selected.png");
-			else
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/question_mark_selected.png");
+			selection = controls_button;
+			// Set selected textures
+			renderer::get()->change_texture(entity_manager::get()->get_entity("controls_button"), "res/textures/controls_button_selected.png");
 			// Set normal textures for other states
 			renderer::get()->change_texture(entity_manager::get()->get_entity("resolution_arrow_left"), "res/textures/arrow_left.png");
 			renderer::get()->change_texture(entity_manager::get()->get_entity("resolution_arrow_right"), "res/textures/arrow_right.png");
 			renderer::get()->change_texture(entity_manager::get()->get_entity("window_mode_arrow_left"), "res/textures/arrow_left.png");
 			renderer::get()->change_texture(entity_manager::get()->get_entity("window_mode_arrow_right"), "res/textures/arrow_right.png");
 			renderer::get()->change_texture(entity_manager::get()->get_entity("back_button"), "res/textures/back_button.png");
-
-			if (input_handler::get()->glfw_button_right >= 65 && input_handler::get()->glfw_button_right <= 90)
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/" + letter_right + ".png");
-			else
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/question_mark.png");
 			break;
-		case move_left_button:
-			selection = move_right_button;
-			// Update texture to new letter
-			if (input_handler::get()->glfw_button_right >= 65 && input_handler::get()->glfw_button_right <= 90)
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/" + letter_right + "_selected.png");
-			else
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/question_mark_selected.png");
-			// Set normal textures for other states
-			renderer::get()->change_texture(entity_manager::get()->get_entity("resolution_arrow_left"), "res/textures/arrow_left.png");
-			renderer::get()->change_texture(entity_manager::get()->get_entity("resolution_arrow_right"), "res/textures/arrow_right.png");
-			renderer::get()->change_texture(entity_manager::get()->get_entity("window_mode_arrow_left"), "res/textures/arrow_left.png");
-			renderer::get()->change_texture(entity_manager::get()->get_entity("window_mode_arrow_right"), "res/textures/arrow_right.png");
-			renderer::get()->change_texture(entity_manager::get()->get_entity("back_button"), "res/textures/back_button.png");
-
-			if (input_handler::get()->glfw_button_right >= 65 && input_handler::get()->glfw_button_right <= 90)
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/" + letter_left + ".png");
-			else
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/question_mark.png");
-			break;
-		case move_right_button:
+		case controls_button:
 			selection = back_button;
 			// Set selected textures
 			renderer::get()->change_texture(entity_manager::get()->get_entity("back_button"), "res/textures/back_button_selected.png");
@@ -613,16 +421,46 @@ void settings_state::on_update(float delta_time)
 			renderer::get()->change_texture(entity_manager::get()->get_entity("resolution_arrow_right"), "res/textures/arrow_right.png");
 			renderer::get()->change_texture(entity_manager::get()->get_entity("window_mode_arrow_left"), "res/textures/arrow_left.png");
 			renderer::get()->change_texture(entity_manager::get()->get_entity("window_mode_arrow_right"), "res/textures/arrow_right.png");
-
-			if (input_handler::get()->glfw_button_right >= 65 && input_handler::get()->glfw_button_right <= 90)
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/" + letter_right + ".png");
-			else
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/question_mark.png");
-			if (input_handler::get()->glfw_button_left >= 65 && input_handler::get()->glfw_button_left <= 90)
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/" + letter_left + ".png");
-			else
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/question_mark.png");
+			renderer::get()->change_texture(entity_manager::get()->get_entity("controls_button"), "res/textures/controls_button.png");
 			break;
+		//case move_left_button:
+		//	selection = move_right_button;
+		//	// Update texture to new letter
+		//	if (input_handler::get()->glfw_button_right >= 65 && input_handler::get()->glfw_button_right <= 90)
+		//		renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/" + letter_right + "_selected.png");
+		//	else
+		//		renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/question_mark_selected.png");
+		//	// Set normal textures for other states
+		//	renderer::get()->change_texture(entity_manager::get()->get_entity("resolution_arrow_left"), "res/textures/arrow_left.png");
+		//	renderer::get()->change_texture(entity_manager::get()->get_entity("resolution_arrow_right"), "res/textures/arrow_right.png");
+		//	renderer::get()->change_texture(entity_manager::get()->get_entity("window_mode_arrow_left"), "res/textures/arrow_left.png");
+		//	renderer::get()->change_texture(entity_manager::get()->get_entity("window_mode_arrow_right"), "res/textures/arrow_right.png");
+		//	renderer::get()->change_texture(entity_manager::get()->get_entity("back_button"), "res/textures/back_button.png");
+
+		//	if (input_handler::get()->glfw_button_right >= 65 && input_handler::get()->glfw_button_right <= 90)
+		//		renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/" + letter_left + ".png");
+		//	else
+		//		renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/question_mark.png");
+		//	break;
+		//case move_right_button:
+		//	selection = back_button;
+		//	// Set selected textures
+		//	renderer::get()->change_texture(entity_manager::get()->get_entity("back_button"), "res/textures/back_button_selected.png");
+		//	// Set normal textures for other states
+		//	renderer::get()->change_texture(entity_manager::get()->get_entity("resolution_arrow_left"), "res/textures/arrow_left.png");
+		//	renderer::get()->change_texture(entity_manager::get()->get_entity("resolution_arrow_right"), "res/textures/arrow_right.png");
+		//	renderer::get()->change_texture(entity_manager::get()->get_entity("window_mode_arrow_left"), "res/textures/arrow_left.png");
+		//	renderer::get()->change_texture(entity_manager::get()->get_entity("window_mode_arrow_right"), "res/textures/arrow_right.png");
+
+		//	if (input_handler::get()->glfw_button_right >= 65 && input_handler::get()->glfw_button_right <= 90)
+		//		renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/" + letter_right + ".png");
+		//	else
+		//		renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/question_mark.png");
+		//	if (input_handler::get()->glfw_button_left >= 65 && input_handler::get()->glfw_button_left <= 90)
+		//		renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/" + letter_left + ".png");
+		//	else
+		//		renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/question_mark.png");
+		//	break;
 		case back_button:
 			selection = resolution_button;
 			// Set selected textures
@@ -632,15 +470,7 @@ void settings_state::on_update(float delta_time)
 			renderer::get()->change_texture(entity_manager::get()->get_entity("window_mode_arrow_left"), "res/textures/arrow_left.png");
 			renderer::get()->change_texture(entity_manager::get()->get_entity("window_mode_arrow_right"), "res/textures/arrow_right.png");
 			renderer::get()->change_texture(entity_manager::get()->get_entity("back_button"), "res/textures/back_button.png");
-
-			if (input_handler::get()->glfw_button_right >= 65 && input_handler::get()->glfw_button_right <= 90)
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/" + letter_right + ".png");
-			else
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveRight"), "res/textures/letters/question_mark.png");
-			if (input_handler::get()->glfw_button_left >= 65 && input_handler::get()->glfw_button_left <= 90)
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/" + letter_left + ".png");
-			else
-				renderer::get()->change_texture(entity_manager::get()->get_entity("keyMoveLeft"), "res/textures/letters/question_mark.png");
+			renderer::get()->change_texture(entity_manager::get()->get_entity("controls_button"), "res/textures/controls_button.png");
 			break;
 
 		}
@@ -650,7 +480,7 @@ void settings_state::on_update(float delta_time)
 
 	static char enter_joystick_old_state = GLFW_RELEASE;
 	static int enter_old_state = GLFW_RELEASE;
-	int enter_state = glfwGetKey(glfw::window, GLFW_KEY_ENTER);
+	int enter_state = glfwGetKey(glfw::window, input_handler::get()->glfw_joystick_enter);
 	if (enter_state == GLFW_RELEASE && enter_old_state == GLFW_PRESS || (present && axes[input_handler::get()->glfw_joystick_enter] == GLFW_RELEASE && enter_joystick_old_state == GLFW_PRESS))
 	{
 		switch (selection)
@@ -658,15 +488,11 @@ void settings_state::on_update(float delta_time)
 		case back_button:
 			engine_state_machine::get()->change_state("menu_state", true);
 			break;
-		case move_left_button:
-			handle_remap_key_left();
-			break;
-		case move_right_button:
-			handle_remap_key_right();
+		case controls_button:
+			engine_state_machine::get()->change_state("controls_state", true);
 			break;
 		}
 	}
-
 
 	// Right arrow
 	static int right_old_state = GLFW_RELEASE;
@@ -676,9 +502,13 @@ void settings_state::on_update(float delta_time)
 	static int left_old_state = GLFW_RELEASE;
 	int left_state = glfwGetKey(glfw::window, GLFW_KEY_LEFT);
 
+	static int right_joystick_old_state = GLFW_RELEASE;
+	static int left_joystick_old_state = GLFW_RELEASE;
+
 	//std::cout << "********** SETTINGS DISPLAYED ****************" << std::endl;
 	std::shared_ptr<clickable_system> cs = std::static_pointer_cast<clickable_system>(engine::get()->get_subsystem("clickable_system"));
-	if (cs->get_clicked_component_name() == "resolution_arrow_right" || (right_state == GLFW_RELEASE && right_old_state == GLFW_PRESS && selection == resolution_button))
+	if (cs->get_clicked_component_name() == "resolution_arrow_right" || (right_state == GLFW_RELEASE && right_old_state == GLFW_PRESS && selection == resolution_button)
+		|| (present && axes[input_handler::get()->glfw_joystick_right] == GLFW_RELEASE && right_joystick_old_state == GLFW_PRESS && selection == resolution_button))
 	{
 		// Wrap around
 		switch (current_resolution)
@@ -702,7 +532,8 @@ void settings_state::on_update(float delta_time)
 		cs->clear_clicked_component_name();
 
 	}
-	else if (cs->get_clicked_component_name() == "resolution_arrow_left" || (left_state == GLFW_RELEASE && left_old_state == GLFW_PRESS && selection == resolution_button))
+	else if (cs->get_clicked_component_name() == "resolution_arrow_left" || (left_state == GLFW_RELEASE && left_old_state == GLFW_PRESS && selection == resolution_button)
+		|| (present && axes[input_handler::get()->glfw_joystick_left] == GLFW_RELEASE && left_joystick_old_state == GLFW_PRESS && selection == resolution_button))
 	{
 		// Wrap around
 		switch (current_resolution)
@@ -724,7 +555,8 @@ void settings_state::on_update(float delta_time)
 
 		cs->clear_clicked_component_name();
 	}
-	else if (cs->get_clicked_component_name() == "window_mode_arrow_left" || (left_state == GLFW_RELEASE && left_old_state == GLFW_PRESS && selection == window_mode_button))
+	else if (cs->get_clicked_component_name() == "window_mode_arrow_left" || (left_state == GLFW_RELEASE && left_old_state == GLFW_PRESS && selection == window_mode_button)
+		|| (present && axes[input_handler::get()->glfw_joystick_left] == GLFW_RELEASE && left_joystick_old_state == GLFW_PRESS && selection == window_mode_button))
 	{
 		// Wrap around
 		switch (current_window_mode)
@@ -739,7 +571,8 @@ void settings_state::on_update(float delta_time)
 		determine_window_mode(current_window_mode);
 		cs->clear_clicked_component_name();
 	}
-	else if (cs->get_clicked_component_name() == "window_mode_arrow_right" || (right_state == GLFW_RELEASE && right_old_state == GLFW_PRESS && selection == window_mode_button))
+	else if (cs->get_clicked_component_name() == "window_mode_arrow_right" || (right_state == GLFW_RELEASE && right_old_state == GLFW_PRESS && selection == window_mode_button)
+		|| (present && axes[input_handler::get()->glfw_joystick_right] == GLFW_RELEASE && right_joystick_old_state == GLFW_PRESS && selection == window_mode_button))
 	{
 		// Wrap around
 		switch (current_window_mode)
@@ -754,16 +587,7 @@ void settings_state::on_update(float delta_time)
 		determine_window_mode(current_window_mode);
 		cs->clear_clicked_component_name();
 	}
-	else if (cs->get_clicked_component_name() == "keyMoveLeft")
-	{
-		handle_remap_key_left();
-		cs->clear_clicked_component_name();
-	}
-	else if (cs->get_clicked_component_name() == "keyMoveRight")
-	{
-		handle_remap_key_right();
-		cs->clear_clicked_component_name();
-	}
+	
 	// Reset key states
 	left_old_state = left_state;
 	right_old_state = right_state;
@@ -777,6 +601,8 @@ void settings_state::on_update(float delta_time)
 		up_old_axis = axes[input_handler::get()->glfw_joystick_up];
 		down_old_axis = axes[input_handler::get()->glfw_joystick_down];
 		enter_joystick_old_state = axes[input_handler::get()->glfw_joystick_enter];
+		right_joystick_old_state = axes[input_handler::get()->glfw_joystick_right];
+		left_joystick_old_state = axes[input_handler::get()->glfw_joystick_left];
 	}
 
 	

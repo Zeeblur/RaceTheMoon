@@ -10,6 +10,7 @@
 #include "game_state.h"
 #include "menu_state.h"
 #include "pause_state.h"
+#include "controls_state.h"
 #include "game_over_state.h"
 #include "settings_state.h"
 #include "thread_pool.h"
@@ -50,6 +51,7 @@ int main()
     engine_state_machine::get()->add_state("pause_state", std::make_shared<pause_state>(), state_type::PAUSE);
 	engine_state_machine::get()->add_state("game_over_state", std::make_shared<game_over_state>(), state_type::GAME_OVER);
 	engine_state_machine::get()->add_state("settings_state", std::make_shared<settings_state>(), state_type::SETTINGS);
+	engine_state_machine::get()->add_state("controls_state", std::make_shared<controls_state>(), state_type::CONTROLS);
 
     engine_state_machine::get()->change_state("menu_state");
     eng->run();

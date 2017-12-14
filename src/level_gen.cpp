@@ -35,6 +35,7 @@ void level_gen::update(float delta_time)
 {
 	// remove block that has passed
     auto pos = entity_manager::get()->get_entity("Bat")->get_trans().z;
+
    // std::cout << "pos = " << pos << std::endl;
 	if (pos < currentBlock-300)
 	{
@@ -60,7 +61,6 @@ void level_gen::render() {}
 void level_gen::reset()
 {
     // level gen reset attempt - Beej
-  //  std::cout << "currentBlock = " << currentBlock << std::endl;
 
     for (int i = 0; i <= (-currentBlock) + 1600; i += 400)
     {

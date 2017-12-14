@@ -20,6 +20,7 @@ enum state_type
     SETTINGS,
     EXIT,
 	GAME_OVER,
+	CONTROLS,
     NONE
 };
 
