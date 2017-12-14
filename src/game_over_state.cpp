@@ -7,6 +7,8 @@
 #include "engine_state_machine.h"
 using namespace std;
 
+#ifdef WINDOWS
+
 void show_error(MYSQL *mysql)
 {
 	printf("Error(%d) [%s] \"%s\"", mysql_errno(mysql),
@@ -131,6 +133,12 @@ void key_callback2(GLFWwindow* window, int key, int scancode, int action, int mo
 
 }
 
+#endif // WINDOWS
+
+
+
+
+
 void game_over_state::initialise()
 {
 	int x_size = 0, y_size = 0;
@@ -144,6 +152,14 @@ void game_over_state::initialise()
 	background->add_component("render", renderer::get()->build_component(background, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/race_the_moon.png", "rectangle", "Gouraud", simple_texture));
 	background->add_component("camera", camera_system::get()->build_component(background, camera_type::ORTHO));
 
+	transform_data your_score_prompt_transform;
+	your_score_prompt_transform.x = x_size / 2 - 300;
+	your_score_prompt_transform.y = 40;
+	auto your_score_prompt = entity_manager::get()->create_entity("your_score_prompt", state_type::GAME_OVER, your_score_prompt_transform);
+	your_score_prompt->add_component("render", renderer::get()->build_component(your_score_prompt, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), "res/textures/exit_button.png", "rectangle", "text", text));
+	your_score_prompt->add_component("text", text_system::get()->build_component(your_score_prompt, "Your score: " + std::to_string(current_score)));
+
+#ifdef WINDOWS
 	// High scores text transform
 	transform_data menu_transform;
 	menu_transform.x = x_size / 2 - 100;
@@ -152,13 +168,6 @@ void game_over_state::initialise()
 	auto menu_text = entity_manager::get()->create_entity("highScores", state_type::GAME_OVER, menu_transform);
 	menu_text->add_component("render", renderer::get()->build_component(menu_text, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/play_button.png", "rectangle", "text", text));
 	menu_text->add_component("text", text_system::get()->build_component(menu_text, "HIGH SCORES"));
-
-	transform_data your_score_prompt_transform;
-	your_score_prompt_transform.x = x_size / 2 - 300;
-	your_score_prompt_transform.y = 40;
-	auto your_score_prompt = entity_manager::get()->create_entity("your_score_prompt", state_type::GAME_OVER, your_score_prompt_transform);
-	your_score_prompt->add_component("render", renderer::get()->build_component(your_score_prompt, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), "res/textures/exit_button.png", "rectangle", "text", text));
-	your_score_prompt->add_component("text", text_system::get()->build_component(your_score_prompt, "Your score: " + std::to_string(current_score)));
 
 	transform_data your_name_prompt_transform;
 	your_name_prompt_transform.x = x_size / 2 - 300;
@@ -181,6 +190,10 @@ void game_over_state::initialise()
 	auto help_text = entity_manager::get()->create_entity("help_text_game_over", state_type::GAME_OVER, help_text_transform);
 	help_text->add_component("render", renderer::get()->build_component(help_text, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), "res/textures/exit_button.png", "rectangle", "text", text));
 	help_text->add_component("text", text_system::get()->build_component(help_text, "Type your name and press enter to submit..."));
+
+
+
+
 
 	printf("MySQL client version: %s\n", mysql_get_client_info());
 
@@ -268,15 +281,18 @@ void game_over_state::initialise()
 			no_connection->add_component("text", text_system::get()->build_component(no_connection, "Could not connect to high score database."));
 		}
 	}
+#endif // DEBUG
 
 }
 
 void game_over_state::display_high_scores()
 {
+	
 	// Update score
 	std::shared_ptr<text_component> your_score = std::dynamic_pointer_cast<text_component>(entity_manager::get()->get_entity("your_score_prompt")->get_component("text"));
 	your_score->_data->text = "Your score: " + std::to_string(current_score);
 
+#ifdef WINDOWS
 	if (!my_sql_error)
 	{
 
@@ -343,7 +359,7 @@ void game_over_state::display_high_scores()
 			}
 		}
 	}
-
+#endif // WINDOWS
 
 }
 
@@ -368,10 +384,15 @@ void game_over_state::on_enter()
 	current_score = score_system::get()->_data[0]->score;
 	score_system::get()->_data[0]->score = 0;
 
+#ifdef WINDOWS
+
 	glfwSetCharCallback(glfw::window, character_callback);
 	glfwSetKeyCallback(glfw::window, key_callback2);
 
+#endif // WINDOWS
+
 	display_high_scores();
+
 
 	std::cout << "Entered game over state, press ANY BUTTON to go to game state" << std::endl;
 }
@@ -382,7 +403,12 @@ void game_over_state::on_update(float delta_time)
 	int x_size = 0, y_size = 0;
 	glfwGetWindowSize(glfw::window, &x_size, &y_size);
 
+
 	entity_manager::get()->get_entity("your_score_prompt")->get_trans().x = x_size / 2 - 300;
+
+#ifdef WINDOWS
+
+
 	entity_manager::get()->get_entity("your_name_prompt")->get_trans().x = x_size / 2 - 300;
 	entity_manager::get()->get_entity("help_text_game_over")->get_trans().x = x_size / 2 - 400;
 	entity_manager::get()->get_entity("highScores")->get_trans().x = x_size / 2 - 100;
@@ -415,20 +441,30 @@ void game_over_state::on_update(float delta_time)
 		}
 	}
 
+#endif // WINDOWS
 	static int enter_old_state = GLFW_RELEASE;
 	int enter_state = glfwGetKey(glfw::window, GLFW_KEY_ENTER);
 
 	if (enter_state == GLFW_RELEASE && enter_old_state == GLFW_PRESS)
 	{
 		std::cout << "ENTER" << std::endl;
+#ifdef WINDOWS
 		submit_score();
+
+#endif // WINDOWS
+
+		engine_state_machine::get()->change_state("menu_state");
 	}
 	enter_old_state = enter_state;
 }
 
 void game_over_state::on_exit()
 {
+#ifdef WINDOWS
+
 	glfwSetCharCallback(glfw::window, dummy_character_callback);
 	glfwSetKeyCallback(glfw::window, dummy_key_callback);
+
+#endif // WINDOWS
 	std::cout << "Exiting game over state" << std::endl;
 }
