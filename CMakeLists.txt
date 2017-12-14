@@ -14,6 +14,8 @@ SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/bin")
 SET (CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/lib")
 SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/lib")
 
+
+
 file(GLOB_RECURSE SOURCE_FILES src/*.cpp src/*.h)
 # Add all shaders
 file(GLOB_RECURSE SHADER_FILES res/shaders/*.vert res/shaders/*.frag res/shaders/*.geom res/shaders/*.comp)
@@ -185,6 +187,7 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 else()
 	# GLEW https://github.com/Perlmint/glew-cmake.git ea68a21
 	add_subdirectory("lib/glew_windows")
+	target_compile_definitions(RaceTheMoon PUBLIC WINDOWS)
 	target_include_directories(RaceTheMoon PUBLIC "lib/glew_windows/include")
 	set(GLEWLIB libglew_shared)
     set_target_properties(${GLEWLIB} PROPERTIES

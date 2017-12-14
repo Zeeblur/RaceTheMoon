@@ -41,7 +41,7 @@ void engine::save_preferences()
 	if (user_pref_file.is_open())
 	{
 		// Add new button and old buttons
-		user_pref_file << "Left: " << input_handler::get()->glfw_button_forward << "\n";
+		user_pref_file << "Left: " << input_handler::get()->glfw_button_left << "\n";
 		user_pref_file << "Right: " << input_handler::get()->glfw_button_right << "\n";
 		user_pref_file << "Front: " << input_handler::get()->glfw_button_forward << "\n";
 		user_pref_file << "Back: " << input_handler::get()->glfw_button_backward << "\n";
