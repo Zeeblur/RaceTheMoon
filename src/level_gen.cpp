@@ -93,7 +93,7 @@ void level_gen::addWaterfallPuzzle(int blockIdx)
     waterfallPlaneTrans.z = blockIdx + 200.0f;
     auto p = entity_manager::get()->create_entity("Plane" + std::to_string(blockIdx), state_type::GAME, waterfallPlaneTrans);
     p->add_component("physics", physics_system::get()->build_component(p));
-    p->add_component("render", renderer::get()->build_component(p, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), "res/textures/floor.jpg", "plane", "Gouraud", phong));
+    p->add_component("render", renderer::get()->build_component(p, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), "res/textures/floor.jpg", "plane", "Gouraud", phongDistance));
     
     // Left wall piece
     transform_data waterfallLeftWallTrans;
@@ -287,7 +287,7 @@ void level_gen::addCrusher(int blockIdx)
     waterfallPlaneTrans.z = blockIdx + 200.0f;
     auto p = entity_manager::get()->create_entity("Plane" + std::to_string(blockIdx), state_type::GAME, waterfallPlaneTrans);
     p->add_component("physics", physics_system::get()->build_component(p));
-    p->add_component("render", renderer::get()->build_component(p, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), "res/textures/floor.jpg", "plane", "Gouraud", phong));
+    p->add_component("render", renderer::get()->build_component(p, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), "res/textures/floor.jpg", "plane", "Gouraud", phongDistance));
 
     // Left wall piece
     transform_data crusherLeftWallTrans;
@@ -320,7 +320,7 @@ void level_gen::addCrusher(int blockIdx)
     transform_data crusherL1Ttrans;
     crusherL1Ttrans.scale = glm::vec3(10.0f, 20.0f, 60.0f);
     crusherL1Ttrans.x =  -230.0f;
-    crusherL1Ttrans.y =  5.0f;
+    crusherL1Ttrans.y =  10.0f;
     crusherL1Ttrans.z = blockIdx + 150.0f;
     auto cL1 = entity_manager::get()->create_entity("CrusherL1" + std::to_string(blockIdx), state_type::GAME, crusherL1Ttrans);
     cL1->add_component("physics", physics_system::get()->build_component(cL1));
@@ -334,7 +334,7 @@ void level_gen::addCrusher(int blockIdx)
     transform_data crusherR1Ttrans;
     crusherR1Ttrans.scale = glm::vec3(10.0f, 20.0f, 60.0f);
     crusherR1Ttrans.x =  -170.0f;
-    crusherR1Ttrans.y =  5.0f;
+    crusherR1Ttrans.y =  10.0f;
     crusherR1Ttrans.z = blockIdx + 150.0f;
     auto cR1 = entity_manager::get()->create_entity("CrusherR1" + std::to_string(blockIdx), state_type::GAME, crusherR1Ttrans);
     cR1->add_component("physics", physics_system::get()->build_component(cR1));
@@ -348,7 +348,7 @@ void level_gen::addCrusher(int blockIdx)
     transform_data crusherL2Ttrans;
     crusherL2Ttrans.scale = glm::vec3(10.0f, 20.0f, 60.0f);
     crusherL2Ttrans.x =  130.0f;
-    crusherL2Ttrans.y =  5.0f;
+    crusherL2Ttrans.y =  10.0f;
     crusherL2Ttrans.z = blockIdx + 0.0f;
     auto cL2 = entity_manager::get()->create_entity("CrusherL2" + std::to_string(blockIdx), state_type::GAME, crusherL2Ttrans);
     cL2->add_component("physics", physics_system::get()->build_component(cL2));
@@ -362,7 +362,7 @@ void level_gen::addCrusher(int blockIdx)
     transform_data crusherR2Ttrans;
     crusherR2Ttrans.scale = glm::vec3(10.0f, 20.0f, 60.0f);
     crusherR2Ttrans.x =  190.0f;
-    crusherR2Ttrans.y =  5.0f;
+    crusherR2Ttrans.y =  10.0f;
     crusherR2Ttrans.z = blockIdx + 0.0f;
     auto cR2 = entity_manager::get()->create_entity("CrusherR2" + std::to_string(blockIdx), state_type::GAME, crusherR2Ttrans);
     cR2->add_component("physics", physics_system::get()->build_component(cR2));
@@ -376,7 +376,7 @@ void level_gen::addCrusher(int blockIdx)
 	transform_data crusherL3Trans;
 	crusherL3Trans.scale = glm::vec3(10.0f, 20.0f, 60.0f);
 	crusherL3Trans.x =  0.0f;
-	crusherL3Trans.y =  5.0f;
+	crusherL3Trans.y =  10.0f;
 	crusherL3Trans.z = blockIdx + 150.0f;
 	auto cL3 = entity_manager::get()->create_entity("CrusherL3" + std::to_string(blockIdx), state_type::GAME, crusherL3Trans);
 	cL3->add_component("physics", physics_system::get()->build_component(cL3));
@@ -390,7 +390,7 @@ void level_gen::addCrusher(int blockIdx)
 	transform_data crushR3;
 	crushR3.scale = glm::vec3(10.0f, 20.0f, 60.0f);
 	crushR3.x =  60.0f;
-	crushR3.y =  5.0f;
+	crushR3.y =  10.0f;
 	crushR3.z = blockIdx + 150.0f;
 	auto cR3 = entity_manager::get()->create_entity("CrusherR3" + std::to_string(blockIdx), state_type::GAME, crushR3);
 	cR3->add_component("physics", physics_system::get()->build_component(cR3));
@@ -404,7 +404,7 @@ void level_gen::addCrusher(int blockIdx)
 	transform_data crusherL4Trans;
 	crusherL4Trans.scale = glm::vec3(10.0f, 20.0f, 60.0f);
 	crusherL4Trans.x =  -60.0f;
-	crusherL4Trans.y =  5.0f;
+	crusherL4Trans.y =  10.0f;
 	crusherL4Trans.z = blockIdx + 250.0f;
 	auto cL4 = entity_manager::get()->create_entity("CrusherL4" + std::to_string(blockIdx), state_type::GAME, crusherL4Trans);
 	cL4->add_component("physics", physics_system::get()->build_component(cL4));
@@ -418,7 +418,7 @@ void level_gen::addCrusher(int blockIdx)
 	transform_data crushR4;
 	crushR4.scale = glm::vec3(10.0f, 20.0f, 60.0f);
 	crushR4.x =  0.0f;
-	crushR4.y =  5.0f;
+	crushR4.y =  10.0f;
 	crushR4.z = blockIdx + 250.0f;
 	auto cR4 = entity_manager::get()->create_entity("CrusherR4" + std::to_string(blockIdx), state_type::GAME, crushR4);
 	cR4->add_component("physics", physics_system::get()->build_component(cR4));
@@ -495,7 +495,7 @@ void level_gen::addSnakeBalls(int blockIdx)
     waterfallPlaneTrans.z = blockIdx + 200.0f;
     auto p = entity_manager::get()->create_entity("Plane" + std::to_string(blockIdx), state_type::GAME, waterfallPlaneTrans);
     p->add_component("physics", physics_system::get()->build_component(p));
-    p->add_component("render", renderer::get()->build_component(p, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), "res/textures/floor.jpg", "plane", "Gouraud", phong));
+    p->add_component("render", renderer::get()->build_component(p, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), "res/textures/floor.jpg", "plane", "Gouraud", phongDistance));
 
 	// Left wall piece
 	transform_data snakeLeftWall;

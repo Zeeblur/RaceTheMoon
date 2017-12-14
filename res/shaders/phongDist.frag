@@ -102,7 +102,7 @@ int fogSelector = 0;
 if(fogSelector == 0)//linear fog
 {
    // 20 - fog starts; 80 - fog ends
-   fogFactor = (800 - dist)/(800 - 200);
+   fogFactor = (1000 - dist)/(1000 - 200);
    fogFactor = clamp( fogFactor, 0.0, 1.0 );
  
    //if you inverse color in glsl mix function you have to
