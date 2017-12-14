@@ -46,6 +46,8 @@ public:
 	void on_update(float delta_time);
 
 	void on_exit();
+
+	
 };
 
 static int latest_key_press;

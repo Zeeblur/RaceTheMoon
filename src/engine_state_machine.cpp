@@ -154,48 +154,6 @@ void engine_state_machine::update(float delta_time)
 	}
 	escape_old_state = escape_state;
 
-	//static int enter_old_state = GLFW_RELEASE;
-	//int enter_state = glfwGetKey(glfw::window, GLFW_KEY_ENTER);
-
-	//if (enter_state == GLFW_RELEASE && enter_old_state == GLFW_PRESS)
-	//{
-	//	switch (engine_state_machine::get()->get_current_state_type())
-	//	{
-	//		// Go from menu state to game state RESETTING GAME
-	//	case state_type::MENU:
-	//		engine_state_machine::get()->change_state("game_state", true);
-	//		break;
-	//	case state_type::GAME_OVER:
-	//		engine_state_machine::get()->change_state("menu_state");
-	//		break;
-	//	default:
-	//		// do nothing
-	//		break;
-	//	}
-	//}
-	//enter_old_state = enter_state;
-
-	//static int backspace_old_state = GLFW_RELEASE;
-	//int backspace_state = glfwGetKey(glfw::window, GLFW_KEY_BACKSPACE);
-
-	//if (backspace_state == GLFW_RELEASE && backspace_old_state == GLFW_PRESS)
-	//{
-	//	switch (engine_state_machine::get()->get_current_state_type())
-	//	{
-	//		// Go from pause state to menu state
-	//	case state_type::PAUSE:
-	//		engine_state_machine::get()->change_state("menu_state");
-	//		break;
-	//	case state_type::GAME_OVER:
-	//		engine_state_machine::get()->change_state("menu_state");
-	//		break;
-	//	default:
-	//		// do nothing
-	//		break;
-	//	}
-	//}
-	//backspace_old_state = backspace_state;
-
 	if (_current_state != nullptr)
 		_current_state->on_update(delta_time);
 

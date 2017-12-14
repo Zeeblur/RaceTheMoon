@@ -293,6 +293,7 @@ void determine_screen_res(resolution &res)
 
 void determine_window_mode(window_mode &window_mode)
 {
+	
     int xsize = 0;
     int ysize = 0;
 
