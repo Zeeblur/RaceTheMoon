@@ -202,7 +202,7 @@ void determine_screen_res(resolution &res)
 		glfwSetWindowSize(glfw::window, 1280, 720);
         glfwSetWindowPos(glfw::window, 320, 180);
 		renderer::get()->change_texture(entity_manager::get()->get_entity("resolutionValue"), "res/textures/1280x720.png");
-		engine::get()->resPref = "_128x720";
+		engine::get()->resPref = "_1280x720";
 		break;
 	case _1600x1200:
 		glfwSetWindowSize(glfw::window, 1600, 1200);
