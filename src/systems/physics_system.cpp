@@ -227,26 +227,26 @@ void collision(void* col1, void* batCol)
     // Shield power-up collision
     else if (col && _obstacle->behaviour_ == colType::SHIELD)
     {
-        entity_manager::get()->delete_entity(_obstacle->name_);
+         entity_manager::get()->get_entity(_obstacle->name_)->get_component("render")->set_visible(false);
         _bat_collider->shield = true;
     }
     // Points power-up collision
     else if (col && _obstacle->behaviour_ == colType::POINTS)
     {
-        entity_manager::get()->delete_entity(_obstacle->name_);
+        entity_manager::get()->get_entity(_obstacle->name_)->get_component("render")->set_visible(false);
         engine::get()->get_subsystem("score_system")->addPointsPowerUp();
     }
     // Minibat power-up collision
     else if (col && _obstacle->behaviour_ == colType::MINIBAT)
     {
-        entity_manager::get()->delete_entity(_obstacle->name_);
+        entity_manager::get()->get_entity(_obstacle->name_)->get_component("render")->set_visible(false);
         _bat_collider->shrunk = true;
 
     }
     // Speed power-up collision
     else if (col && _obstacle->behaviour_ == colType::SPEED)
     {
-        entity_manager::get()->delete_entity(_obstacle->name_);
+        entity_manager::get()->get_entity(_obstacle->name_)->get_component("render")->set_visible(false);
         _bat_collider->speedTimer = 0.0f;
         _bat_collider->speed = true;
     }

@@ -25,8 +25,6 @@ void game_state::initialise()
     p->add_component("physics", physics_system::get()->build_component(p));
     p->add_component("render", renderer::get()->build_component(p, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), "res/textures/floor.jpg", "plane", "Gouraud", phongDistance));
 
-    //auto levelGenerator = level_gen::get(); <------------- DO WE NEED THIS NOW? - Beej
-
     // Adding moon sphere
     transform_data moonTrans;
     moonTrans.scale = glm::vec3(10.0f, 10.0f, 10.0f);
@@ -93,7 +91,8 @@ void game_state::on_reset()
 	}
     physics_system::get()->_bat_collider->reset_data();
     // Reset level gen
-    engine::get()->get_subsystem("level_gen")->unload_content();
+    engine::get()->get_subsystem("level_gen")->reset();
+    //engine::get()->add_subsystem("level_gen", level_gen::get());
 	// set score system active
 	engine::get()->get_subsystem("score_system")->initialise();
 

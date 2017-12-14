@@ -153,7 +153,10 @@ void renderer::render()
 	auto err2 = glGetError();
 
 	for (auto &r : _dataList)
-	{
+    {
+        if (!r->visible)
+            continue;
+
 		// bind effect
 		gl::render(r);
 		glBindVertexArray(0);

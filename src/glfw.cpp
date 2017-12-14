@@ -36,7 +36,7 @@ namespace glfw
         glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 
         // Open a window and create its OpenGL context
-        window = glfwCreateWindow(1920, 1080, "Race The Moon", glfwGetPrimaryMonitor(), NULL);
+        window = glfwCreateWindow(1920, 1080, "Race The Moon", NULL, NULL);
         if (window == NULL) {
             fprintf(stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n");
             getchar();
