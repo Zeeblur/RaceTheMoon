@@ -64,6 +64,27 @@ void settings_state::initialise()
 	resolution_value->add_component("render", renderer::get()->build_component(resolution_value, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/1920x1080.png", "rectangle", "Gouraud", simple_texture));
 	resolution_value->add_component("camera", camera_system::get()->build_component(resolution_value, camera_type::ORTHO));
 
+	if (engine::get()->resPref == "_1024x768")
+	{
+		current_resolution = _1024x768;
+		renderer::get()->change_texture(entity_manager::get()->get_entity("resolutionValue"), "res/textures/1024x768.png");
+	}
+	else if (engine::get()->resPref == "_1280x720")
+	{
+		current_resolution = _1280x720;
+		renderer::get()->change_texture(entity_manager::get()->get_entity("resolutionValue"), "res/textures/1280x720.png");
+	}
+	else if (engine::get()->resPref == "_1600x1200")
+	{
+		current_resolution = _1600x1200;
+		renderer::get()->change_texture(entity_manager::get()->get_entity("resolutionValue"), "res/textures/1600x1200.png");
+	}
+	else if (engine::get()->resPref == "_1920x1080")
+	{
+		current_resolution = _1920x1080;
+		renderer::get()->change_texture(entity_manager::get()->get_entity("resolutionValue"), "res/textures/1920x1080.png");
+	}
+
 	// Resolution transform
 	transform_data resolution_transform;
 	resolution_transform.x = 0;
@@ -85,6 +106,18 @@ void settings_state::initialise()
 	auto window_mode_value = entity_manager::get()->create_entity("windowModeValue", state_type::SETTINGS, window_mode_value_transform);
 	window_mode_value->add_component("render", renderer::get()->build_component(window_mode_value, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/fullscreen.png", "rectangle", "Gouraud", simple_texture));
 	window_mode_value->add_component("camera", camera_system::get()->build_component(window_mode_value, camera_type::ORTHO));
+
+	if (engine::get()->windowPref == "TRUE")
+	{
+		current_window_mode = windowed;
+		renderer::get()->change_texture(entity_manager::get()->get_entity("windowModeValue"), "res/textures/windowed.png");
+	}
+	else if (engine::get()->windowPref == "FALSE")
+	{
+		current_window_mode = fullscreen;
+		renderer::get()->change_texture(entity_manager::get()->get_entity("windowModeValue"), "res/textures/fullscreen.png");
+	}
+
 
 	// Window mode transform
 	transform_data window_transform;
@@ -162,7 +195,7 @@ void settings_state::initialise()
 	window_mode_button_left->add_component("clickable", clickable_system::get()->build_component(window_mode_button_left, glm::dvec2(window_mode_left_arrow_transform.x, -window_mode_left_arrow_transform.y), glm::dvec2(x_button_size, y_button_size)));
 	window_mode_button_left->add_component("render", renderer::get()->build_component(window_mode_button_left, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/arrow_left.png", "rectangle", "Gouraud", simple_texture));
 	window_mode_button_left->add_component("camera", camera_system::get()->build_component(window_mode_button_left, camera_type::ORTHO));
-
+	
 	selection = resolution_button;
 }
 
