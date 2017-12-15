@@ -14,7 +14,6 @@ matrix:
   include: 
     - 
       addons: 
-        mariadb: "10.2"
         apt: 
           packages: 
             - g++-6
@@ -35,8 +34,7 @@ matrix:
       env: "COMPILER_NAME=gcc COMPILER=g++-6 CXX=g++-6 CC=gcc-6"
       os: linux
     - 
-      addons:
-        mariadb: "10.2"      
+      addons: 
         apt: 
           packages: 
             - clang-3.8
