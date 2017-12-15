@@ -36,6 +36,8 @@ private:
     std::shared_ptr<entity> _parent;
 
     glm::vec3 acceleration = glm::vec3(2.0f);
+
+	bool turnt = false;
 public:
     physics_component(std::shared_ptr<entity> &e, std::shared_ptr<physics_data> &data);
 

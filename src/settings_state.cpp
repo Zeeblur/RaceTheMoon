@@ -22,8 +22,8 @@ void settings_state::initialise()
 	glfwGetWindowSize(glfw::window, &x_size, &y_size);
 
 	transform_data back_transform;
-	back_transform.scale = glm::vec3(x_size * 0.5 , y_size * 0.5, 1.0f);
-	back_transform.z = -10;
+	back_transform.scale = glm::vec3(1920 * 0.5 , 1080 * 0.5, 1.0f);
+	back_transform.z = -500;
 	auto background = entity_manager::get()->create_entity("background", state_type::SETTINGS, back_transform);
 
 	background->add_component("render", renderer::get()->build_component(background, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/race_the_moon.png", "rectangle", "Gouraud", simple_texture));
@@ -49,7 +49,7 @@ void settings_state::initialise()
 	controls_button_transform.scale.y = 50;
 	// Controls button
 	auto controls_button = entity_manager::get()->create_entity("controls_button", state_type::SETTINGS, controls_button_transform);
-	controls_button->add_component("render", renderer::get()->build_component(controls_button, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/back_button.png", "rectangle", "Gouraud", simple_texture));
+	controls_button->add_component("render", renderer::get()->build_component(controls_button, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/controls_button.png", "rectangle", "Gouraud", simple_texture));
 	controls_button->add_component("camera", camera_system::get()->build_component(controls_button, camera_type::ORTHO));
 	controls_button->add_component("clickable", clickable_system::get()->build_component(controls_button, vec2(controls_button_transform.x, -controls_button_transform.y), controls_button_transform.scale));
 
@@ -63,6 +63,27 @@ void settings_state::initialise()
 	auto resolution_value = entity_manager::get()->create_entity("resolutionValue", state_type::SETTINGS, resolution_value_transform);
 	resolution_value->add_component("render", renderer::get()->build_component(resolution_value, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/1920x1080.png", "rectangle", "Gouraud", simple_texture));
 	resolution_value->add_component("camera", camera_system::get()->build_component(resolution_value, camera_type::ORTHO));
+
+	if (engine::get()->resPref == "_1024x768")
+	{
+		current_resolution = _1024x768;
+		renderer::get()->change_texture(entity_manager::get()->get_entity("resolutionValue"), "res/textures/1024x768.png");
+	}
+	else if (engine::get()->resPref == "_1280x720")
+	{
+		current_resolution = _1280x720;
+		renderer::get()->change_texture(entity_manager::get()->get_entity("resolutionValue"), "res/textures/1280x720.png");
+	}
+	else if (engine::get()->resPref == "_1600x1200")
+	{
+		current_resolution = _1600x1200;
+		renderer::get()->change_texture(entity_manager::get()->get_entity("resolutionValue"), "res/textures/1600x1200.png");
+	}
+	else if (engine::get()->resPref == "_1920x1080")
+	{
+		current_resolution = _1920x1080;
+		renderer::get()->change_texture(entity_manager::get()->get_entity("resolutionValue"), "res/textures/1920x1080.png");
+	}
 
 	// Resolution transform
 	transform_data resolution_transform;
@@ -85,6 +106,18 @@ void settings_state::initialise()
 	auto window_mode_value = entity_manager::get()->create_entity("windowModeValue", state_type::SETTINGS, window_mode_value_transform);
 	window_mode_value->add_component("render", renderer::get()->build_component(window_mode_value, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/fullscreen.png", "rectangle", "Gouraud", simple_texture));
 	window_mode_value->add_component("camera", camera_system::get()->build_component(window_mode_value, camera_type::ORTHO));
+
+	if (engine::get()->windowPref == "TRUE")
+	{
+		current_window_mode = windowed;
+		renderer::get()->change_texture(entity_manager::get()->get_entity("windowModeValue"), "res/textures/windowed.png");
+	}
+	else if (engine::get()->windowPref == "FALSE")
+	{
+		current_window_mode = fullscreen;
+		renderer::get()->change_texture(entity_manager::get()->get_entity("windowModeValue"), "res/textures/fullscreen.png");
+	}
+
 
 	// Window mode transform
 	transform_data window_transform;
@@ -162,7 +195,7 @@ void settings_state::initialise()
 	window_mode_button_left->add_component("clickable", clickable_system::get()->build_component(window_mode_button_left, glm::dvec2(window_mode_left_arrow_transform.x, -window_mode_left_arrow_transform.y), glm::dvec2(x_button_size, y_button_size)));
 	window_mode_button_left->add_component("render", renderer::get()->build_component(window_mode_button_left, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), "res/textures/arrow_left.png", "rectangle", "Gouraud", simple_texture));
 	window_mode_button_left->add_component("camera", camera_system::get()->build_component(window_mode_button_left, camera_type::ORTHO));
-
+	
 	selection = resolution_button;
 }
 
@@ -202,7 +235,7 @@ void determine_screen_res(resolution &res)
 		glfwSetWindowSize(glfw::window, 1280, 720);
         glfwSetWindowPos(glfw::window, 320, 180);
 		renderer::get()->change_texture(entity_manager::get()->get_entity("resolutionValue"), "res/textures/1280x720.png");
-		engine::get()->resPref = "_128x720";
+		engine::get()->resPref = "_1280x720";
 		break;
 	case _1600x1200:
 		glfwSetWindowSize(glfw::window, 1600, 1200);
@@ -480,7 +513,7 @@ void settings_state::on_update(float delta_time)
 
 	static char enter_joystick_old_state = GLFW_RELEASE;
 	static int enter_old_state = GLFW_RELEASE;
-	int enter_state = glfwGetKey(glfw::window, input_handler::get()->glfw_joystick_enter);
+	int enter_state = glfwGetKey(glfw::window, GLFW_KEY_ENTER);
 	if (enter_state == GLFW_RELEASE && enter_old_state == GLFW_PRESS || (present && axes[input_handler::get()->glfw_joystick_enter] == GLFW_RELEASE && enter_joystick_old_state == GLFW_PRESS))
 	{
 		switch (selection)

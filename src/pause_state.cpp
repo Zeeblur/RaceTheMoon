@@ -20,7 +20,7 @@ void pause_state::initialise()
 	paused_text->add_component("text", text_system::get()->build_component(paused_text, "PAUSED"));
 
 	transform_data back_transform;
-	back_transform.scale = glm::vec3(x_size * 0.5, y_size * 0.5, 1.0f);
+	back_transform.scale = glm::vec3(1920 * 0.5, 1080 * 0.5, 1.0f);
 	back_transform.z = -1;
 	auto background = entity_manager::get()->create_entity("background", state_type::PAUSE, back_transform);
 

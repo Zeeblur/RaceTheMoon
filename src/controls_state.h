@@ -5,6 +5,7 @@ enum controls_selection
 {
 	move_left_button,
 	move_right_button,
+	enter_joystick_button,
 	controls_back_button
 };
 

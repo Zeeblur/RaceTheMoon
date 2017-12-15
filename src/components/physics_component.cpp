@@ -41,7 +41,9 @@ void physics_component::update(float delta_time)
     _parent->get_trans().x = _data->x;
     _parent->get_trans().y = _data->y;
 	_parent->get_trans().z = _data->z;
-	_parent->get_trans().rotation = _data->rotation * _data->rotateby;  
+	_parent->get_trans().rotation = _data->rotation * _data->rotateby;
+
+	turnt = false;
 }
 
 void physics_component::render()
@@ -61,11 +63,20 @@ void physics_component::shutdown()
 void physics_component::add_impulse(glm::vec3& direction)
 {
     _data->moveRequest = true;
-
-	// check for continuous movement ? possibly new command
-	//if (direction.z == 0) {
+	
+	if (direction.z == 0)
+	{
 		auto reverse = glm::vec3(direction.z, direction.y, direction.x);
 		_data->rotateby = glm::angleAxis(glm::radians(-20.0f), reverse);
-	//}
+		turnt = true;
+	}
+
+	if (!turnt)
+	{
+		auto reverse = glm::vec3(direction.z, direction.y, direction.x);
+		_data->rotateby = glm::angleAxis(glm::radians(-20.0f), reverse);
+	}
+	
+
     _data->currentVelocity += (direction * acceleration);
 }

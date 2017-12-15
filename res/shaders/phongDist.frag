@@ -1,4 +1,4 @@
-﻿#version 330 core
+#version 330 core
 
 
 // Incoming texture coordinate
@@ -59,7 +59,7 @@ const float FogDensity = 0.05;
  
 void main(){
  
-vec3 tex1 = texture(tex, tex_coord).rgb;
+vec3 tex1 = texture2D(tex, tex_coord).rgb;
  
 //get light an view directions
 vec3 L = normalize( light_pos - vertex_pos);
