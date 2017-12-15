@@ -168,6 +168,35 @@ void engine_state_machine::update(float delta_time)
 	}
 	escape_old_state = escape_state;
 
+	int present = glfwJoystickPresent(GLFW_JOYSTICK_1);
+
+	if (present)
+	{
+		int count;
+		const unsigned char* axes = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
+		static char old_state = GLFW_RELEASE;
+		if (axes[7] == GLFW_RELEASE && old_state == GLFW_PRESS)
+		{
+			switch (engine_state_machine::get()->get_current_state_type())
+			{
+				// Go from game state to pause state
+			case state_type::GAME:
+				engine_state_machine::get()->change_state("pause_state");
+				break;
+				// Go from pause state to game state
+			case state_type::PAUSE:
+				engine_state_machine::get()->change_state("game_state");
+				break;
+			default:
+				// do nothing
+				break;
+			}
+		}
+
+		old_state = axes[7];
+	}
+
+
 	if (_current_state != nullptr)
 		_current_state->on_update(delta_time);
 

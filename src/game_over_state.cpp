@@ -444,10 +444,16 @@ void game_over_state::on_update(float delta_time)
 	}
 
 #endif // WINDOWS
+	int present = glfwJoystickPresent(GLFW_JOYSTICK_1);
+
+	int count;
+	const unsigned char* axes = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
+
+	static char enter_joystick_old_state = GLFW_RELEASE;
 	static int enter_old_state = GLFW_RELEASE;
 	int enter_state = glfwGetKey(glfw::window, GLFW_KEY_ENTER);
 
-	if (enter_state == GLFW_RELEASE && enter_old_state == GLFW_PRESS)
+	if ((enter_state == GLFW_RELEASE && enter_old_state == GLFW_PRESS) || (present && axes[input_handler::get()->glfw_joystick_enter] == GLFW_RELEASE && enter_joystick_old_state == GLFW_PRESS))
 	{
 		std::cout << "ENTER" << std::endl;
 #ifdef WINDOWS
@@ -458,6 +464,10 @@ void game_over_state::on_update(float delta_time)
 		engine_state_machine::get()->change_state("menu_state");
 	}
 	enter_old_state = enter_state;
+	if (present)
+	{
+		enter_joystick_old_state = axes[input_handler::get()->glfw_joystick_enter];
+	}
 }
 
 void game_over_state::on_exit()

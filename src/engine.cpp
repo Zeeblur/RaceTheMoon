@@ -88,8 +88,8 @@ void engine::initWindowMan()
 			user_pref_file_out << "JoystickEnter: " << 0 << "\n";
 			user_pref_file_out << "JoystickUp: " << 10 << "\n";
 			user_pref_file_out << "JoystickDown: " << 12 << "\n";
-			user_pref_file_out << "JoystickLeft: " << 11 << "\n"; // is this right?
-			user_pref_file_out << "JoystickRight: " << 13 << "\n"; // is this right?
+			user_pref_file_out << "JoystickLeft: " << 13 << "\n"; // is this right?
+			user_pref_file_out << "JoystickRight: " << 11 << "\n"; // is this right?
 			user_pref_file_out << "Resolution: " << "_1920x1080" << "\n";
 			user_pref_file_out << "Windowed: " << "TRUE" << "\n";
 
@@ -122,7 +122,7 @@ void engine::initWindowMan()
 		current_window_mode = false;
 
 	// set res
-	int resX = 0, resY = 0;
+	int resX = 1920, resY = 1080;
 
 	if (resPref == "_1024x768")
 	{
