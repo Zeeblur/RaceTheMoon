@@ -42,7 +42,7 @@ bool input_handler::initialise()
     auto forward = glm::vec3(0.0f, 0.0f, -1.0f);
     buttonUp_ = new MoveCommand(forward);
 
-    auto move = glm::vec3(0.0f, 0.0f, -0.2f);
+    auto move = glm::vec3(0.0f, 0.0f, -1.0f);
     fakeMove_ = new MoveCommand(move);
 
     return true;
@@ -144,11 +144,11 @@ void input_handler::shutdown()
 std::vector<Command*> input_handler::handle_input()
 {
     std::vector<Command*> commands;
-    if (glfwGetKey(glfw::window, glfw_button_forward))
-        commands.push_back(buttonUp_);
+    //if (glfwGetKey(glfw::window, glfw_button_forward))
+    //    commands.push_back(buttonUp_);
 
-    if (glfwGetKey(glfw::window, glfw_button_backward))
-        commands.push_back(buttonDown_);
+    //if (glfwGetKey(glfw::window, glfw_button_backward))
+    //    commands.push_back(buttonDown_);
 
     if (glfwGetKey(glfw::window, glfw_button_left))
         commands.push_back(buttonLeft_);
@@ -164,12 +164,15 @@ std::vector<Command*> input_handler::handle_input()
 		commands.push_back(buttonLeft_);
 	if (present && axes[0] > 0.1)
 		commands.push_back(buttonRight_);
-	if (present && axes[1] > 0.1)
-		commands.push_back(buttonUp_);
-	if (present && axes[1] < -0.1)
-		commands.push_back(buttonDown_);
+	//if (present && axes[1] > 0.1)
+	//	commands.push_back(buttonUp_);
+	//if (present && axes[1] < -0.1)
+	//	commands.push_back(buttonDown_);
+
+
+
     //fake always move forward
-    //commands.push_back(fakeMove_);
+    commands.push_back(fakeMove_);
 
     return commands;
 }
